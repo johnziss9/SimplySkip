@@ -16,9 +16,16 @@ namespace SimplySkip.Controllers
             _customerService = customerService;
         }
 
+        [HttpGet]
         public async Task<ActionResult<List<Customer>>> GetAll()
         {
             return ResponseHelper.HandleErrorAndReturn(await _customerService.GetAllCustomers());
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<Customer>> Create(Customer customer)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _customerService.CreateCustomer(customer));
         }
     }
 }
