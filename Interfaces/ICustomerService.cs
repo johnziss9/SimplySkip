@@ -9,5 +9,7 @@ namespace SimplySkip.Interfaces
         Task<Response<List<Customer>>> GetAllCustomers();
 
         Task<Response<Customer>> CreateCustomer(Customer customer);
+
+        Task<Response<Customer>> GetCustomerById(int id);
     }
 }

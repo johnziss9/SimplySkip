@@ -27,5 +27,11 @@ namespace SimplySkip.Controllers
         {
             return ResponseHelper.HandleErrorAndReturn(await _customerService.CreateCustomer(customer));
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Customer>> Get(int id)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _customerService.GetCustomerById(id));
+        }
     }
 }

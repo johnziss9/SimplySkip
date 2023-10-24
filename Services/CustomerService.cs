@@ -27,5 +27,17 @@ namespace SimplySkip.Services
 
             return Response<Customer>.Success(customer);
         }
+
+        public async Task<Response<Customer>> GetCustomerById(int id)
+        {
+            var customer = await _ssDbContext.Customers.Where(c => c.Id == id).FirstOrDefaultAsync();
+
+            if (customer == null)
+            {
+                return Response<Customer>.Fail(404, "Customer Not Found");
+            }
+
+            return Response<Customer>.Success(customer);
+        }
     }
 }
