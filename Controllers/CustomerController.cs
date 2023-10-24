@@ -1,3 +1,4 @@
+using System.Drawing;
 using Microsoft.AspNetCore.Mvc;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
@@ -32,6 +33,12 @@ namespace SimplySkip.Controllers
         public async Task<ActionResult<Customer>> Get(int id)
         {
             return ResponseHelper.HandleErrorAndReturn(await _customerService.GetCustomerById(id));
+        }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Customer>> Update(int id, Customer customer)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _customerService.UpdateCustomer(id, customer));
         }
     }
 }

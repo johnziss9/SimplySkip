@@ -11,5 +11,7 @@ namespace SimplySkip.Interfaces
         Task<Response<Customer>> CreateCustomer(Customer customer);
 
         Task<Response<Customer>> GetCustomerById(int id);
+
+        Task<Response<Customer>> UpdateCustomer(int id, Customer updatedCustomer);
     }
 }

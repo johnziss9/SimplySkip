@@ -39,5 +39,44 @@ namespace SimplySkip.Services
 
             return Response<Customer>.Success(customer);
         }
+
+        public async Task<Response<Customer>> UpdateCustomer(int id, Customer updatedCustomer)
+        {
+            var customer = await _ssDbContext.Customers.Where(c => c.Id == id).FirstOrDefaultAsync();
+
+            if (customer == null)
+            {
+                return Response<Customer>.Fail(404, "Customer Not Found");
+            }
+
+            if (updatedCustomer.FirstName != null && updatedCustomer.FirstName != customer.FirstName)
+            {
+                customer.FirstName = updatedCustomer.FirstName;
+            }
+
+            if (updatedCustomer.LastName != null && updatedCustomer.LastName != customer.LastName)
+            {
+                customer.LastName = updatedCustomer.LastName;
+            }
+
+            if (updatedCustomer.Address != null && updatedCustomer.Address != customer.Address)
+            {
+                customer.Address = updatedCustomer.Address;
+            }
+
+            if (updatedCustomer.Phone != null && updatedCustomer.Phone != customer.Phone)
+            {
+                customer.Phone = updatedCustomer.Phone;
+            }
+
+            if (updatedCustomer.Email != null && updatedCustomer.Email != customer.Email)
+            {
+                customer.Email = updatedCustomer.Email;
+            }
+
+            await _ssDbContext.SaveChangesAsync();
+
+            return Response<Customer>.Success(customer);
+        }
     }
 }
