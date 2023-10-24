@@ -1,5 +1,7 @@
 using SimplySkip;
 using Microsoft.EntityFrameworkCore;
+using SimplySkip.Interfaces;
+using SimplySkip.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +13,8 @@ builder.Services.AddDbContext<SSDbContext>( options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
 });
+
+builder.Services.AddScoped<ICustomerService, CustomerService>();
 
 var app = builder.Build();
 
