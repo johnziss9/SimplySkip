@@ -1,8 +1,16 @@
+using SimplySkip;
+using Microsoft.EntityFrameworkCore;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddDbContext<SSDbContext>( options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+});
 
 var app = builder.Build();
 

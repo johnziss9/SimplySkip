@@ -17,5 +17,7 @@ namespace SimplySkip.Models
         public bool Paid { get; set; }
 
         public bool Cancelled { get; set; }
+
+        public int CustomerId { get; set; }
     }
 }
