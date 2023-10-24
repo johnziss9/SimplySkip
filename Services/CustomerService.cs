@@ -74,6 +74,11 @@ namespace SimplySkip.Services
                 customer.Email = updatedCustomer.Email;
             }
 
+            if (updatedCustomer.Deleted != customer.Deleted)
+            {
+                customer.Deleted = updatedCustomer.Deleted;
+            }
+
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Customer>.Success(customer);
