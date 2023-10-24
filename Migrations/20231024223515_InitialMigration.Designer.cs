@@ -12,7 +12,7 @@ using SimplySkip;
 namespace SimplySkip.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    [Migration("20231024091005_InitialMigration")]
+    [Migration("20231024223515_InitialMigration")]
     partial class InitialMigration
     {
         /// <inheritdoc />
@@ -32,6 +32,9 @@ namespace SimplySkip.Migrations
                         .HasColumnType("integer");
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
 
                     b.Property<bool>("Cancelled")
                         .HasColumnType("boolean");
@@ -54,7 +57,7 @@ namespace SimplySkip.Migrations
                     b.Property<bool>("Returned")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("SkipSize")
+                    b.Property<int>("SkipId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -72,6 +75,9 @@ namespace SimplySkip.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");

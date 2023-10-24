@@ -13,5 +13,7 @@ namespace SimplySkip.Models
         public string? Phone { get; set; }
 
         public string? Email { get; set; }
+
+        public bool Deleted { get; set; }
     }
 }

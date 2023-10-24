@@ -4,7 +4,9 @@ namespace SimplySkip.Models
     {
         public int Id { get; set; }
 
-        public SkipSize SkipSize { get; set; }
+        public int SkipId { get; set; }
+
+        public string? Address { get; set; }
 
         public DateTime HireDate { get; set; }
 

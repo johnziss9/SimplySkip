@@ -1,4 +1,3 @@
-using System.Drawing;
 using Microsoft.AspNetCore.Mvc;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;

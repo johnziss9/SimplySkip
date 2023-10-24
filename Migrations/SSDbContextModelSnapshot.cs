@@ -30,6 +30,9 @@ namespace SimplySkip.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<string>("Address")
+                        .HasColumnType("text");
+
                     b.Property<bool>("Cancelled")
                         .HasColumnType("boolean");
 
@@ -51,7 +54,7 @@ namespace SimplySkip.Migrations
                     b.Property<bool>("Returned")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("SkipSize")
+                    b.Property<int>("SkipId")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
@@ -69,6 +72,9 @@ namespace SimplySkip.Migrations
 
                     b.Property<string>("Address")
                         .HasColumnType("text");
+
+                    b.Property<bool>("Deleted")
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
