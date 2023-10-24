@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
 using SimplySkip.Models;
 
@@ -15,11 +16,9 @@ namespace SimplySkip.Controllers
             _customerService = customerService;
         }
 
-        public async Task<ActionResult<Customer>> GetAll()
+        public async Task<ActionResult<List<Customer>>> GetAll()
         {
-            var response = await _customerService.GetAllCustomers();
-
-            return Ok(response);
+            return ResponseHelper.HandleErrorAndReturn(await _customerService.GetAllCustomers());
         }
     }
 }

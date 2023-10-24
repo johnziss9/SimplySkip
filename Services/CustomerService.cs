@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
 using SimplySkip.Models;
 
@@ -12,11 +13,11 @@ namespace SimplySkip.Services
         {
             _ssDbContext = ssDbContext;
         }
-        public async Task<List<Customer>> GetAllCustomers()
+        public async Task<Response<List<Customer>>> GetAllCustomers()
         {
             var customers = await _ssDbContext.Customers.ToListAsync();
 
-            return customers;
+            return Response<List<Customer>>.Success(customers);
         }
     }
 }

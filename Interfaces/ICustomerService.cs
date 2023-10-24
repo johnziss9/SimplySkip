@@ -1,10 +1,11 @@
 
+using SimplySkip.Helpers;
 using SimplySkip.Models;
 
 namespace SimplySkip.Interfaces
 {
     public interface ICustomerService
     {
-        Task<List<Customer>> GetAllCustomers();
+        Task<Response<List<Customer>>> GetAllCustomers();
     }
 }
