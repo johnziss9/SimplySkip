@@ -11,6 +11,9 @@ namespace SimplySkip
         }
 
         public DbSet<Customer> Customers { get; set; }
+        
         public DbSet<Booking> Bookings { get; set; }
+
+        public DbSet<Skip> Skips { get; set; }
     }
 }

@@ -92,6 +92,31 @@ namespace SimplySkip.Migrations
 
                     b.ToTable("Customers");
                 });
+
+            modelBuilder.Entity("SimplySkip.Models.Skip", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Notes")
+                        .HasColumnType("text");
+
+                    b.Property<bool>("Rented")
+                        .HasColumnType("boolean");
+
+                    b.Property<int>("SkipSize")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Skips");
+                });
 #pragma warning restore 612, 618
         }
     }

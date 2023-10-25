@@ -7,5 +7,9 @@ namespace SimplySkip.Models
         public string? Name { get; set; }
 
         public SkipSize SkipSize { get; set; }
+
+        public string? Notes { get; set; }
+
+        public bool Rented { get; set; }
     }
 }
