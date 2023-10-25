@@ -10,5 +10,7 @@ namespace SimplySkip.Interfaces
         Task<Response<List<Skip>>> GetAllSkips();
 
         Task<Response<Skip>> GetSkipById(int id);
+
+        Task<Response<Skip>> DeleteSkip(int id, Skip updatedSkip);
     }
 }

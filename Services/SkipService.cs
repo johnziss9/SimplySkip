@@ -40,5 +40,21 @@ namespace SimplySkip.Services
 
             return Response<Skip>.Success(skip);
         }
+
+        public async Task<Response<Skip>> DeleteSkip(int id, Skip updatedSkip)
+        {
+            var skip = await _ssDbContext.Skips.Where(s => s.Id == id).FirstOrDefaultAsync();
+
+            if (skip == null)
+            {
+                return Response<Skip>.Fail(404, "Skip Not Found");
+            }
+
+            skip.Deleted = updatedSkip.Deleted;
+            
+            await _ssDbContext.SaveChangesAsync();
+
+            return Response<Skip>.Success(skip);
+        }
     }
 }
