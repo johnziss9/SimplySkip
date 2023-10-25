@@ -10,6 +10,8 @@ namespace SimplySkip.Models
 
         public string? Notes { get; set; }
 
-        public bool Rented { get; set; }
+        public bool Rented { get; set; } = false;
+
+        public bool Deleted { get; set; } = false;
     }
 }

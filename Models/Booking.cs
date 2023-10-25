@@ -14,11 +14,11 @@ namespace SimplySkip.Models
 
         public string? Notes { get; set; }
 
-        public bool Returned { get; set; }
+        public bool Returned { get; set; }= false;
 
-        public bool Paid { get; set; }
+        public bool Paid { get; set; } = false;
 
-        public bool Cancelled { get; set; }
+        public bool Cancelled { get; set; } = false;
 
         public int CustomerId { get; set; }
     }

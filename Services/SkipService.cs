@@ -24,7 +24,7 @@ namespace SimplySkip.Services
 
         public async Task<Response<List<Skip>>> GetAllSkips()
         {
-            var skips = await _ssDbContext.Skips.ToListAsync();
+            var skips = await _ssDbContext.Skips.Where(s => s.Deleted == false).ToListAsync();
 
             return Response<List<Skip>>.Success(skips);
         }

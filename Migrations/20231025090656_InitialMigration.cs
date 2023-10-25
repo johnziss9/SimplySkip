@@ -60,7 +60,8 @@ namespace SimplySkip.Migrations
                     Name = table.Column<string>(type: "text", nullable: true),
                     SkipSize = table.Column<int>(type: "integer", nullable: false),
                     Notes = table.Column<string>(type: "text", nullable: true),
-                    Rented = table.Column<bool>(type: "boolean", nullable: false)
+                    Rented = table.Column<bool>(type: "boolean", nullable: false),
+                    Deleted = table.Column<bool>(type: "boolean", nullable: false)
                 },
                 constraints: table =>
                 {

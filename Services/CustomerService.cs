@@ -15,7 +15,7 @@ namespace SimplySkip.Services
         }
         public async Task<Response<List<Customer>>> GetAllCustomers()
         {
-            var customers = await _ssDbContext.Customers.Where(s => s.Deleted == false).ToListAsync();
+            var customers = await _ssDbContext.Customers.Where(c => c.Deleted == false).ToListAsync();
 
             return Response<List<Customer>>.Success(customers);
         }
