@@ -6,5 +6,7 @@ namespace SimplySkip.Interfaces
     public interface ISkipService
     {
         Task<Response<Skip>> AddSkip(Skip skip);
+
+        Task<Response<List<Skip>>> GetAllSkips();
     }
 }

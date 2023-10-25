@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
 using SimplySkip.Models;
@@ -19,6 +20,13 @@ namespace SimplySkip.Services
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Skip>.Success(skip);
+        }
+
+        public async Task<Response<List<Skip>>> GetAllSkips()
+        {
+            var skips = await _ssDbContext.Skips.ToListAsync();
+
+            return Response<List<Skip>>.Success(skips);
         }
     }
 }
