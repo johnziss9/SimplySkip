@@ -39,5 +39,64 @@ namespace SimplySkip.Services
 
             return Response<Booking>.Success(booking);
         }
+
+        public async Task<Response<Booking>> UpdateBooking(int id, Booking updatedBooking)
+        {
+            var booking = await _ssDbContext.Bookings.Where(c => c.Id == id).FirstOrDefaultAsync();
+
+            if (booking == null)
+            {
+                return Response<Booking>.Fail(404, "Booking Not Found");
+            }
+
+            if (updatedBooking.SkipId != 0 && updatedBooking.SkipId != booking.SkipId)
+            {
+                booking.SkipId = updatedBooking.SkipId;
+            }
+
+            if (updatedBooking.Address != null && updatedBooking.Address != booking.Address)
+            {
+                booking.Address = updatedBooking.Address;
+            }
+
+            if (updatedBooking.HireDate != booking.HireDate)
+            {
+                booking.HireDate = updatedBooking.HireDate;
+            }
+
+            if (updatedBooking.ReturnDate != booking.ReturnDate)
+            {
+                booking.ReturnDate = updatedBooking.ReturnDate;
+            }
+
+            if (updatedBooking.Notes != null && updatedBooking.Notes != booking.Notes)
+            {
+                booking.Notes = updatedBooking.Notes;
+            }
+
+            if (updatedBooking.Returned != booking.Returned)
+            {
+                booking.Returned = updatedBooking.Returned;
+            }
+
+            if (updatedBooking.Paid != booking.Paid)
+            {
+                booking.Paid = updatedBooking.Paid;
+            }
+
+            if (updatedBooking.Cancelled != booking.Cancelled)
+            {
+                booking.Cancelled = updatedBooking.Cancelled;
+            }
+
+            if (updatedBooking.CustomerId != 0 && updatedBooking.CustomerId != booking.CustomerId)
+            {
+                booking.CustomerId = updatedBooking.CustomerId;
+            }
+
+            await _ssDbContext.SaveChangesAsync();
+
+            return Response<Booking>.Success(booking);
+        }
     }
 }

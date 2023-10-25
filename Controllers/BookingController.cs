@@ -33,5 +33,11 @@ namespace SimplySkip.Controllers
         {
             return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetBookingById(id));
         }
+
+        [HttpPut("{id}")]
+        public async Task<ActionResult<Booking>> Update(int id, Booking booking)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _bookingService.UpdateBooking(id, booking));
+        }
     }
 }
