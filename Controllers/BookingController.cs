@@ -27,5 +27,11 @@ namespace SimplySkip.Controllers
         {
             return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetAllBookings());
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Booking>> Get(int id)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetBookingById(id));
+        }
     }
 }

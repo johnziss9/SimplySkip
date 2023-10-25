@@ -8,5 +8,7 @@ namespace SimplySkip.Interfaces
         Task<Response<Booking>> CreateBooking(Booking booking);
 
         Task<Response<List<Booking>>> GetAllBookings();
+
+        Task<Response<Booking>> GetBookingById(int id);
     }
 }
