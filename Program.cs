@@ -15,6 +15,7 @@ builder.Services.AddDbContext<SSDbContext>( options =>
 });
 
 builder.Services.AddScoped<ICustomerService, CustomerService>();
+builder.Services.AddScoped<ISkipService, SkipService>();
 
 var app = builder.Build();
 

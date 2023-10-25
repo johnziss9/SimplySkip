@@ -5,6 +5,6 @@ namespace SimplySkip.Interfaces
 {
     public interface ISkipService
     {
-         Task<Response<Skip>> CreateCustomer(Skip skip);
+        Task<Response<Skip>> AddSkip(Skip skip);
     }
 }
