@@ -27,5 +27,11 @@ namespace SimplySkip.Controllers
         {
             return ResponseHelper.HandleErrorAndReturn(await _skipService.GetAllSkips());
         }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Skip>> Get(int id)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _skipService.GetSkipById(id));
+        }
     }
 }

@@ -28,5 +28,17 @@ namespace SimplySkip.Services
 
             return Response<List<Skip>>.Success(skips);
         }
+
+        public async Task<Response<Skip>> GetSkipById(int id)
+        {
+            var skip = await _ssDbContext.Skips.Where(s => s.Id == id).FirstOrDefaultAsync();
+
+            if (skip == null)
+            {
+                return Response<Skip>.Fail(404, "Skip Not Found");
+            }
+
+            return Response<Skip>.Success(skip);
+        }
     }
 }
