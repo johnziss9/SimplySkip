@@ -12,15 +12,15 @@ using SimplySkip;
 namespace SimplySkip.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    [Migration("20231025090656_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20231030145059_SSInitialMigration")]
+    partial class SSInitialMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "7.0.12")
+                .HasAnnotation("ProductVersion", "7.0.13")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);

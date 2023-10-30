@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
@@ -7,6 +8,7 @@ namespace SimplySkip.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class BookingController : ControllerBase
     {
         private readonly IBookingService _bookingService;
