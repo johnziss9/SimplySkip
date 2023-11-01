@@ -1,0 +1,23 @@
+.home-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    background-color: #edf6f9;
+}
+
+.home-title {
+    color: #006d77;
+    margin-bottom: 20px;
+}
+
+.home-login-section {
+    width: 350px;
+    height: 500px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    background-color: #83c5be;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+}
