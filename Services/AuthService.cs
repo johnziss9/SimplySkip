@@ -16,7 +16,7 @@ namespace SimplySkip.Services
 
         private readonly IConfiguration _configuration;
 
-        
+
         public AuthService(UserManager<IdentityUser> userManager, IPasswordHasher<IdentityUser> passwordHasher, IConfiguration configuration)
         {
             _userManager = userManager;
@@ -24,51 +24,91 @@ namespace SimplySkip.Services
             _configuration = configuration;
         }
 
-        public async Task<Response<IdentityResult>> Register(IdentityUser newUser, string password)
+        // public async Task<Response<IdentityResult>> Register(IdentityUser newUser, string password)
+        // {
+        //     if (newUser == null)
+        //     {
+        //         return Response<IdentityResult>.Fail(400, "Please provide user information.");
+        //     }
+
+        //     var user = await _userManager.FindByNameAsync(newUser.UserName);
+
+        //     if (user != null)
+        //     {
+        //         return Response<IdentityResult>.Fail(400, "Username already exists.");
+        //     }
+
+        //     var hashedPassword = _userManager.PasswordHasher.HashPassword(user, password);
+
+        //     newUser.PasswordHash = hashedPassword;
+
+        //     var result = await _userManager.CreateAsync(newUser);
+
+        //     return Response<IdentityResult>.Success(result);
+        // }
+
+        public async Task<Response<IdentityResult>> Register(AuthRequest authRequest)
         {
-            if (newUser == null)
+            if (authRequest == null || string.IsNullOrWhiteSpace(authRequest.UserName) || string.IsNullOrWhiteSpace(authRequest.Password))
             {
-                return Response<IdentityResult>.Fail(400, "Please provide user information.");
+                return Response<IdentityResult>.Fail(400, "Username and/or password cannot be null.");
             }
 
-            var user = await _userManager.FindByNameAsync(newUser.UserName);
+            var user = await _userManager.FindByNameAsync(authRequest.UserName);
 
             if (user != null)
             {
                 return Response<IdentityResult>.Fail(400, "Username already exists.");
             }
 
-            var hashedPassword = _userManager.PasswordHasher.HashPassword(user, password);
+            var newUser = new IdentityUser();
 
-            newUser.PasswordHash = hashedPassword;
+            newUser.UserName = authRequest.UserName;
+            newUser.PasswordHash = _userManager.PasswordHasher.HashPassword(newUser, authRequest.Password);
 
             var result = await _userManager.CreateAsync(newUser);
 
             return Response<IdentityResult>.Success(result);
         }
 
-        public async Task<Response<LoginResponse>> Login(IdentityUser loginUser, string password)
+        // public async Task<Response<LoginResponse>> Login(IdentityUser loginUser, string password)
+        // {
+        //     if (loginUser == null || string.IsNullOrWhiteSpace(loginUser.UserName) || string.IsNullOrWhiteSpace(password))
+        //     {
+        //         return Response<LoginResponse>.Fail(400, "The user cannot be null.");
+        //     }
+
+        //     var user = await _userManager.FindByNameAsync(loginUser.UserName);
+
+        //     if (user != null && await _userManager.CheckPasswordAsync(user, password))
+        //     {
+        //         var token = GenerateToken(user);
+
+        //         return Response<LoginResponse>.Success(new LoginResponse(IdentityResult.Success, token));
+        //     }
+
+        //     return Response<LoginResponse>.Fail(400, "Invalid username or password.");
+        // }
+
+        public async Task<Response<LoginResponse>> Login(AuthRequest authRequest)
         {
-            if (loginUser == null || string.IsNullOrWhiteSpace(loginUser.UserName) || string.IsNullOrWhiteSpace(password))
+            if (authRequest == null || string.IsNullOrWhiteSpace(authRequest.UserName) || string.IsNullOrWhiteSpace(authRequest.Password))
             {
-                return Response<LoginResponse>.Fail(400, "The user cannot be null.");
+                return Response<LoginResponse>.Fail(400, "Username and/or password cannot be null.");
             }
 
-            var user = await _userManager.FindByNameAsync(loginUser.UserName);
+            var user = await _userManager.FindByNameAsync(authRequest.UserName);
 
-            if (user != null && await _userManager.CheckPasswordAsync(user, password))
+            if (user != null && await _userManager.CheckPasswordAsync(user, authRequest.Password))
             {
-                // Authentication successful. Generate a token.
                 var token = GenerateToken(user);
-
-                // TODO Store or send the token as needed (e.g., in an HTTP cookie or response).
-                // Response.Cookies.Append("access_token", token);
 
                 return Response<LoginResponse>.Success(new LoginResponse(IdentityResult.Success, token));
             }
 
             return Response<LoginResponse>.Fail(400, "Invalid username or password.");
         }
+
 
         public string GenerateToken(IdentityUser user)
         {
@@ -92,4 +132,4 @@ namespace SimplySkip.Services
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
-}   
+}

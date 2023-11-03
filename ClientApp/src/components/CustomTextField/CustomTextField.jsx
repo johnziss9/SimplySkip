@@ -10,6 +10,8 @@ function CustomTextField(props) {
             variant="outlined"
             margin={props.margin}
             type={props.type}
+            onChange={props.onChange}
+            value={props.value}
             sx={{
                 "& .MuiOutlinedInput-root": {
                     "& fieldset": {

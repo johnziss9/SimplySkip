@@ -18,15 +18,15 @@ namespace SimplySkip.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<ActionResult<IdentityResult>> Register(IdentityUser user, string password)
+        public async Task<ActionResult<IdentityResult>> Register(AuthRequest authRequest)
         {
-            return ResponseHelper.HandleErrorAndReturn(await _authService.Register(user, password));
+            return ResponseHelper.HandleErrorAndReturn(await _authService.Register(authRequest));
         }
 
         [HttpPost("login")]
-        public async Task<ActionResult<LoginResponse>> Login(IdentityUser user, string password)
+        public async Task<ActionResult<LoginResponse>> Login(AuthRequest authRequest)
         {
-            return ResponseHelper.HandleErrorAndReturn(await _authService.Login(user, password));
+            return ResponseHelper.HandleErrorAndReturn(await _authService.Login(authRequest));
         }
     }
 }

@@ -7,6 +7,7 @@ function CustomButton(props) {
             variant="contained"
             color="info"
             style={{ backgroundColor: props.backgroundColor, width: props.width, height: props.height, color: props.color, marginTop: props.marginTop }}
+            onClick={props.onClick}
         >{props.buttonName}</Button>
     );
 }

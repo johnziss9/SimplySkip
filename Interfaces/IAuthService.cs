@@ -5,8 +5,8 @@ namespace SimplySkip.Interfaces
 {
     public interface IAuthService
     {
-         Task<Response<IdentityResult>> Register(IdentityUser newUser, string password);
+         Task<Response<IdentityResult>> Register(AuthRequest authRequest);
 
-         Task<Response<LoginResponse>> Login(IdentityUser loginUser, string password);
+         Task<Response<LoginResponse>> Login(AuthRequest authRequest);
     }
 }

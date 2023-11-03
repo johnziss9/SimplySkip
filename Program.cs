@@ -20,19 +20,30 @@ builder.Services.AddSwaggerGen(c =>
     c.SwaggerDoc("v1", new OpenApiInfo { Title = "Your API", Version = "v1" });
 });
 
-builder.Services.AddDbContext<SSDbContext>( options =>
+builder.Services.AddDbContext<SSDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
 });
 
-builder.Services.AddDbContext<AuthDbContext>( options =>
+builder.Services.AddDbContext<AuthDbContext>(options =>
 {
     options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
 });
+
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAllOrigins", builder =>
+    {
+        builder.AllowAnyOrigin()
+            .AllowAnyHeader()
+            .AllowAnyMethod();
+    });
+});
+
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
 
-builder.Services.AddAuthentication(options => 
+builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -75,6 +86,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseSwagger();
+app.UseCors("AllowAllOrigins");
 
 app.UseSwaggerUI(c =>
 {
