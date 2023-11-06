@@ -1,19 +1,21 @@
-import React, { Component } from 'react';
-import { Route, Routes } from 'react-router-dom';
-import AppRoutes from './AppRoutes';
+import React, { Component, useState, useEffect } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
 import './custom.css';
+import Home from './pages/Home/Home';
+import PrivateRoute from './components/PrivateRoute/PrivateRoute';
+import Reminders from './pages/Reminders/Reminders';
 
-export default class App extends Component {
-  static displayName = App.name;
+const App = () => {
+  const hasToken = sessionStorage.getItem('token');
 
-  render() {
-    return (
-      <Routes>
-        {AppRoutes.map((route, index) => {
-          const { element, ...rest } = route;
-          return <Route key={index} {...rest} element={element} />;
-        })}
-      </Routes>
-    );
-  }
-}
+  return (
+    <Routes>
+      <Route path="/" element={hasToken ? <Navigate to="/Reminders" /> : <Home />} />
+      <Route element={<PrivateRoute />}>
+        <Route path="/Reminders" element={<Reminders />} />
+      </Route>
+    </Routes>
+  );
+};
+
+export default App;
