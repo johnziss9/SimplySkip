@@ -27,7 +27,10 @@ function RemindersCard(props) {
                     {props.firstName}
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.hireDate} ({props.numberOfDays} Days)
+                    {props.hireDate} 
+                </Typography>
+                <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
+                    {props.returnDateOrDays}
                 </Typography>
 
                 <IconButton onClick={handleExpand} sx={{ padding: 0 }} >

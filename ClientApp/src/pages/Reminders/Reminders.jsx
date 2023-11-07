@@ -3,6 +3,9 @@ import './Reminders.css';
 import RemindersCard from '../../components/RemindersCard/RemindersCard';
 
 function Reminders() {
+
+    // TODO Add condition to show the number of days if the skip hasn't been returned of the return date
+
     return (
         <>
             <div className='reminders-container'>
@@ -14,7 +17,7 @@ function Reminders() {
                             lastName="PAPAVASILIOU"
                             firstName="Panayiotis"
                             hireDate="07/12/2023"
-                            numberOfDays='23'
+                            returnDateOrDays="15 Days"
                         />
                         <RemindersCard
                             statusBorder="6px solid red"
@@ -22,7 +25,7 @@ function Reminders() {
                             lastName="PAPAVASILIOU"
                             firstName="Panayiotis"
                             hireDate="07/12/2023"
-                            numberOfDays='23'
+                            returnDateOrDays="07/12/2023"
                         />
                         <RemindersCard
                             statusBorder="6px solid green"
@@ -30,7 +33,7 @@ function Reminders() {
                             lastName="PAPAVASILIOU"
                             firstName="Panayiotis"
                             hireDate="07/12/2023"
-                            numberOfDays='23'
+                            returnDateOrDays="15 Days"
                         />
                         <RemindersCard
                             statusBorder="6px solid green"
@@ -38,7 +41,7 @@ function Reminders() {
                             lastName="PAPAVASILIOU"
                             firstName="Panayiotis"
                             hireDate="07/12/2023"
-                            numberOfDays='23'
+                            returnDateOrDays="07/12/2023"
                         />
                     </div>
                 </div>
