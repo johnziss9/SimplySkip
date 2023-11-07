@@ -53,7 +53,14 @@ function Reminders() {
         }
 
         setCustomerDetails(details);
+    }
 
+    function handleCalculateDays(hireDate) {
+        const dateOfHire = new Date(hireDate);
+        const today = new Date();
+        const timeDifference = today - dateOfHire;
+        
+        return Math.floor(timeDifference / (1000 * 60 * 60 * 24));
     }
 
     return (
@@ -66,9 +73,9 @@ function Reminders() {
                                 key={booking.id}
                                 statusBorder={!booking.returned ? "6px solid green" : "6px solid red"}
                                 lastName={customerDetails[booking.customerId]?.lastName}
-                                firstName={customerDetails[booking.customerId]?.firstName   }
+                                firstName={customerDetails[booking.customerId]?.firstName}
                                 hireDate={booking.hireDate}
-                                returnDateOrDays={!booking.returned ? 'DAYS' : booking.returnDate}
+                                returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
                             />
                         )) : null}
                     </div>
