@@ -1,0 +1,19 @@
+.reminders-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #edf6f9;
+}
+
+.reminders-section {
+    max-width: 915px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.reminders-cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
