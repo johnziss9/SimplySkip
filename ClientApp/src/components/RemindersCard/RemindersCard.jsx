@@ -38,8 +38,34 @@ function RemindersCard(props) {
                 </IconButton>
 
                 <Collapse in={expanded}>
-                    <FormControlLabel control={<Switch />} label="Returned" />
-                    <FormControlLabel control={<Switch />} label="Paid" />
+                    <FormControlLabel 
+                        control={
+                            <Switch 
+                                disabled={props.disableReturnedSwitch} 
+                                checked={props.booking.returned}
+                                onChange={() => {
+                                    if (!props.booking.returned) {
+                                        props.onReturnedSwitchChange();
+                                    }
+                                }}
+                            />
+                        } 
+                        label="Returned" 
+                    />
+                    <FormControlLabel 
+                        control={
+                            <Switch 
+                                disabled={props.disablePaidSwitch}
+                                checked={props.booking.paid}
+                                onChange={() => {
+                                    if (!props.booking.paid) {
+                                        props.onPaidSwitchChange();
+                                    }
+                                }}
+                            />
+                        } 
+                        label="Paid" 
+                    />
                 </Collapse>
             </CardContent>
         </Card>
