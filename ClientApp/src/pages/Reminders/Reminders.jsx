@@ -4,6 +4,7 @@ import RemindersCard from '../../components/RemindersCard/RemindersCard';
 import { Dialog, DialogActions, DialogTitle } from '@mui/material';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
+import CustomNavbar from '../../components/CustomNavbar/CustomNavbar';
 
 function Reminders() {
     const [activeBookings, setActiveBookings] = useState([]);
@@ -131,6 +132,7 @@ function Reminders() {
 
     return (
         <>
+            <CustomNavbar currentPage={'Reminders'} />
             <div className='reminders-container'>
                 <div className='reminders-section'>
                     <div className='reminders-cards'>

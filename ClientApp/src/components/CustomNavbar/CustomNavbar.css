@@ -1,0 +1,30 @@
+.menu-container {
+    background-color :rgba(0, 109, 119, 0.9);
+    width: 100%;
+    position: absolute;
+    top: 64px;
+    left: 0px;
+    padding: 0 0 10px 20px;
+}
+
+.menu-item {
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu-item:hover {
+    color: #fff;
+}
+
+@media (max-width: 600px) {
+    .menu-container {
+        display: flex;
+        flex-direction: column;
+        background-color :rgba(0, 109, 119, 0.9);
+        width: 100%;
+        position: absolute;
+        top: 56px;
+        left: 0px;
+        padding: 0 0 10px 20px;
+    }
+}
