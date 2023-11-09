@@ -1,11 +1,15 @@
 import React, { useState } from 'react';
 import './Home.css';
+import { useNavigate } from "react-router-dom";
 import CustomTextField from '../../components/CustomTextField/CustomTextField';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import { Alert, Snackbar, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 
 function Home() {
+
+    const navigate = useNavigate();
+
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [userLoginFailed, setUserLoginFailed] = useState(false);
@@ -27,9 +31,8 @@ function Home() {
             const data = await response.json();
             const { token } = data;
 
-            // TODO Handle Redirect
-            console.log(token);
             sessionStorage.setItem('token', token);
+            navigate('/Reminders');
         } else {
             const data = await response.json();
             const { title } = data;
