@@ -48,8 +48,8 @@ function Home() {
             <div className='home-container'>
                 <div className='home-login-section'>
                     <h1 className='home-title'>Simply Skip</h1>
-                    <CustomTextField label={"Username"} margin={"dense"} onChange={e => setUsername(e.target.value)} value={username} />
-                    <CustomTextField label={"Password"} margin={"dense"} type={"password"} onChange={e => setPassword(e.target.value)} value={password} />
+                    <CustomTextField label={"Username"} variant={"outlined"} margin={"dense"} onChange={e => setUsername(e.target.value)} value={username} />
+                    <CustomTextField label={"Password"} variant={"outlined"} margin={"dense"} type={"password"} onChange={e => setPassword(e.target.value)} value={password} />
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Login"} width={"200px"} height={"50px"} marginTop={"20px"} onClick={handleLogin} />
                 </div>
             </div>
