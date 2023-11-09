@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Reminders.css';
 import RemindersCard from '../../components/RemindersCard/RemindersCard';
-import { Dialog, DialogActions, DialogTitle } from '@mui/material';
+import { Dialog, DialogActions, DialogTitle, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
 import CustomNavbar from '../../components/CustomNavbar/CustomNavbar';
@@ -11,9 +11,10 @@ function Reminders() {
     const [customerDetails, setCustomerDetails] = useState({});
     const [openReturn, setOpenReturn] = React.useState(false); // Return Confirmation Catalog
     const [openPaid, setOpenPaid] = React.useState(false); // Paid Confirmation Catalog
-    const [selectedBookingId, setSelectedBookingId] = useState(null); 
+    const [selectedBookingId, setSelectedBookingId] = useState(null);
     const [openReturnSuccess, setOpenReturnSuccess] = React.useState(false);
     const [openPaidSuccess, setOpenPaidSuccess] = React.useState(false);
+    const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
 
     useEffect(() => {
         handleFetchedActiveBookings();
@@ -122,6 +123,23 @@ function Reminders() {
     const handleShowPaidSuccess = () => setOpenPaidSuccess(true);
     const handleHidePaidSuccess = () => setOpenPaidSuccess(false);
 
+    const handleRadioChange = (event) => {
+        setSelectedValue(event.target.value);
+    };
+
+    // Filter active bookings based on booking.returned
+    const getActiveBookings = () => {
+        return activeBookings.filter((booking) => !booking.returned);
+    };
+
+    // Filter unpaid bookings based on booking.returned and booking.paid
+    const getUnpaidBookings = () => {
+        return activeBookings.filter((booking) => booking.returned && !booking.paid);
+    };
+
+    const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid' ? getUnpaidBookings() : activeBookings;
+
+
     function handleCalculateDays(hireDate) {
         const dateOfHire = new Date(hireDate);
         const today = new Date();
@@ -134,9 +152,14 @@ function Reminders() {
         <>
             <CustomNavbar currentPage={'Reminders'} />
             <div className='reminders-container'>
+                <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
+                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />
+                    <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Active" />
+                    <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" />
+                </RadioGroup>
                 <div className='reminders-section'>
                     <div className='reminders-cards'>
-                        {Array.isArray(activeBookings) ? activeBookings.map((booking) => (
+                        {Array.isArray(filteredBookings) ? filteredBookings.map((booking) => (
                             <RemindersCard
                                 key={booking.id}
                                 statusBorder={!booking.returned ? "10px solid green" : "10px solid red"}

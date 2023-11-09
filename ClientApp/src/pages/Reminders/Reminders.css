@@ -1,5 +1,6 @@
 .reminders-container {
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     background-color: #edf6f9;
@@ -8,6 +9,7 @@
 
 .reminders-section {
     max-width: 915px;
+    margin-top: 10px;
     display: flex;
     flex-direction: column;
     align-items: center;
