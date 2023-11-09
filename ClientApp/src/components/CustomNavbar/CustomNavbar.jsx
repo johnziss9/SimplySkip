@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import './CustomNavbar.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { AppBar, Button, IconButton, Toolbar, Typography } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
@@ -8,9 +8,16 @@ import CloseIcon from '@mui/icons-material/Close';
 function CustomNavbar(props) {
     const [open, setOpen] = useState(false);
 
+    const navigate = useNavigate();
+
     const handleMenuClick = () => {
         setOpen(!open);
     };
+
+    const handleLogout = () => {
+        sessionStorage.clear();
+        navigate('/');
+    }
 
     return (
         <AppBar position="fixed" sx={{ backgroundColor: '#006d77' }}>
@@ -28,7 +35,7 @@ function CustomNavbar(props) {
                 <Typography variant="h5" sx={{ flexGrow: 1 }}>
                     {props.currentPage}
                 </Typography>
-                <Button color="inherit">Logout</Button>
+                <Button color="inherit" onClick={handleLogout}>Logout</Button>
             </Toolbar>
             {open && (
                 <div className="menu-container">
