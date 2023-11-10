@@ -6,6 +6,7 @@ import CustomerCard from "../../components/CustomerCard/CustomerCard";
 
 function Customers() {
     const [customers, setCustomers] = useState([]);
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
         handleFetchedCustomers();
@@ -29,13 +30,26 @@ function Customers() {
         }
     }
 
+    const filteredCustomers = customers.filter((customer) =>
+        customer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        customer.phone.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <>
             <CustomNavbar currentPage={'Customers'} />
             <div className='customers-container'>
-                <CustomTextField label={'Search...'} variant={'standard'} type={'search'} width={'500px'} margin={'normal'} />
+                <CustomTextField 
+                    label={'Search...'} 
+                    variant={'standard'} 
+                    type={'search'} 
+                    width={'500px'} 
+                    margin={'normal'}
+                    onChange={(e) => setSearchQuery(e.target.value)} 
+                />
                 <div className="customers-section">
-                    {Array.isArray(customers) ? customers.map((customer) => (
+                    {Array.isArray(filteredCustomers) ? filteredCustomers.map((customer) => (
                         <CustomerCard
                             key={customer.id}
                             statusBorder={'10px solid #83c5be'}
