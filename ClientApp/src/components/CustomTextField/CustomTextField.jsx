@@ -38,7 +38,8 @@ function CustomTextField(props) {
                     '&::after': {
                         borderBottom: 'none', // Removed 2px blue border-bottom 
                     },
-                }
+                },
+                width: props.width
             }}
             InputProps={{
                 style: {
