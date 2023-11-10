@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './Reminders.css';
-import RemindersCard from '../../components/RemindersCard/RemindersCard';
+import RemindersCard from '../../components/ReminderCard/ReminderCard';
 import { Dialog, DialogActions, DialogTitle, FormControlLabel, Radio, RadioGroup } from '@mui/material';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
@@ -158,23 +158,21 @@ function Reminders() {
                     <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" />
                 </RadioGroup>
                 <div className='reminders-section'>
-                    <div className='reminders-cards'>
-                        {Array.isArray(filteredBookings) ? filteredBookings.map((booking) => (
-                            <RemindersCard
-                                key={booking.id}
-                                statusBorder={!booking.returned ? "10px solid green" : "10px solid red"}
-                                lastName={customerDetails[booking.customerId]?.lastName}
-                                firstName={customerDetails[booking.customerId]?.firstName}
-                                hireDate={booking.hireDate}
-                                returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
-                                disableReturnedSwitch={booking.returned === true ? true : false}
-                                disablePaidSwitch={!booking.returned ? true : false}
-                                booking={booking}
-                                onReturnedSwitchChange={() => handleOpenReturn(booking.id)}
-                                onPaidSwitchChange={() => handleOpenPaid(booking.id)}
-                            />
-                        )) : null}
-                    </div>
+                    {Array.isArray(filteredBookings) ? filteredBookings.map((booking) => (
+                        <RemindersCard
+                            key={booking.id}
+                            statusBorder={!booking.returned ? "10px solid green" : "10px solid red"}
+                            lastName={customerDetails[booking.customerId]?.lastName}
+                            firstName={customerDetails[booking.customerId]?.firstName}
+                            hireDate={booking.hireDate}
+                            returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
+                            disableReturnedSwitch={booking.returned === true ? true : false}
+                            disablePaidSwitch={!booking.returned ? true : false}
+                            booking={booking}
+                            onReturnedSwitchChange={() => handleOpenReturn(booking.id)}
+                            onPaidSwitchChange={() => handleOpenPaid(booking.id)}
+                        />
+                    )) : null}
                 </div>
             </div>
             <Dialog open={openReturn} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseReturn(event, reason) } }}>

@@ -4,3 +4,11 @@
     align-items: center;
     margin-top: 64px;
 }
+
+.customers-section {
+    max-width: 915px;
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}

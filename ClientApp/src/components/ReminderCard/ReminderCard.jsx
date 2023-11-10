@@ -4,7 +4,7 @@ import CardContent from '@mui/material/CardContent';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 
-function RemindersCard(props) {
+function ReminderCard(props) {
     const [expanded, setExpanded] = useState(false);
 
     const handleExpand = () => {
@@ -32,11 +32,9 @@ function RemindersCard(props) {
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
                     {props.returnDateOrDays}
                 </Typography>
-
                 <IconButton onClick={handleExpand} sx={{ padding: 0 }} >
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
-
                 <Collapse in={expanded}>
                     <FormControlLabel 
                         control={
@@ -73,4 +71,4 @@ function RemindersCard(props) {
     );
 }
 
-export default RemindersCard;
+export default ReminderCard;
