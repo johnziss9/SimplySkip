@@ -22,7 +22,7 @@ function CustomerCard(props) {
             borderTop: props.statusBorder,
             margin: '15px'
         }}>
-            <CardContent>
+            <CardContent sx={{ paddingBottom: '17px !important' }}>
                 <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px', textTransform: 'uppercase' }} >
                     {props.lastName}
                 </Typography>
@@ -36,13 +36,13 @@ function CustomerCard(props) {
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
                 <Collapse in={expanded}>
-                    <IconButton sx={{ padding: '3px 7px 0 7px' }} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} >
                         <VisibilityIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '3px 7px 0 7px' }} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton  sx={{ padding: '3px 7px 0 7px' }} >
+                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} >
                         <DeleteIcon  />
                     </IconButton>
                 </Collapse>

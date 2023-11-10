@@ -19,7 +19,7 @@ function ReminderCard(props) {
             borderTop: props.statusBorder,
             margin: '15px'
         }}>
-            <CardContent>
+            <CardContent sx={{ paddingBottom: '17px !important' }}>
                 <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px', textTransform: 'uppercase' }} >
                     {props.lastName}
                 </Typography>

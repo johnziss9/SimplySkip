@@ -30,7 +30,7 @@ namespace SimplySkip.Services
 
         public async Task<Response<List<Booking>>> GetActiveBookings()
         {
-            var bookings = await _ssDbContext.Bookings.Where(b => b.Returned == false || b.Paid == false).ToListAsync();
+            var bookings = await _ssDbContext.Bookings.Where(b => (b.Returned == false || b.Paid == false) && b.Cancelled == false).ToListAsync();
 
             return Response<List<Booking>>.Success(bookings);
         }
