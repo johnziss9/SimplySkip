@@ -10,6 +10,11 @@ function CustomTextField(props) {
             type={props.type}
             onChange={props.onChange}
             value={props.value}
+            required={props.required}
+            disabled={props.disabled}
+            multiline={props.multiline}
+            rows={props.rows}
+            maxRows={props.maxRows}
             sx={{
                 // Styles for the outlined variant
                 "& .MuiOutlinedInput-root": {
@@ -37,14 +42,14 @@ function CustomTextField(props) {
                     },
                     '&::after': {
                         borderBottom: 'none', // Removed 2px blue border-bottom 
-                    },
+                    }
                 },
                 width: props.width
             }}
             InputProps={{
                 style: {
                     color: "#006d77" // Changes the font color when focused
-                },
+                }
             }}
             InputLabelProps={{
                 style: { color: '#006d77' } // Changes the label when focus and when not

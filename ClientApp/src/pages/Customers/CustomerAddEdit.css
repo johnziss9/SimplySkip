@@ -1,0 +1,18 @@
+.customer-add-edit-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 64px;
+}
+
+.customer-add-edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.customer-add-edit-form-buttons {
+    display: flex;
+    flex-direction: row;
+}

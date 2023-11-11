@@ -180,8 +180,8 @@ function Reminders() {
                     Skip Returned?
                 </DialogTitle>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#83c5be"} buttonName={"No"} width={"100px"} height={"45px"} marginTop={"20px"} onClick={handleCloseReturn} />
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} marginTop={"20px"} onClick={() => handleReturn(selectedBookingId)} />
+                    <CustomButton backgroundColor={"#83c5be"} buttonName={"No"} width={"100px"} height={"45px"} margin={"20px 10px 10px 0"} onClick={handleCloseReturn} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} margin={"20px 10px 10px 10px"} onClick={() => handleReturn(selectedBookingId)} />
                 </DialogActions>
             </Dialog>
             <Dialog open={openPaid} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleClosePaid(event, reason) } }}>
@@ -189,8 +189,8 @@ function Reminders() {
                     Skip Paid?
                 </DialogTitle>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#83c5be"} buttonName={"No"} width={"100px"} height={"45px"} marginTop={"20px"} onClick={handleClosePaid} />
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} marginTop={"20px"} onClick={() => handlePaid(selectedBookingId)} />
+                    <CustomButton backgroundColor={"#83c5be"} buttonName={"No"} width={"100px"} height={"45px"} margin={"20px 10px 10px 0"} onClick={handleClosePaid} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} margin={"20px 10px 10px 10px"} onClick={() => handlePaid(selectedBookingId)} />
                 </DialogActions>
             </Dialog>
             <CustomSnackbar open={openReturnSuccess} onClose={handleHideReturnSuccess} severity={"success"} onClick={handleHideReturnSuccess} value={"Skip has been marked as returned."} />

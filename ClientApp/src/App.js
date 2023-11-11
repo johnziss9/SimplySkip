@@ -5,6 +5,7 @@ import Home from './pages/Home/Home';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Reminders from './pages/Reminders/Reminders';
 import Customers from './pages/Customers/Customers';
+import CustomerAddEdit from './pages/Customers/CustomerAddEdit';
 
 const App = () => {
   const hasToken = sessionStorage.getItem('token');
@@ -15,6 +16,7 @@ const App = () => {
       <Route element={<PrivateRoute />}>
         <Route path="/Reminders" element={<Reminders />} />
         <Route path="/Customers" element={<Customers />} />
+        <Route path="/Customer" element={<CustomerAddEdit />} />
       </Route>
     </Routes>
   );
