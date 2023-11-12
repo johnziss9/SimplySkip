@@ -57,6 +57,10 @@ function CustomerAddEdit() {
         }
     }
 
+    const handleCancel = () => {
+        navigate('/Customers');
+    };
+
     return (
         <>
             <CustomNavbar currentPage={'Customer Information'} />
@@ -68,7 +72,7 @@ function CustomerAddEdit() {
                     <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={'440px'} onChange={handleEmailInput} value={email} />
                     <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} maxRows={7} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} />
                     <div className="customer-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleCancel} />
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitCustomer} />
                     </div>
                 </div>

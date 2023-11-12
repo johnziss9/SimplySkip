@@ -38,7 +38,7 @@ function Customers() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Customers'} />
+            <CustomNavbar currentPage={'Customers'} addNewClick={'/Customer'} />
             <div className='customers-container'>
                 <CustomTextField 
                     label={'Search...'} 
