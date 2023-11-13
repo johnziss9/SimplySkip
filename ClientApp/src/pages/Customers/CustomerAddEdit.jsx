@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import { Dialog, DialogActions, DialogTitle } from "@mui/material";
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
@@ -14,6 +15,7 @@ function CustomerAddEdit() {
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [isValidEmail, setIsValidEmail] = useState(false);
+    const [openAddSuccess, setOpenAddSuccess] = useState(false);
 
     const handlePhoneInput = (event) => {
         setPhone(event.target.value);
@@ -40,7 +42,7 @@ function CustomerAddEdit() {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             },
             body: JSON.stringify({
-                id: 9,
+                id: 12,
                 firstName: firstName,
                 lastName: lastName,
                 phone: phone,
@@ -51,15 +53,18 @@ function CustomerAddEdit() {
         });
 
         if (response.ok) {
-            navigate('/Customers');
+            handleShowAddSuccess();
         } else {
             // TODO Handle error
         }
     }
 
-    const handleCancel = () => {
+    const handleOkAndCancel = () => {
         navigate('/Customers');
     };
+
+    const handleShowAddSuccess = () => setOpenAddSuccess(true);
+    const handleCloseAddSuccess = () => setOpenAddSuccess(false);
 
     return (
         <>
@@ -72,12 +77,19 @@ function CustomerAddEdit() {
                     <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={'440px'} onChange={handleEmailInput} value={email} />
                     <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} maxRows={7} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} />
                     <div className="customer-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleCancel} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitCustomer} />
                     </div>
                 </div>
-
             </div>
+            <Dialog open={openAddSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddSuccess(event, reason) } }}>
+                <DialogTitle sx={{ width: '300px' }}>
+                    Customer Added Successfully.
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
+                </DialogActions>
+            </Dialog>
         </>
     )
 }
