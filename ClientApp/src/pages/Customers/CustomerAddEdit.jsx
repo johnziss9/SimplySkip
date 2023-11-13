@@ -42,7 +42,6 @@ function CustomerAddEdit() {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
             },
             body: JSON.stringify({
-                id: 12,
                 firstName: firstName,
                 lastName: lastName,
                 phone: phone,
