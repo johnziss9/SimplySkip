@@ -3,8 +3,11 @@ import './Customers.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomerCard from "../../components/CustomerCard/CustomerCard";
+import { useNavigate } from "react-router-dom";
 
 function Customers() {
+    const navigate = useNavigate();
+
     const [customers, setCustomers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
 
@@ -30,6 +33,10 @@ function Customers() {
         }
     }
 
+    const handleEditClick = (customerId) => {
+        navigate(`/Customer/${customerId}`);
+    }
+
     const filteredCustomers = customers.filter((customer) =>
         customer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
         customer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -49,13 +56,14 @@ function Customers() {
                     onChange={(e) => setSearchQuery(e.target.value)} 
                 />
                 <div className="customers-section">
-                    {Array.isArray(filteredCustomers) ? filteredCustomers.map((customer) => (
+                    {Array.isArray(filteredCustomers) ? filteredCustomers.sort((a, b) => a.lastName.localeCompare(b.lastName)).map((customer) => (
                         <CustomerCard
                             key={customer.id}
                             statusBorder={'10px solid #83c5be'}
                             lastName={customer.lastName}
                             firstName={customer.firstName}
                             phone={customer.phone}
+                            onClickEdit={() => handleEditClick(customer.id)}
                         />
                     )) : null}
                 </div>

@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import './CustomerAddEdit.css';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -8,14 +8,26 @@ import { Dialog, DialogActions, DialogTitle } from "@mui/material";
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
+    const { id } = useParams();
 
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
+
     const [isValidEmail, setIsValidEmail] = useState(false);
-    const [openAddSuccess, setOpenAddSuccess] = useState(false);
+    const [openSuccess, setOpenSuccess] = useState(false);
+    const [isEdit, setIsEdit] = useState(false); // TODO Check if this is used. Currently using it but I could use id from useParams?
+    const [customer, setCustomer] = useState({}); // TODO Check if this is used
+
+    useEffect(() => {
+        if (id) {
+            handleFetchCustomer();
+
+            setIsEdit(true);
+        }
+    }, [id]);
 
     const handlePhoneInput = (event) => {
         setPhone(event.target.value);
@@ -35,26 +47,49 @@ function CustomerAddEdit() {
     };
 
     const handleSubmitCustomer = async () => {
-        const response = await fetch('https://localhost:7197/customer', {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify({
-                firstName: firstName,
-                lastName: lastName,
-                phone: phone,
-                email: email,
-                address: address,
-                deleted: false
-            })
-        });
+        if (isEdit) {
+            const response = await fetch(`https://localhost:7197/customer/${id}`, {
+                method: 'put',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phone,
+                    email: email,
+                    address: address
+                })
+            });
 
-        if (response.ok) {
-            handleShowAddSuccess();
+            if (response.ok) {
+                handleShowSuccess();
+            } else {
+                // TODO Handle error
+            }
         } else {
-            // TODO Handle error
+            const response = await fetch('https://localhost:7197/customer', {
+                method: 'post',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                },
+                body: JSON.stringify({
+                    firstName: firstName,
+                    lastName: lastName,
+                    phone: phone,
+                    email: email,
+                    address: address,
+                    deleted: false
+                })
+            });
+
+            if (response.ok) {
+                handleShowSuccess();
+            } else {
+                // TODO Handle error
+            }
         }
     }
 
@@ -62,8 +97,30 @@ function CustomerAddEdit() {
         navigate('/Customers');
     };
 
-    const handleShowAddSuccess = () => setOpenAddSuccess(true);
-    const handleCloseAddSuccess = () => setOpenAddSuccess(false);
+    const handleFetchCustomer = async () => {
+        const response = await fetch(`https://localhost:7197/customer/${id}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const customer = await response.json();
+
+            setCustomer(customer);
+            setFirstName(customer.firstName);
+            setLastName(customer.lastName);
+            setPhone(customer.phone);
+            setAddress(customer.address);
+            setEmail(customer.email);
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
+    const handleShowSuccess = () => setOpenSuccess(true);
+    const handleCloseSuccess = () => setOpenSuccess(false);
 
     return (
         <>
@@ -81,9 +138,9 @@ function CustomerAddEdit() {
                     </div>
                 </div>
             </div>
-            <Dialog open={openAddSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddSuccess(event, reason) } }}>
+            <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
-                    Customer Added Successfully.
+                    {isEdit ? "Customer Edited." : "Customer Added."}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />

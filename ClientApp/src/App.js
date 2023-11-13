@@ -16,7 +16,7 @@ const App = () => {
       <Route element={<PrivateRoute />}>
         <Route path="/Reminders" element={<Reminders />} />
         <Route path="/Customers" element={<Customers />} />
-        <Route path="/Customer" element={<CustomerAddEdit />} />
+        <Route path="/Customer/:id?" element={<CustomerAddEdit />} />
       </Route>
     </Routes>
   );

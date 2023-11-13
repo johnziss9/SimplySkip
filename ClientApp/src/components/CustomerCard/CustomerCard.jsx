@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Collapse, FormControlLabel, IconButton, Switch, Typography } from "@mui/material";
+import { Card, Collapse, IconButton, Typography } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
@@ -36,13 +36,13 @@ function CustomerCard(props) {
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
                 <Collapse in={expanded}>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickView} >
                         <VisibilityIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} >
+                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickDelete} >
                         <DeleteIcon  />
                     </IconButton>
                 </Collapse>
