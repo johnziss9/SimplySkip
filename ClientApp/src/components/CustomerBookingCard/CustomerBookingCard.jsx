@@ -5,6 +5,7 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
+import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
 
 function CustomerBookingCard(props) {
     const [expanded, setExpanded] = useState(false);
@@ -40,6 +41,9 @@ function CustomerBookingCard(props) {
                     </IconButton>
                     <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
                         <EditIcon />
+                    </IconButton>
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickCancel} >
+                        <DoNotDisturbIcon />
                     </IconButton>
                 </Collapse>
             </CardContent>

@@ -3,15 +3,18 @@ import './CustomerBookings.css';
 import { useParams } from "react-router-dom";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBookingCard";
-import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import CustomButton from "../../components/CustomButton/CustomButton";
 
 function CustomerBookings() {
 
     const { id } = useParams();
 
     const [bookings, setBookings] = useState([]);
+    const [booking, setBooking] = useState({});
     const [customer, setCustomer] = useState([]);
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
+    const [openViewBooking, setOpenViewBooking] = useState(false);
 
     useEffect(() => {
         handleFetchCustomerBookings();
@@ -53,11 +56,17 @@ function CustomerBookings() {
         }
     }
 
+    const handleOpenViewBooking = (booking) => {
+        setBooking(booking);
+        setOpenViewBooking(true);
+    }
+    const handleCloseViewBooking = () => setOpenViewBooking(false);
+
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
     };
 
-     const getActiveBookings = () => {
+    const getActiveBookings = () => {
         return bookings.filter((booking) => !booking.returned);
     };
 
@@ -65,11 +74,11 @@ function CustomerBookings() {
         return bookings.filter((booking) => booking.returned && !booking.paid);
     };
 
-     const getPastBookings = () => {
+    const getPastBookings = () => {
         return bookings.filter((booking) => booking.returned && booking.paid);
     };
 
-    const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid' 
+    const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid'
         ? getUnpaidBookings() : selectedValue === 'Past' ? getPastBookings() : bookings;
 
     function handleCalculateDays(hireDate) {
@@ -98,10 +107,64 @@ function CustomerBookings() {
                             hireDate={booking.hireDate}
                             returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
                             address={booking.address}
+                            onClickView={() => handleOpenViewBooking(booking)}
                         />
                     )) : null}
                 </div>
             </div>
+            <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
+                    Booking Details
+                </DialogTitle>
+                <DialogContent>
+                    <Typography variant="h6" sx={{ margin: '5px' }} >
+                        Customer
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Last Name:</FormLabel> {customer.lastName}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>First Name:</FormLabel> {customer.firstName}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Phone:</FormLabel> {customer.phone}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Address:</FormLabel> {customer.address}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Email:</FormLabel> {customer.email != null ? customer.email : 'N/A'}
+                    </Typography>
+                    <hr />
+                    <Typography variant="h6" sx={{ margin: '5px' }} >
+                        Booking
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Skip:</FormLabel> {booking.skipId}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Address:</FormLabel> {booking.address}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Hire Date:</FormLabel> {booking.hireDate}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Notes:</FormLabel> {booking.notes != null ? booking.notes : 'N/A'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Returned:</FormLabel> {booking.returned ? 'Yes' : 'No'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Paid:</FormLabel> {booking.paid ? 'Yes' : 'No'}
+                    </Typography>
+                </DialogContent>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseViewBooking} />
+                </DialogActions>
+            </Dialog>
         </>
     );
 }
