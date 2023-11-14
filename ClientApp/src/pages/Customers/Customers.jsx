@@ -41,6 +41,10 @@ function Customers() {
         navigate(`/Customer/${customerId}`);
     }
 
+    const handleViewBookings = (customerId) => {
+        navigate(`/Customer/${customerId}/Bookings`);
+    }
+
     const handleOpenViewCustomer = (customer) => {
         setCustomer(customer);
         setOpenViewCustomer(true);
@@ -108,7 +112,8 @@ function Customers() {
                             '&:hover': {
                                 border: '1px solid #006d77',
                             },
-                        }}>
+                        }}
+                        onClick={() => handleViewBookings(customer.id)}>
                         View Bookings
                     </Button>
                 </DialogContent>

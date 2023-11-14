@@ -6,6 +6,7 @@ import PrivateRoute from './components/PrivateRoute/PrivateRoute';
 import Reminders from './pages/Reminders/Reminders';
 import Customers from './pages/Customers/Customers';
 import CustomerAddEdit from './pages/Customers/CustomerAddEdit';
+import CustomerBookings from './pages/Bookings/CustomerBookings';
 
 const App = () => {
   const hasToken = sessionStorage.getItem('token');
@@ -17,6 +18,7 @@ const App = () => {
         <Route path="/Reminders" element={<Reminders />} />
         <Route path="/Customers" element={<Customers />} />
         <Route path="/Customer/:id?" element={<CustomerAddEdit />} />
+        <Route path="/Customer/:id/Bookings" element={<CustomerBookings />} />
       </Route>
     </Routes>
   );
