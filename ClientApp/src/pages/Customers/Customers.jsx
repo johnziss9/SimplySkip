@@ -16,11 +16,11 @@ function Customers() {
     const [customer, setCustomer] = useState({});
 
     useEffect(() => {
-        handleFetchedCustomers();
+        handleFetchCustomers();
         // eslint-disable-next-line
     }, []);
 
-    const handleFetchedCustomers = async () => {
+    const handleFetchCustomers = async () => {
         const response = await fetch("https://localhost:7197/customer/", {
             method: 'get',
             headers: {

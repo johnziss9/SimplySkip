@@ -17,11 +17,11 @@ function Reminders() {
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
 
     useEffect(() => {
-        handleFetchedActiveBookings();
+        handleFetchActiveBookings();
         // eslint-disable-next-line
     }, []);
 
-    const handleFetchedActiveBookings = async () => {
+    const handleFetchActiveBookings = async () => {
         const response = await fetch("https://localhost:7197/booking/active", {
             method: 'get',
             headers: {
@@ -76,7 +76,7 @@ function Reminders() {
 
         if (response.ok) {
             handleCloseReturn();
-            handleFetchedActiveBookings();
+            handleFetchActiveBookings();
             handleShowReturnSuccess();
         } else {
             // TODO Handle error if cards don't load
@@ -98,7 +98,7 @@ function Reminders() {
 
         if (response.ok) {
             handleClosePaid();
-            handleFetchedActiveBookings();
+            handleFetchActiveBookings();
             handleShowPaidSuccess();
         } else {
             // TODO Handle error if cards don't load
