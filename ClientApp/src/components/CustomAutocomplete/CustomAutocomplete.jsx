@@ -38,22 +38,38 @@ function CustomAutocomplete() {
             options={customers}
             getOptionLabel={formatCustomerLabel}
             sx={{ width: '440px' }}
-            renderInput={(params) => <TextField sx={{
-                "& .MuiOutlinedInput-root": {
-                    "& fieldset": {
-                        borderColor: "#006d77", // Changes border style when not focused
-                        borderRadius: 0,
-                    },
-                    '&:hover fieldset': {
-                        border: "2px solid #006d77", // Changes border style on hover
-                    },
-                    '&.Mui-focused fieldset': {
-                        borderColor: '#006d77 !important', // Changes border style when focused
-                    },
-                },
-            }}
-                {...params} label="Customer" />}
+            renderInput={(params) => (
+                <TextField
+                    {...params}
+                    label="Customer"
+                    InputProps={{
+                        style: {
+                            color: '#006d77', // Changes the font color
+                        },
+                    }}
+                    InputLabelProps={{
+                        style: {
+                            color: '#006d77', // Changes the label color
+                        },
+                    }}
+                    sx={{
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: '#006d77', // Changes border style when not focused
+                                borderRadius: 0,
+                            },
+                            '&:hover fieldset': {
+                                border: '2px solid #006d77', // Changes border style on hover
+                            },
+                            '&.Mui-focused fieldset': {
+                                borderColor: '#006d77 !important', // Changes border style when focused
+                            },
+                        },
+                    }}
+                />
+            )}
         />
+
     );
 }
 
