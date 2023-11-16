@@ -6,9 +6,12 @@
     background-color: #edf6f9;
 }
 
-.home-title {
-    color: #006d77;
-    margin-bottom: 20px;
+.home-logo-container {
+    width: 230px;
+    margin-bottom: 40px;
+}
+.home-logo-image {
+    width: 100%;
 }
 
 .home-login-section {
