@@ -1,0 +1,26 @@
+.booking-add-edit-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 64px;
+}
+
+.booking-add-edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.booking-add-edit-form-buttons {
+    display: flex;
+    flex-direction: row;
+}
+
+.booking-add-edit-switches {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    margin: 16px 0 8px 0;
+    width: 440px;
+}

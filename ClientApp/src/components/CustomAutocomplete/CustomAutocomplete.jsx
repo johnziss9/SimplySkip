@@ -1,9 +1,10 @@
 import { Autocomplete, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 
-function CustomAutocomplete() {
+function CustomAutocomplete(props) {
 
     const [customers, setCustomers] = useState([]);
+    const [skips, setSkips] = useState([]);
 
     useEffect(() => {
         handleFetchCustomers();
@@ -27,6 +28,10 @@ function CustomAutocomplete() {
         }
     }
 
+    const handleFetchSkips = async () => {
+        // TODO Fetch Skips
+    }
+
     const formatCustomerLabel = (customer) => {
         const formattedLastName = customer.lastName.toUpperCase();
         return `${formattedLastName}, ${customer.firstName}`;
@@ -35,23 +40,14 @@ function CustomAutocomplete() {
     return (
         <Autocomplete
             disablePortal
-            options={customers}
+            options={props.fill == 'Customers' ? customers : skips}
             getOptionLabel={formatCustomerLabel}
             sx={{ width: '440px' }}
             renderInput={(params) => (
                 <TextField
+                    margin="normal"
                     {...params}
-                    label="Customer"
-                    InputProps={{
-                        style: {
-                            color: '#006d77', // Changes the font color
-                        },
-                    }}
-                    InputLabelProps={{
-                        style: {
-                            color: '#006d77', // Changes the label color
-                        },
-                    }}
+                    label={props.fill == 'Customers' ? "Customer" : "Skip"}
                     sx={{
                         '& .MuiOutlinedInput-root': {
                             '& fieldset': {
@@ -63,7 +59,15 @@ function CustomAutocomplete() {
                             },
                             '&.Mui-focused fieldset': {
                                 borderColor: '#006d77 !important', // Changes border style when focused
-                            },
+                            }
+                        },
+                        '& input': {
+                            color: '#006d77', // Changes the font color
+                          },
+                    }}
+                    InputLabelProps={{
+                        style: {
+                            color: '#006d77', // Changes the label color
                         },
                     }}
                 />
