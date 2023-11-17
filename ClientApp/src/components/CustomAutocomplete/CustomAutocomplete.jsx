@@ -43,6 +43,9 @@ function CustomAutocomplete(props) {
             options={props.fill == 'Customers' ? customers : skips}
             getOptionLabel={formatCustomerLabel}
             sx={{ width: '440px' }}
+            value={props.value}
+            onChange={props.onChange}
+            disabled={props.disabled}
             renderInput={(params) => (
                 <TextField
                     margin="normal"
@@ -63,7 +66,7 @@ function CustomAutocomplete(props) {
                         },
                         '& input': {
                             color: '#006d77', // Changes the font color
-                          },
+                        }
                     }}
                     InputLabelProps={{
                         style: {
@@ -73,7 +76,6 @@ function CustomAutocomplete(props) {
                 />
             )}
         />
-
     );
 }
 

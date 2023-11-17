@@ -4,6 +4,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { PickersDay } from '@mui/x-date-pickers/PickersDay';
 import { styled } from '@mui/material/styles';
+import dayjs from 'dayjs';
 
 function CustomDatePicker(props) {
 
@@ -19,6 +20,8 @@ function CustomDatePicker(props) {
                 slots={{
                     day: StyledDay
                 }}
+                value={dayjs(props.value)}
+                onChange={props.onChange}
                 sx={{
                     "& .MuiInputLabel-root.Mui-focused": { color: "#006d77" }, // Change the label colour on focus
                     "& .MuiOutlinedInput-root": {

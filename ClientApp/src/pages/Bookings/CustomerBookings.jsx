@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from "react";
 import './CustomerBookings.css';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBookingCard";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 
 function CustomerBookings() {
+
+    const navigate = useNavigate();
 
     const { id } = useParams();
 
@@ -62,6 +64,10 @@ function CustomerBookings() {
     }
     const handleCloseViewBooking = () => setOpenViewBooking(false);
 
+    const handleEditClick = (bookingId) => {
+        navigate(`/Booking/${bookingId}`);
+    }
+
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
     };
@@ -108,6 +114,7 @@ function CustomerBookings() {
                             returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
+                            onClickEdit={() => handleEditClick(booking.id)}
                         />
                     )) : null}
                 </div>
