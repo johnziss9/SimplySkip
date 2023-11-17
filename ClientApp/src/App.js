@@ -8,7 +8,7 @@ import Customers from './pages/Customers/Customers';
 import CustomerAddEdit from './pages/Customers/CustomerAddEdit';
 import CustomerBookings from './pages/Bookings/CustomerBookings';
 import BookingAddEdit from './pages/Bookings/BookingAddEdit';
-import CustomAutocomplete from './components/CustomAutocomplete/CustomAutocomplete';
+import Bookings from './pages/Bookings/Bookings';
 
 const App = () => {
   const hasToken = sessionStorage.getItem('token');
@@ -20,6 +20,7 @@ const App = () => {
         <Route path="/Reminders" element={<Reminders />} />
         <Route path="/Customers" element={<Customers />} />
         <Route path="/Customer/:id?" element={<CustomerAddEdit />} />
+        <Route path="/Bookings" element={<Bookings />} />
         <Route path="/Customer/:id/Bookings" element={<CustomerBookings />} />
         <Route path="/Booking/:id?" element={<BookingAddEdit />} />
       </Route>
