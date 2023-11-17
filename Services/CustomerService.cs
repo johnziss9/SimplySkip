@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations;
 using Microsoft.EntityFrameworkCore;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
@@ -22,6 +23,14 @@ namespace SimplySkip.Services
 
         public async Task<Response<Customer>> CreateCustomer(Customer customer)
         {
+            var validationContext = new ValidationContext(customer, serviceProvider: null, items: null);
+            var validationResults = new List<ValidationResult>();
+            if (!Validator.TryValidateObject(customer, validationContext, validationResults, validateAllProperties: true))
+            {
+                var errorMessages = validationResults.Select(vr => vr.ErrorMessage).ToList();
+                return Response<Customer>.Fail(errorMessages);
+            }
+
             _ssDbContext.Customers.Add(customer);
             await _ssDbContext.SaveChangesAsync();
 

@@ -4,7 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import { Dialog, DialogActions, DialogTitle } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
@@ -20,6 +21,9 @@ function CustomerAddEdit() {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [isEdit, setIsEdit] = useState(false); // TODO Check if this is used. Currently using it but I could use id from useParams?
     const [customer, setCustomer] = useState({}); // TODO Check if this is used
+    const [addEditFailed, setAddEditFailed] = useState(false);
+    const [validationErrors, setValidationErrors] = useState([]);
+    const [otherError, setOtherError] = useState('');
 
     useEffect(() => {
         if (id) {
@@ -66,7 +70,7 @@ function CustomerAddEdit() {
             if (response.ok) {
                 handleShowSuccess();
             } else {
-                // TODO Handle error
+                // TODO Handle Error
             }
         } else {
             const response = await fetch('https://localhost:7197/customer', {
@@ -88,7 +92,22 @@ function CustomerAddEdit() {
             if (response.ok) {
                 handleShowSuccess();
             } else {
-                // TODO Handle error
+                const data = await response.json();
+
+                if (data.errors) {
+                    const { errors } = data;
+
+                    const flattenedErrors = Object.values(errors).flat();
+                    setValidationErrors(flattenedErrors);
+
+                    handleShowFailedAddEdit();
+                } else {
+                    const { title } = data;
+
+                    setOtherError(title);
+                    handleShowFailedAddEdit();
+                }
+
             }
         }
     }
@@ -122,6 +141,9 @@ function CustomerAddEdit() {
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
+    const handleShowFailedAddEdit = () => setAddEditFailed(true);
+    const handleHideFailedAddEdit = () => setAddEditFailed(false);
+
     return (
         <>
             <CustomNavbar currentPage={'Customer Information'} />
@@ -131,7 +153,7 @@ function CustomerAddEdit() {
                     <CustomTextField label={'Last Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setLastName(e.target.value)} value={lastName} />
                     <CustomTextField label={'Phone Number'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={'440px'} />
                     <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={'440px'} onChange={handleEmailInput} value={email} />
-                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} maxRows={7} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} />
+                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} />
                     <div className="customer-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitCustomer} />
@@ -146,6 +168,59 @@ function CustomerAddEdit() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
                 </DialogActions>
             </Dialog>
+            <Snackbar
+                open={addEditFailed}
+                autoHideDuration={4000}
+                onClose={handleHideFailedAddEdit}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                ClickAwayListenerProps={{ onClickAway: () => null }}
+            >
+                <div>
+                    {validationErrors && Array.isArray(validationErrors) && validationErrors.length > 1 ? (
+                        validationErrors.reverse().map((error, index) => (
+                            <Alert
+                                key={index}
+                                severity="error"
+                                sx={{
+                                    margin: '20px 0'
+                                }}
+                                action={(
+                                    <IconButton
+                                        size="small"
+                                        aria-label="close"
+                                        color="inherit"
+                                        onClick={handleHideFailedAddEdit}
+                                    >
+                                        <CloseIcon fontSize="small" />
+                                    </IconButton>
+                                )}
+                            >
+                                {error}
+                            </Alert>
+                        ))
+                    ) : (
+                        <Alert
+                            severity="error"
+                            sx={{
+                                margin: '20px 0'
+                            }}
+                            action={(
+                                <IconButton
+                                    size="small"
+                                    aria-label="close"
+                                    color="inherit"
+                                    onClick={handleHideFailedAddEdit}
+                                >
+                                    <CloseIcon fontSize="small" />
+                                </IconButton>
+                            )}
+                        >
+                            {otherError}
+                        </Alert>
+                    )}
+
+                </div>
+            </Snackbar>
         </>
     )
 }

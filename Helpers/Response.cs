@@ -32,6 +32,9 @@ namespace SimplySkip.Helpers
         public static Response<T> Success(T data) => new(data);
 
         public static Response<T> Fail(int errorCode, string errorMessage) => new Response<T>(errorCode, errorMessage);
+
+        public static Response<T> Fail(List<string?> errorMessages) => new Response<T> { ErrorCode = 500, ErrorMessage = string.Join(", ", errorMessages) };
+
         
         public static Response<T> Fail(Exception ex) => new Response<T>(ex);
     }
