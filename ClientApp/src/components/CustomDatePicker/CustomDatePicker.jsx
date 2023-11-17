@@ -16,7 +16,7 @@ function CustomDatePicker(props) {
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
-                label="Styled picker"
+                label={props.label}
                 slots={{
                     day: StyledDay
                 }}

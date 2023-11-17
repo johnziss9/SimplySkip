@@ -110,6 +110,7 @@ function BookingAddEdit() {
                     customerId: customer.id,
                     // TODO Change skip id from dropdown
                     hireDate: hireDate,
+                    returnDate: new Date(),
                     address: address,
                     notes: notes,
                     returned: isReturned,
@@ -134,9 +135,9 @@ function BookingAddEdit() {
             <CustomNavbar currentPage={'Booking Information'} />
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
-                    <CustomAutocomplete fill={'Customers'} value={customer} onChange={e => setCustomer(e.target.value)} disabled={isEdit ? true : false} />
+                    <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} />
                     <CustomAutocomplete fill={'Skips'} />
-                    <CustomDatePicker value={hireDate} onChange={setHireDate} />
+                    <CustomDatePicker label={'Hire Date'} value={hireDate} onChange={setHireDate} />
                     <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} />
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">

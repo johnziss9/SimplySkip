@@ -33,8 +33,11 @@ function CustomAutocomplete(props) {
     }
 
     const formatCustomerLabel = (customer) => {
-        const formattedLastName = customer.lastName.toUpperCase();
-        return `${formattedLastName}, ${customer.firstName}`;
+        if (customer) {
+            const formattedLastName = customer.lastName.toUpperCase();
+            return `${formattedLastName}, ${customer.firstName}`;
+        }
+        return '';
     };
 
     return (
