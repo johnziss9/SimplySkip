@@ -8,6 +8,7 @@ function CustomAutocomplete(props) {
 
     useEffect(() => {
         handleFetchCustomers();
+        handleFetchSkips();
         // eslint-disable-next-line
     }, []);
 
@@ -29,7 +30,20 @@ function CustomAutocomplete(props) {
     }
 
     const handleFetchSkips = async () => {
-        // TODO Fetch Skips
+        const response = await fetch("https://localhost:7197/skip/available/", {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+
+            setSkips(data);
+        } else {
+            // TODO Handle error if cards don't load
+        }
     }
 
     const formatCustomerLabel = (customer) => {
@@ -40,11 +54,18 @@ function CustomAutocomplete(props) {
         return '';
     };
 
+    const formatSkipLabel = (skip) => {
+        if (skip) {
+            return `Skip ${skip.name} - ${skip.skipSize == 1 ? 'Small' : 'Large'}`;
+        }
+        return '';
+    };
+
     return (
         <Autocomplete
             disablePortal
             options={props.fill == 'Customers' ? customers : skips}
-            getOptionLabel={formatCustomerLabel}
+            getOptionLabel={props.fill == 'Customers' ? formatCustomerLabel : formatSkipLabel}
             sx={{ width: '440px' }}
             value={props.value}
             onChange={props.onChange}

@@ -29,6 +29,13 @@ namespace SimplySkip.Services
             return Response<List<Skip>>.Success(skips);
         }
 
+        public async Task<Response<List<Skip>>> GetAvailableSkips()
+        {
+            var skips = await _ssDbContext.Skips.Where(s => s.Deleted == false && s.Rented == false).ToListAsync();
+
+            return Response<List<Skip>>.Success(skips);
+        }
+
         public async Task<Response<Skip>> GetSkipById(int id)
         {
             var skip = await _ssDbContext.Skips.Where(s => s.Id == id).FirstOrDefaultAsync();

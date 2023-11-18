@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './BookingAddEdit.css';
-import { useNavigate, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -16,7 +16,7 @@ function BookingAddEdit() {
     const [openSuccess, setOpenSuccess] = useState(false);
 
     const [customer, setCustomer] = useState(null);
-    const [skip, setSkip] = useState(null); // TODO Use this for skip once fetched
+    const [skip, setSkip] = useState(null);
     const [hireDate, setHireDate] = useState(new Date());
     const [address, setAddress] = useState('');
     const [notes, setNotes] = useState('');
@@ -44,7 +44,7 @@ function BookingAddEdit() {
             const booking = await response.json();
 
             handleFetchCustomer(booking.customerId);
-            // TODO Fetch Skip
+            handleFetchSkip(booking.skipId);
             setHireDate(new Date(booking.hireDate));
             setAddress(booking.address);
             setNotes(booking.notes);
@@ -75,6 +75,24 @@ function BookingAddEdit() {
         }
     }
 
+    const handleFetchSkip = async (id) => {
+        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const skip = await response.json();
+
+            setSkip(skip);
+
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
     const handleSubmitBooking = async () => {
         if (isEdit) {
             const response = await fetch(`https://localhost:7197/booking/${id}`, {
@@ -84,7 +102,7 @@ function BookingAddEdit() {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
                 },
                 body: JSON.stringify({
-                    // TODO Change skip id from dropdown
+                    skipId: skip.id,
                     hireDate: hireDate,
                     address: address,
                     notes: notes,
@@ -108,7 +126,7 @@ function BookingAddEdit() {
                 },
                 body: JSON.stringify({
                     customerId: customer.id,
-                    // TODO Change skip id from dropdown
+                    skipId: skip.id,
                     hireDate: hireDate,
                     returnDate: new Date(),
                     address: address,
@@ -136,7 +154,7 @@ function BookingAddEdit() {
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} />
-                    <CustomAutocomplete fill={'Skips'} />
+                    <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} />
                     <CustomDatePicker label={'Hire Date'} value={hireDate} onChange={setHireDate} />
                     <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} />
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
