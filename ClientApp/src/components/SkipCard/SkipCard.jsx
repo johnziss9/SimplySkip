@@ -1,13 +1,12 @@
 import React, { useState } from "react";
-import { Card, Collapse, IconButton, Typography } from "@mui/material";
-import CardContent from '@mui/material/CardContent';
+import { Card, CardContent, Collapse, IconButton, Typography } from "@mui/material";
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
-import DoNotDisturbIcon from '@mui/icons-material/DoNotDisturb';
+import DeleteIcon from '@mui/icons-material/Delete';
 
-function CustomerBookingCard(props) {
+function SkipCard(props) {
     const [expanded, setExpanded] = useState(false);
 
     const handleExpand = () => {
@@ -24,13 +23,10 @@ function CustomerBookingCard(props) {
         }}>
             <CardContent sx={{ paddingBottom: '17px !important' }}>
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.hireDate}
+                    {props.name}
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.returnDateOrDays}
-                </Typography>
-                <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.address}
+                    {props.size}
                 </Typography>
                 <IconButton onClick={handleExpand} sx={{ padding: 0 }} >
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
@@ -42,8 +38,8 @@ function CustomerBookingCard(props) {
                     <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickCancel} >
-                        <DoNotDisturbIcon />
+                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickDelete} >
+                        <DeleteIcon  />
                     </IconButton>
                 </Collapse>
             </CardContent>
@@ -51,4 +47,4 @@ function CustomerBookingCard(props) {
     );
 }
 
-export default CustomerBookingCard;
+export default SkipCard;

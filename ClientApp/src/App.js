@@ -9,6 +9,7 @@ import CustomerAddEdit from './pages/Customers/CustomerAddEdit';
 import CustomerBookings from './pages/Bookings/CustomerBookings';
 import BookingAddEdit from './pages/Bookings/BookingAddEdit';
 import Bookings from './pages/Bookings/Bookings';
+import Skips from './pages/Skips/Skips';
 
 const App = () => {
   const hasToken = sessionStorage.getItem('token');
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/Bookings" element={<Bookings />} />
         <Route path="/Customer/:id/Bookings" element={<CustomerBookings />} />
         <Route path="/Booking/:id?" element={<BookingAddEdit />} />
+        <Route path="/Skips" element={<Skips />} />
       </Route>
     </Routes>
   );

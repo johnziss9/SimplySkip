@@ -42,7 +42,7 @@ function CustomNavbar(props) {
                         {props.currentPage}
                     </Typography>
                     {props.currentPage === 'Customers' || props.currentPage === 'Bookings' ?
-                    <Fab sx={{ background: '#edf6f9', width: '150px', height:'40px', marginLeft: '25px', borderRadius: '5px' }} onClick={handleAddNew}>
+                    <Fab sx={{ background: '#edf6f9', width: '150px', height:'40px', marginLeft: '20px', borderRadius: '5px' }} onClick={handleAddNew}>
                         <AddIcon sx={{ color: '#006d77' }} />
                         ADD NEW
                     </Fab>
@@ -55,6 +55,7 @@ function CustomNavbar(props) {
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Reminders">Reminders</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">Customers</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">Bookings</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
                 </div>
             )}
         </AppBar>
