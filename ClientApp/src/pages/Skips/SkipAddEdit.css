@@ -1,0 +1,18 @@
+.skip-add-edit-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 64px;
+}
+
+.skip-add-edit-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 40px;
+}
+
+.skip-add-edit-form-buttons {
+    display: flex;
+    flex-direction: row;
+}
