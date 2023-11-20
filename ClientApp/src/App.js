@@ -17,9 +17,8 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={hasToken ? <Navigate to="/Reminders" /> : <Home />} />
+      <Route path="/" element={hasToken ? <Navigate to="/Bookings" /> : <Home />} />
       <Route element={<PrivateRoute />}>
-        <Route path="/Reminders" element={<Reminders />} />
         <Route path="/Customers" element={<Customers />} />
         <Route path="/Customer/:id?" element={<CustomerAddEdit />} />
         <Route path="/Bookings" element={<Bookings />} />

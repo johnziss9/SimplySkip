@@ -30,12 +30,6 @@ namespace SimplySkip.Controllers
             return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetAllBookings());
         }
 
-        [HttpGet("active")]
-        public async Task<ActionResult<List<Booking>>> GetActive()
-        {
-            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetActiveBookings());
-        }
-
         [HttpGet("customer/{id}")]
         public async Task<ActionResult<List<Booking>>> GetCustomer(int id)
         {

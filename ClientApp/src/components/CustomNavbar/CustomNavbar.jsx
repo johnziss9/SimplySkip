@@ -52,7 +52,6 @@ function CustomNavbar(props) {
             </Toolbar>
             {open && (
                 <div className="menu-container">
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Reminders">Reminders</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">Customers</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">Bookings</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>

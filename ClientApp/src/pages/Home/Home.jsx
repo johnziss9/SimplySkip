@@ -33,7 +33,7 @@ function Home() {
             const { token } = data;
 
             sessionStorage.setItem('token', token);
-            navigate('/Reminders');
+            navigate('/Bookings');
         } else {
             const data = await response.json();
             const { title } = data;
