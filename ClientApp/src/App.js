@@ -3,7 +3,6 @@ import { Navigate, Route, Routes } from 'react-router-dom';
 import './custom.css';
 import Home from './pages/Home/Home';
 import PrivateRoute from './components/PrivateRoute/PrivateRoute';
-import Reminders from './pages/Reminders/Reminders';
 import Customers from './pages/Customers/Customers';
 import CustomerAddEdit from './pages/Customers/CustomerAddEdit';
 import CustomerBookings from './pages/Bookings/CustomerBookings';

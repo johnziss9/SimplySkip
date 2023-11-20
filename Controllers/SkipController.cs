@@ -45,7 +45,7 @@ namespace SimplySkip.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Skip>> Update(int id, Skip skip)
         {
-            return ResponseHelper.HandleErrorAndReturn(await _skipService.DeleteSkip(id, skip));
+            return ResponseHelper.HandleErrorAndReturn(await _skipService.UpdateSkip(id, skip));
         }
     }
 }

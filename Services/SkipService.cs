@@ -48,7 +48,7 @@ namespace SimplySkip.Services
             return Response<Skip>.Success(skip);
         }
 
-        public async Task<Response<Skip>> DeleteSkip(int id, Skip updatedSkip)
+        public async Task<Response<Skip>> UpdateSkip(int id, Skip updatedSkip)
         {
             var skip = await _ssDbContext.Skips.Where(s => s.Id == id).FirstOrDefaultAsync();
 
@@ -57,8 +57,21 @@ namespace SimplySkip.Services
                 return Response<Skip>.Fail(404, "Skip Not Found");
             }
 
-            skip.Deleted = updatedSkip.Deleted;
-            
+            if (updatedSkip.Notes != null && updatedSkip.Notes != skip.Notes)
+            {
+                skip.Notes = updatedSkip.Notes;
+            }
+
+            if (updatedSkip.Rented != skip.Rented)
+            {
+                skip.Rented = updatedSkip.Rented;
+            }
+
+            if (updatedSkip.Deleted != skip.Deleted)
+            {
+                skip.Deleted = updatedSkip.Deleted;
+            }
+
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Skip>.Success(skip);
