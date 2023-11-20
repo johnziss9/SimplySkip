@@ -48,8 +48,7 @@ function Skips() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Skips'} />
-            {/* addNewClick={'/Customer'} /> */}
+            <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
                 <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />
