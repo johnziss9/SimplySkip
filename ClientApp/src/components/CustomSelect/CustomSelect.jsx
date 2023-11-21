@@ -5,11 +5,20 @@ function CustomSelect(props) {
     return (
         <FormControl margin="normal" sx={{ width: '440px' }}>
             <InputLabel
+                required
+                error={props.error}
                 sx={{
                     color: '#006d77',
                     '&.Mui-focused': {
                         color: '#006d77'
-                    }
+                    },
+                    '&.Mui-error': {
+                        color: '#006d77',  // Reset the color for the entire label when it has an error
+                    },
+                    '& .MuiFormLabel-asterisk': {
+                        color: props.error ? '#d32f2f' : 'inherit',  // Change the color of the asterisk
+                    },
+
                 }}>Size</InputLabel>
             <Select
                 value={props.value}
