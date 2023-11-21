@@ -47,6 +47,18 @@ namespace SimplySkip.Services
             return Response<Booking>.Success(booking);
         }
 
+        public async Task<Response<Booking>> GetBookingBySkipId(int id)
+        {
+            var booking = await _ssDbContext.Bookings.Where(c => c.SkipId == id).FirstOrDefaultAsync();
+
+            if (booking == null)
+            {
+                return Response<Booking>.Fail(404, "Booking Not Found");
+            }
+
+            return Response<Booking>.Success(booking);
+        }
+
         public async Task<Response<Booking>> UpdateBooking(int id, Booking updatedBooking)
         {
             var booking = await _ssDbContext.Bookings.Where(c => c.Id == id).FirstOrDefaultAsync();
