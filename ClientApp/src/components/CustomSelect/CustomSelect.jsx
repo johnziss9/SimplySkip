@@ -14,9 +14,10 @@ function CustomSelect(props) {
             <Select
                 value={props.value}
                 label="Size"
-                required
+                disabled={props.disabled}
                 onChange={props.onChange}
                 labelStyle={{ color: '#006d77' }}
+                error={props.error}
                 sx={{
                     color: "#006d77",
                     '.MuiOutlinedInput-notchedOutline': { // Changed border off focus

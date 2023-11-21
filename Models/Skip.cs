@@ -1,11 +1,16 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SimplySkip.Models
 {
     public class Skip
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Skip Name is required.")]
         public string? Name { get; set; }
 
+        [Required(ErrorMessage = "Skip Size is required.")]
+        [EnumDataType(typeof(SkipSize), ErrorMessage = "Invalid Skip Size.")]
         public SkipSize SkipSize { get; set; }
 
         public string? Notes { get; set; }

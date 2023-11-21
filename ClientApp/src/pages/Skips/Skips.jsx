@@ -4,8 +4,11 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import SkipCard from "../../components/SkipCard/SkipCard";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import { useNavigate } from "react-router-dom";
 
 function Skips() {
+
+    const navigate = useNavigate();
 
     const [skips, setSkips] = useState([]);
     const [skip, setSkip] = useState({});
@@ -87,6 +90,10 @@ function Skips() {
         return skips.filter((skip) => !skip.rented);
     };
 
+    const handleEditClick = (id) => {
+        navigate(`/Skip/${id}`);
+    }
+
     const handleOpenViewSkip = (skip) => {
         setOpenViewSkip(true);
 
@@ -125,6 +132,7 @@ function Skips() {
                             name={`Skip ${skip.name}`}
                             size={skip.skipSize === 1 ? 'Small' : 'Large'}
                             onClickView={() => handleOpenViewSkip(skip)}
+                            onClickEdit={() => handleEditClick(skip.id)}
                         />
                     )) : null}
                 </div>
