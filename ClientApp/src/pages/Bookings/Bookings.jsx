@@ -3,8 +3,11 @@ import './Bookings.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import { FormControlLabel, Radio, RadioGroup } from "@mui/material";
 import BookingCard from "../../components/BookingCard/BookingCard";
+import { useNavigate } from "react-router-dom";
 
 function Bookings() {
+
+    const navigate = useNavigate();
 
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
     const [bookings, setBookings] = useState([]);
@@ -72,6 +75,10 @@ function Bookings() {
         return bookings.filter((booking) => booking.returned && booking.paid);
     };
 
+    const handleEditClick = (id) => {
+        navigate(`/Booking/${id}`);
+    }
+
     const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid'
         ? getUnpaidBookings() : selectedValue === 'Past' ? getPastBookings() : bookings;
 
@@ -104,7 +111,9 @@ function Bookings() {
                             returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
                             address={booking.address}
                         // onClickView={() => handleOpenViewBooking(booking)}
-                        // onClickEdit={() => handleEditClick(booking.id)}
+                            onClickEdit={() => handleEditClick(booking.id)}
+                            disabledEditButton = {booking.returned && booking.paid ? true : false}
+                            disabledCancelButton = {booking.returned && booking.paid ? true : false}
                         />
                     )) : null}
                 </div>

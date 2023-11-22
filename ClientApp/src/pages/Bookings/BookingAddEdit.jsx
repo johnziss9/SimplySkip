@@ -18,11 +18,15 @@ function BookingAddEdit() {
     const [customer, setCustomer] = useState(null);
     const [skip, setSkip] = useState(null);
     const [hireDate, setHireDate] = useState(new Date());
+    const [returnDate, setReturnDate] = useState(new Date());
     const [address, setAddress] = useState('');
     const [notes, setNotes] = useState('');
     const [isReturned, setIsReturned] = useState(false);
     const [isPaid, setIsPaid] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false);
+
+    const [returnedSwitchIsOn, setReturnedSwitchIsOn] = useState(false);
+    const [paidSwitchIsOn, setPaidSwitchIsOn] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -46,6 +50,7 @@ function BookingAddEdit() {
             handleFetchCustomer(booking.customerId);
             handleFetchSkip(booking.skipId);
             setHireDate(new Date(booking.hireDate));
+            setReturnDate(new Date(booking.returnDate));
             setAddress(booking.address);
             setNotes(booking.notes);
             setIsReturned(booking.returned);
@@ -102,8 +107,10 @@ function BookingAddEdit() {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
                 },
                 body: JSON.stringify({
+                    customerId: customer.id,
                     skipId: skip.id,
                     hireDate: hireDate,
+                    returnDate: returnDate,
                     address: address,
                     notes: notes,
                     returned: isReturned,
@@ -145,6 +152,17 @@ function BookingAddEdit() {
         }
     }
 
+    const handleReturnSwitchChange = (e) => {
+        setIsReturned(e.target.checked);
+        setReturnDate(new Date());
+        setReturnedSwitchIsOn(e.target.checked);
+    }
+
+    const handlePaidSwitchChange = (e) => {
+        setIsPaid(e.target.checked)
+        setPaidSwitchIsOn(e.target.checked);
+    }
+
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
@@ -162,9 +180,9 @@ function BookingAddEdit() {
                         <FormControlLabel
                             control={
                                 <Switch
-                                disabled={isReturned ? true : false}
-                                checked={isReturned}
-                                onChange={setIsReturned}
+                                    disabled={isReturned && !returnedSwitchIsOn}
+                                    checked={returnedSwitchIsOn}
+                                    onChange={(e) => handleReturnSwitchChange(e)}
                                 />
                             }
                             label="Returned"
@@ -172,9 +190,9 @@ function BookingAddEdit() {
                         <FormControlLabel
                             control={
                                 <Switch
-                                disabled={isPaid ? true : false}
-                                checked={isPaid}
-                                onChange={setIsPaid}
+                                    disabled={isPaid && !paidSwitchIsOn}
+                                    checked={paidSwitchIsOn}
+                                    onChange={(e) => handlePaidSwitchChange(e)}
                                 />
                             }
                             label="Paid"
@@ -182,8 +200,8 @@ function BookingAddEdit() {
                         <FormControlLabel
                             control={
                                 <Switch
-                                checked={isCancelled}
-                                onChange={setIsCancelled}
+                                    checked={isCancelled}
+                                    onChange={(e) => setIsCancelled(e.target.checked)}
                                 />
                             }
                             label="Cancelled"
