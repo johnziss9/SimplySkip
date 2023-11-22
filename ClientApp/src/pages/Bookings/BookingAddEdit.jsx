@@ -129,7 +129,19 @@ function BookingAddEdit() {
             if (response.ok) {
                 handleShowSuccess();
             } else {
-                // TODO Handle error
+                const data = await response.json();
+
+                if (!customer || !skip || !address) {
+                    setError('Please fill in required fields.')
+                    setSkipError(true);
+                    setAddressError(true);
+                } else {
+                    const { title } = data;
+
+                    setError(title);
+                }
+
+                handleShowFailedAddEdit();
             }
         } else {
             const response = await fetch('https://localhost:7197/booking', {

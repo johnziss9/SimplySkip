@@ -12,6 +12,7 @@ namespace SimplySkip.Models
         [Required(ErrorMessage = "Last Name is required.")]
         public string? LastName { get; set; }
 
+        [Required(ErrorMessage = "Address is required.")]
         public string? Address { get; set; }
         
         [Required(ErrorMessage = "Phone is required.")]

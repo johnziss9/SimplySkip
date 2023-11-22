@@ -22,8 +22,13 @@ function CustomerAddEdit() {
     const [isEdit, setIsEdit] = useState(false); // TODO Check if this is used. Currently using it but I could use id from useParams?
     const [customer, setCustomer] = useState({}); // TODO Check if this is used
     const [addEditFailed, setAddEditFailed] = useState(false);
-    const [validationErrors, setValidationErrors] = useState([]);
-    const [otherError, setOtherError] = useState('');
+    const [error, setError] = useState('');
+
+    const [firstNameError, setFirstNameError] = useState(false);
+    const [lastNameError, setLastNameError] = useState(false);
+    const [addressError, setAddressError] = useState(false);
+    const [phoneError, setPhoneError] = useState(false);
+    const [emailError, setEmailError] = useState(false);
 
     useEffect(() => {
         if (id) {
@@ -41,16 +46,27 @@ function CustomerAddEdit() {
     };
 
     const handleEmailInput = (event) => {
-        setEmail(event.target.value);
         const newEmail = event.target.value;
         setEmail(newEmail);
 
-        const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
-        setIsValidEmail(isValid);
-        // TODO On submit, check if isValidEmail is true
+        // Check if the email is not blank before validation
+        if (newEmail.trim() !== "") {
+            const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+            setIsValidEmail(isValid);
+        } else {
+            // Reset the email validation if the email is blank
+            setIsValidEmail(true);
+        }
     };
 
     const handleSubmitCustomer = async () => {
+        if (!isValidEmail && email !== null && email.trim() !== "") {
+            setError("Please enter a valid email address");
+            setEmailError(true);
+            handleShowFailedAddEdit();
+            return; // Stop further execution if email is not valid
+        }
+        
         if (isEdit) {
             const response = await fetch(`https://localhost:7197/customer/${id}`, {
                 method: 'put',
@@ -70,7 +86,21 @@ function CustomerAddEdit() {
             if (response.ok) {
                 handleShowSuccess();
             } else {
-                // TODO Handle Error
+                const data = await response.json();
+
+                if (!firstName || !lastName || !address || !phone) {
+                    setError('Please fill in required fields.')
+                    setFirstNameError(true);
+                    setLastNameError(true);
+                    setAddressError(true);
+                    setPhoneError(true);
+                } else {
+                    const { title } = data;
+
+                    setError(title);
+                }
+
+                handleShowFailedAddEdit();
             }
         } else {
             const response = await fetch('https://localhost:7197/customer', {
@@ -94,20 +124,19 @@ function CustomerAddEdit() {
             } else {
                 const data = await response.json();
 
-                if (data.errors) {
-                    const { errors } = data;
-
-                    const flattenedErrors = Object.values(errors).flat();
-                    setValidationErrors(flattenedErrors);
-
-                    handleShowFailedAddEdit();
+                if (!firstName || !lastName || !address || !phone) {
+                    setError('Please fill in required fields.')
+                    setFirstNameError(true);
+                    setLastNameError(true);
+                    setAddressError(true);
+                    setPhoneError(true);
                 } else {
                     const { title } = data;
 
-                    setOtherError(title);
-                    handleShowFailedAddEdit();
+                    setError(title);
                 }
 
+                handleShowFailedAddEdit();
             }
         }
     }
@@ -149,11 +178,11 @@ function CustomerAddEdit() {
             <CustomNavbar currentPage={'Customer Information'} />
             <div className='customer-add-edit-container'>
                 <div className="customer-add-edit-form">
-                    <CustomTextField label={'First Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setFirstName(e.target.value)} value={firstName} />
-                    <CustomTextField label={'Last Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setLastName(e.target.value)} value={lastName} />
-                    <CustomTextField label={'Phone Number'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={'440px'} />
-                    <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={'440px'} onChange={handleEmailInput} value={email} />
-                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} />
+                    <CustomTextField label={'First Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setFirstName(e.target.value)} value={firstName} error={firstNameError} />
+                    <CustomTextField label={'Last Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setLastName(e.target.value)} value={lastName} error={lastNameError} />
+                    <CustomTextField label={'Phone Number'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={'440px'} error={phoneError} />
+                    <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={'440px'} onChange={(e) => handleEmailInput(e)} value={email} error={emailError} />
+                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
                     <div className="customer-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitCustomer} />
@@ -175,51 +204,24 @@ function CustomerAddEdit() {
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
                 ClickAwayListenerProps={{ onClickAway: () => null }}
             >
-                <div>
-                    {validationErrors && Array.isArray(validationErrors) && validationErrors.length > 1 ? (
-                        validationErrors.reverse().map((error, index) => (
-                            <Alert
-                                key={index}
-                                severity="error"
-                                sx={{
-                                    margin: '20px 0'
-                                }}
-                                action={(
-                                    <IconButton
-                                        size="small"
-                                        aria-label="close"
-                                        color="inherit"
-                                        onClick={handleHideFailedAddEdit}
-                                    >
-                                        <CloseIcon fontSize="small" />
-                                    </IconButton>
-                                )}
-                            >
-                                {error}
-                            </Alert>
-                        ))
-                    ) : (
-                        <Alert
-                            severity="error"
-                            sx={{
-                                margin: '20px 0'
-                            }}
-                            action={(
-                                <IconButton
-                                    size="small"
-                                    aria-label="close"
-                                    color="inherit"
-                                    onClick={handleHideFailedAddEdit}
-                                >
-                                    <CloseIcon fontSize="small" />
-                                </IconButton>
-                            )}
+                <Alert
+                    severity="error"
+                    sx={{
+                        margin: '20px 0'
+                    }}
+                    action={(
+                        <IconButton
+                            size="small"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={handleHideFailedAddEdit}
                         >
-                            {otherError}
-                        </Alert>
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
                     )}
-
-                </div>
+                >
+                    {error}
+                </Alert>
             </Snackbar>
         </>
     )
