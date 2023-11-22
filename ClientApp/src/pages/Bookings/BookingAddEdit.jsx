@@ -6,7 +6,8 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomAutocomplete from "../../components/CustomAutocomplete/CustomAutocomplete";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
-import { Dialog, DialogActions, DialogTitle, FormControlLabel, Switch } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogTitle, FormControlLabel, IconButton, Snackbar, Switch } from "@mui/material";
+import CloseIcon from '@mui/icons-material/Close';
 
 function BookingAddEdit() {
 
@@ -24,6 +25,12 @@ function BookingAddEdit() {
     const [isReturned, setIsReturned] = useState(false);
     const [isPaid, setIsPaid] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false);
+    const [error, setError] = useState('');
+    const [addEditFailed, setAddEditFailed] = useState(false);
+
+    const [skipError, setSkipError] = useState(false);
+    const [customerError, setCustomerError] = useState(false);
+    const [addressError, setAddressError] = useState(false);
 
     const [returnedSwitchIsOn, setReturnedSwitchIsOn] = useState(false);
     const [paidSwitchIsOn, setPaidSwitchIsOn] = useState(false);
@@ -132,8 +139,8 @@ function BookingAddEdit() {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
                 },
                 body: JSON.stringify({
-                    customerId: customer.id,
-                    skipId: skip.id,
+                    customerId: customer ? customer.id : null,
+                    skipId: skip ? skip.id : null,
                     hireDate: hireDate,
                     returnDate: new Date(),
                     address: address,
@@ -147,7 +154,20 @@ function BookingAddEdit() {
             if (response.ok) {
                 handleShowSuccess();
             } else {
-                // TODO Handle error
+                const data = await response.json();
+
+                if (!customer || !skip || !address) {
+                    setError('Please fill in required fields.')
+                    setSkipError(true);
+                    setCustomerError(true);
+                    setAddressError(true);
+                } else {
+                    const { title } = data;
+
+                    setError(title);
+                }
+
+                handleShowFailedAddEdit();
             }
         }
     }
@@ -166,15 +186,18 @@ function BookingAddEdit() {
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
+    const handleShowFailedAddEdit = () => setAddEditFailed(true);
+    const handleHideFailedAddEdit = () => setAddEditFailed(false);
+
     return (
         <>
             <CustomNavbar currentPage={'Booking Information'} />
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
-                    <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} />
-                    <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} />
+                    <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} />
+                    <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} error={skipError} />
                     <CustomDatePicker label={'Hire Date'} value={hireDate} onChange={setHireDate} />
-                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} />
+                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} />
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
                         <FormControlLabel
@@ -221,6 +244,32 @@ function BookingAddEdit() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }} />
                 </DialogActions>
             </Dialog>
+            <Snackbar
+                open={addEditFailed}
+                autoHideDuration={4000}
+                onClose={handleHideFailedAddEdit}
+                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+                ClickAwayListenerProps={{ onClickAway: () => null }}
+            >
+                <Alert
+                    severity="error"
+                    sx={{
+                        margin: '20px 0'
+                    }}
+                    action={(
+                        <IconButton
+                            size="small"
+                            aria-label="close"
+                            color="inherit"
+                            onClick={handleHideFailedAddEdit}
+                        >
+                            <CloseIcon fontSize="small" />
+                        </IconButton>
+                    )}
+                >
+                    {error}
+                </Alert>
+            </Snackbar>
         </>
     )
 }

@@ -74,6 +74,7 @@ function CustomAutocomplete(props) {
                 <TextField
                     margin="normal"
                     {...params}
+                    required
                     label={props.fill == 'Customers' ? "Customer" : "Skip"}
                     sx={{
                         '& .MuiOutlinedInput-root': {
@@ -97,6 +98,7 @@ function CustomAutocomplete(props) {
                             color: '#006d77', // Changes the label color
                         },
                     }}
+                    error={props.error}
                 />
             )}
         />

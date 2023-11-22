@@ -1,11 +1,15 @@
+using System.ComponentModel.DataAnnotations;
+
 namespace SimplySkip.Models
 {
     public class Booking
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "Skip is required.")]
         public int SkipId { get; set; }
 
+        [Required(ErrorMessage = "Address is required.")]
         public string? Address { get; set; }
 
         public DateTime HireDate { get; set; }
@@ -20,6 +24,7 @@ namespace SimplySkip.Models
 
         public bool Cancelled { get; set; } = false;
 
+        [Required(ErrorMessage = "Customer is required.")]
         public int CustomerId { get; set; }
     }
 }
