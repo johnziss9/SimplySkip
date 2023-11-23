@@ -14,7 +14,7 @@ function CustomerBookings() {
 
     const [bookings, setBookings] = useState([]);
     const [booking, setBooking] = useState({});
-    const [customer, setCustomer] = useState([]);
+    const [customer, setCustomer] = useState({});
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
     const [openViewBooking, setOpenViewBooking] = useState(false);
 
