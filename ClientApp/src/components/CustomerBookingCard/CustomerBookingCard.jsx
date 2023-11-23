@@ -39,10 +39,10 @@ function CustomerBookingCard(props) {
                     <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickView} >
                         <VisibilityIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} disabled={props.disabledEditButton}>
                         <EditIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickCancel} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickCancel} disabled={props.disabledCancelButton}>
                         <DoNotDisturbIcon />
                     </IconButton>
                 </Collapse>

@@ -104,7 +104,7 @@ function Bookings() {
     };
 
     const handleEditClick = (id) => {
-        navigate(`/Booking/${id}`);
+        navigate(`/Booking/${id}/all-bookings`);
     }
 
     const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid'

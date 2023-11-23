@@ -65,7 +65,7 @@ function CustomerBookings() {
     const handleCloseViewBooking = () => setOpenViewBooking(false);
 
     const handleEditClick = (bookingId) => {
-        navigate(`/Booking/${bookingId}`);
+        navigate(`/Booking/${bookingId}/customer-bookings`);
     }
 
     const handleRadioChange = (event) => {
@@ -115,6 +115,8 @@ function CustomerBookings() {
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
+                            disabledEditButton={booking.returned && booking.paid ? true : false}
+                            disabledCancelButton={booking.returned && booking.paid ? true : false}
                         />
                     )) : null}
                 </div>

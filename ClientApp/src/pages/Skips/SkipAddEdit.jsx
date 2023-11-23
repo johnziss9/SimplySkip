@@ -4,11 +4,12 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
 import { Alert, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
 
 function SkipAddEdit() {
+    const navigate = useNavigate();
 
     const { id } = useParams();
 
@@ -119,6 +120,10 @@ function SkipAddEdit() {
         }
     }
 
+    const handleOkAndCancel = () => {
+        navigate('/Skips');
+    };
+
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
@@ -134,7 +139,7 @@ function SkipAddEdit() {
                     <CustomSelect value={size} onChange={e => setSize(e.target.value)} disabled={isEdit ? true : false} error={sizeError} />
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="skip-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitSkip} />
                     </div>
                 </div>
@@ -144,7 +149,7 @@ function SkipAddEdit() {
                     {isEdit ? "Skip Edited." : "Skip Added."}
                 </DialogTitle>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} /> {/* TODO onClick={handleOkAndCancel} */}
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
                 </DialogActions>
             </Dialog>
             <Snackbar

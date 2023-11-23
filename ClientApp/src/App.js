@@ -22,7 +22,7 @@ const App = () => {
         <Route path="/Customer/:id?" element={<CustomerAddEdit />} />
         <Route path="/Bookings" element={<Bookings />} />
         <Route path="/Customer/:id/Bookings" element={<CustomerBookings />} />
-        <Route path="/Booking/:id?" element={<BookingAddEdit />} />
+        <Route path="/Booking/:id?/:source?" element={<BookingAddEdit />} />
         <Route path="/Skips" element={<Skips />} />
         <Route path="/Skip/:id?" element={<SkipAddEdit />} />
       </Route>

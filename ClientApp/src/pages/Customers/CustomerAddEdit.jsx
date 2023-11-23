@@ -9,6 +9,7 @@ import CloseIcon from '@mui/icons-material/Close';
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
+    
     const { id } = useParams();
 
     const [firstName, setFirstName] = useState('');

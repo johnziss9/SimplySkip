@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import './BookingAddEdit.css';
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
@@ -11,7 +11,9 @@ import CloseIcon from '@mui/icons-material/Close';
 
 function BookingAddEdit() {
 
-    const { id } = useParams();
+    const navigate = useNavigate();
+
+    const { id, source } = useParams();
 
     const [isEdit, setIsEdit] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -195,6 +197,10 @@ function BookingAddEdit() {
         setPaidSwitchIsOn(e.target.checked);
     }
 
+    const handleOkAndCancel = () => {
+        navigate(source === 'customer-bookings' ? `/Customer/${customer.id}/Bookings` : '/Bookings');
+    }
+
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
@@ -243,7 +249,7 @@ function BookingAddEdit() {
                         />
                     </div>
                     <div className="booking-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleShowSuccess} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitBooking} />
                     </div>
                 </div>
@@ -253,7 +259,7 @@ function BookingAddEdit() {
                     {isEdit ? "Booking Edited." : "Booking Added."}
                 </DialogTitle>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
                 </DialogActions>
             </Dialog>
             <Snackbar
