@@ -6,7 +6,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomAutocomplete from "../../components/CustomAutocomplete/CustomAutocomplete";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
-import { Alert, Dialog, DialogActions, DialogTitle, FormControlLabel, IconButton, Snackbar, Switch } from "@mui/material";
+import { Alert, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, IconButton, Snackbar, Switch } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 function BookingAddEdit() {
@@ -29,6 +29,7 @@ function BookingAddEdit() {
     const [isCancelled, setIsCancelled] = useState(false);
     const [error, setError] = useState('');
     const [addEditFailed, setAddEditFailed] = useState(false);
+    const [useSameAddress, setUseSameAddress] = useState(false);
 
     const [skipError, setSkipError] = useState(false);
     const [customerError, setCustomerError] = useState(false);
@@ -197,6 +198,16 @@ function BookingAddEdit() {
         setPaidSwitchIsOn(e.target.checked);
     }
 
+    const handleSameAddress = () => {
+        setUseSameAddress(!useSameAddress);
+
+        if (!useSameAddress) {
+            setAddress(customer.address);
+        } else {
+            setAddress('');
+        }
+    }
+
     const handleOkAndCancel = () => {
         navigate(source === 'customer-bookings' ? `/Customer/${customer.id}/Bookings` : '/Bookings');
     }
@@ -215,7 +226,18 @@ function BookingAddEdit() {
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} />
                     <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} error={skipError} />
                     <CustomDatePicker label={'Hire Date'} value={hireDate} onChange={setHireDate} />
-                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} />
+                    <FormGroup>
+                        <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress ? true : false} />
+                        <FormControlLabel
+                            control={
+                                <Switch
+                                    disabled={!customer ? true : false}
+                                    onChange={handleSameAddress}
+                                />
+                            }
+                            label="Use Same Address as Customer"
+                        />
+                    </FormGroup>
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
                         <FormControlLabel
