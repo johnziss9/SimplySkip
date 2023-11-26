@@ -18,6 +18,9 @@ namespace SimplySkip.Services
         {
             var customers = await _ssDbContext.Customers.Where(c => c.Deleted == false).ToListAsync();
 
+            foreach (var customer in customers)
+                customer.Address = customer.Address.Replace(", ", "\n");
+
             return Response<List<Customer>>.Success(customers);
         }
 
@@ -34,6 +37,8 @@ namespace SimplySkip.Services
             _ssDbContext.Customers.Add(customer);
             await _ssDbContext.SaveChangesAsync();
 
+            customer.Address = customer.Address.Replace(", ", "\n");
+
             return Response<Customer>.Success(customer);
         }
 
@@ -45,6 +50,8 @@ namespace SimplySkip.Services
             {
                 return Response<Customer>.Fail(404, "Customer Not Found");
             }
+
+            customer.Address = customer.Address.Replace(", ", "\n");
 
             return Response<Customer>.Success(customer);
         }
@@ -70,7 +77,7 @@ namespace SimplySkip.Services
 
             if (updatedCustomer.Address != null && updatedCustomer.Address != customer.Address)
             {
-                customer.Address = updatedCustomer.Address;
+                customer.Address = updatedCustomer.Address.Replace("\n", ", ");
             }
 
             if (updatedCustomer.Phone != null && updatedCustomer.Phone != customer.Phone)

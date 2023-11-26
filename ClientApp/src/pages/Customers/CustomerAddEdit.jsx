@@ -80,7 +80,7 @@ function CustomerAddEdit() {
                     lastName: lastName,
                     phone: phone,
                     email: email,
-                    address: address
+                    address: address.replace(/\n/g, ', ')
                 })
             });
 
@@ -115,7 +115,7 @@ function CustomerAddEdit() {
                     lastName: lastName,
                     phone: phone,
                     email: email,
-                    address: address,
+                    address: address.replace(/\n/g, ', '),
                     deleted: false
                 })
             });
@@ -161,7 +161,7 @@ function CustomerAddEdit() {
             setFirstName(customer.firstName);
             setLastName(customer.lastName);
             setPhone(customer.phone);
-            setAddress(customer.address);
+            setAddress(customer.address.replace(/, /g, '\n'));
             setEmail(customer.email);
         } else {
             // TODO Handle error if cards don't load

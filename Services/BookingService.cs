@@ -18,6 +18,8 @@ namespace SimplySkip.Services
             _ssDbContext.Bookings.Add(booking);
             await _ssDbContext.SaveChangesAsync();
 
+            booking.Address = booking.Address.Replace(", ", "\n");
+
             return Response<Booking>.Success(booking);
         }
 
@@ -25,12 +27,18 @@ namespace SimplySkip.Services
         {
             var bookings = await _ssDbContext.Bookings.ToListAsync();
 
+            foreach (var booking in bookings)
+                booking.Address = booking.Address.Replace(", ", "\n");
+
             return Response<List<Booking>>.Success(bookings);
         }
 
         public async Task<Response<List<Booking>>> GetCustomerBookings(int id)
         {
             var bookings = await _ssDbContext.Bookings.Where(b => b.CustomerId == id && b.Cancelled == false).ToListAsync();
+
+            foreach (var booking in bookings)
+                booking.Address = booking.Address.Replace(", ", "\n");
 
             return Response<List<Booking>>.Success(bookings);
         }
@@ -44,6 +52,8 @@ namespace SimplySkip.Services
                 return Response<Booking>.Fail(404, "Booking Not Found");
             }
 
+            booking.Address = booking.Address.Replace(", ", "\n");
+
             return Response<Booking>.Success(booking);
         }
 
@@ -55,6 +65,8 @@ namespace SimplySkip.Services
             {
                 return Response<Booking>.Fail(404, "Booking Not Found");
             }
+
+            booking.Address = booking.Address.Replace(", ", "\n");
 
             return Response<Booking>.Success(booking);
         }
@@ -75,7 +87,7 @@ namespace SimplySkip.Services
 
             if (updatedBooking.Address != null && updatedBooking.Address != booking.Address)
             {
-                booking.Address = updatedBooking.Address;
+                booking.Address = updatedBooking.Address.Replace("\n", ", ");
             }
 
             if (updatedBooking.HireDate != booking.HireDate)

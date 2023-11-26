@@ -61,7 +61,7 @@ function BookingAddEdit() {
             handleFetchSkip(booking.skipId);
             setHireDate(new Date(booking.hireDate));
             setReturnDate(new Date(booking.returnDate));
-            setAddress(booking.address);
+            setAddress(booking.address.replace(/, /g, '\n'));
             setNotes(booking.notes);
             setIsReturned(booking.returned);
             setIsPaid(booking.paid);
@@ -121,7 +121,7 @@ function BookingAddEdit() {
                     skipId: skip.id,
                     hireDate: hireDate,
                     returnDate: returnDate,
-                    address: address,
+                    address: address.replace(/\n/g, ', '),
                     notes: notes,
                     returned: isReturned,
                     paid: isPaid,
@@ -158,7 +158,7 @@ function BookingAddEdit() {
                     skipId: skip ? skip.id : null,
                     hireDate: hireDate,
                     returnDate: new Date(),
-                    address: address,
+                    address: address.replace(/\n/g, ', '),
                     notes: notes,
                     returned: isReturned,
                     paid: isPaid,
@@ -202,7 +202,7 @@ function BookingAddEdit() {
         setUseSameAddress(!useSameAddress);
 
         if (!useSameAddress) {
-            setAddress(customer.address);
+            setAddress(customer.address.replace(/, /g, '\n'));
         } else {
             setAddress('');
         }
