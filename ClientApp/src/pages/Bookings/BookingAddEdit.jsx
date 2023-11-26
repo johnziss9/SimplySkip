@@ -6,7 +6,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomAutocomplete from "../../components/CustomAutocomplete/CustomAutocomplete";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
-import { Alert, Checkbox, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, IconButton, Snackbar, Switch } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, IconButton, Snackbar, Switch, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 function BookingAddEdit() {
@@ -20,6 +20,8 @@ function BookingAddEdit() {
 
     const [customer, setCustomer] = useState(null);
     const [skip, setSkip] = useState(null);
+    const [smallSkips, setSmallSkips] = useState(0);
+    const [largeSkips, setLargeSkips] = useState(0);
     const [hireDate, setHireDate] = useState(new Date());
     const [returnDate, setReturnDate] = useState(new Date());
     const [address, setAddress] = useState('');
@@ -44,6 +46,7 @@ function BookingAddEdit() {
 
             setIsEdit(true);
         }
+        handleFetchAvailableSkips();
     }, [id]);
 
     const handleFetchBooking = async () => {
@@ -103,6 +106,24 @@ function BookingAddEdit() {
 
             setSkip(skip);
 
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
+    const handleFetchAvailableSkips = async () => {
+        const response = await fetch("https://localhost:7197/skip/available/", {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+      
+            setSmallSkips(data.filter(skip => skip.skipSize === 1).length);
+            setLargeSkips(data.filter(skip => skip.skipSize === 2).length);
         } else {
             // TODO Handle error if cards don't load
         }
@@ -223,6 +244,29 @@ function BookingAddEdit() {
             <CustomNavbar currentPage={'Booking Information'} />
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
+                    <div className="booking-add-edit-available-skips-container">
+                        <Typography variant="h6" sx={{ margin: '5px', display: 'flex', justifyContent: 'center' }}>
+                            Available Skips
+                        </Typography>
+                        <div className="booking-add-edit-available-skips-content">
+                            <div className="booking-add-edit-available-skips-small">
+                                <Typography variant="h4">
+                                    {smallSkips}
+                                </Typography>
+                                <Typography variant="body2" sx={{ marginTop: '5px'}}>
+                                    Small
+                                </Typography>
+                            </div>
+                            <div className="booking-add-edit-available-skips-large">
+                                <Typography variant="h4">
+                                    {largeSkips}
+                                </Typography>
+                                <Typography variant="body2" sx={{ marginTop: '5px'}}>
+                                    Large
+                                </Typography>
+                            </div>
+                        </div>
+                    </div>
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} />
                     <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} error={skipError} />
                     <CustomDatePicker label={'Hire Date'} value={hireDate} onChange={setHireDate} />
