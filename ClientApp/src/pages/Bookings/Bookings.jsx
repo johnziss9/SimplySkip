@@ -135,8 +135,8 @@ function Bookings() {
                             statusBorder={!booking.returned ? "10px solid green" : !booking.paid ? "10px solid red" : "10px solid grey"}
                             lastName={customerDetails[booking.customerId]?.lastName}
                             firstName={customerDetails[booking.customerId]?.firstName}
-                            hireDate={booking.hireDate}
-                            returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
+                            hireDate={new Date(booking.hireDate).toLocaleDateString()}
+                            returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : new Date(booking.returnDate).toLocaleDateString()}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
@@ -180,10 +180,10 @@ function Bookings() {
                         <FormLabel>Address:</FormLabel> {booking.address}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Hire Date:</FormLabel> {booking.hireDate}
+                        <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
+                        <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : new Date(booking.returnDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Notes:</FormLabel> {booking.notes != null ? booking.notes : 'N/A'}

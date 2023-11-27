@@ -182,10 +182,10 @@ function Skips() {
                             <FormLabel>Address:</FormLabel> {booking.address}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Hire Date:</FormLabel> {booking.hireDate}
+                            <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : booking.returnDate}
+                            <FormLabel>Hired For:</FormLabel> {handleCalculateDays(booking.hireDate) + ' Days'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Notes:</FormLabel> {booking.notes != null ? booking.notes : 'N/A'}
