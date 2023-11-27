@@ -46,6 +46,15 @@ function BookingAddEdit() {
 
             setIsEdit(true);
         }
+
+        // Check if customerId exists in localStorage
+        const customerId = localStorage.getItem('CustomerId');
+
+        if (customerId != null) {
+            handleFetchCustomer(customerId);
+            localStorage.clear();
+        }
+
         handleFetchAvailableSkips();
     }, [id]);
 

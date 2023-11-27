@@ -97,7 +97,7 @@ function CustomerBookings() {
 
     return (
         <>
-            <CustomNavbar currentPage={`Bookings for ${customer.firstName} ${customer.lastName}`} />
+            <CustomNavbar currentPage={`Bookings for ${customer.firstName} ${customer.lastName}`} addNewClick={'/Booking'} customerId={customer.id} />
             <div className='customer-bookings-container'>
                 <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />

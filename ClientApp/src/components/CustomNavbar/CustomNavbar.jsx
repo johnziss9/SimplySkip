@@ -21,6 +21,9 @@ function CustomNavbar(props) {
     }
 
     const handleAddNew = () => {
+        if (props.customerId)
+            localStorage.setItem('CustomerId', props.customerId);
+
         navigate(props.addNewClick);
     }
 
@@ -41,7 +44,7 @@ function CustomNavbar(props) {
                     <Typography variant="h5">
                         {props.currentPage}
                     </Typography>
-                    {props.currentPage === 'Customers' || props.currentPage === 'Bookings' || props.currentPage === 'Skips' ?
+                    {props.currentPage === 'Customers' || props.currentPage === 'Bookings' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Bookings for')) ?
                     <Fab sx={{ background: '#edf6f9', width: '150px', height:'40px', marginLeft: '20px', borderRadius: '5px' }} onClick={handleAddNew}>
                         <AddIcon sx={{ color: '#006d77' }} />
                         ADD NEW
