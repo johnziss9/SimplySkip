@@ -5,39 +5,13 @@
     margin-top: 64px;
 }
 
-.booking-add-edit-available-skips-container {
-    width: 180px;
+.booking-add-edit-available-skips-container2 {
+    width: 440px;
     background-color: #83c5be;
-    display: flex;
-    align-items: center;
-    flex-direction: column;
     color: #006d77;
-}
-
-.booking-add-edit-available-skips-content {
-    width: 160px;
-    margin-bottom: 10px;
+    padding: 15px 15px;
     display: flex;
-    justify-content: space-between;
-}
-
-.booking-add-edit-available-skips-small {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    justify-content: center;
     align-items: center;
-    flex-direction: column;
-}
-
-.booking-add-edit-available-skips-large {
-    width: 80px;
-    height: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-
 }
 
 .booking-add-edit-form {

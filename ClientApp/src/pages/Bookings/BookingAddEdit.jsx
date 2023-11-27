@@ -121,7 +121,7 @@ function BookingAddEdit() {
 
         if (response.ok) {
             const data = await response.json();
-      
+
             setSmallSkips(data.filter(skip => skip.skipSize === 1).length);
             setLargeSkips(data.filter(skip => skip.skipSize === 2).length);
         } else {
@@ -244,28 +244,16 @@ function BookingAddEdit() {
             <CustomNavbar currentPage={'Booking Information'} />
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
-                    <div className="booking-add-edit-available-skips-container">
-                        <Typography variant="h6" sx={{ margin: '5px', display: 'flex', justifyContent: 'center' }}>
-                            Available Skips
+                    <div className="booking-add-edit-available-skips-container2">
+                        <Typography variant="h6" sx={{ width: '160px' }}>
+                            Available Skips:
                         </Typography>
-                        <div className="booking-add-edit-available-skips-content">
-                            <div className="booking-add-edit-available-skips-small">
-                                <Typography variant="h4">
-                                    {smallSkips}
-                                </Typography>
-                                <Typography variant="body2" sx={{ marginTop: '5px'}}>
-                                    Small
-                                </Typography>
-                            </div>
-                            <div className="booking-add-edit-available-skips-large">
-                                <Typography variant="h4">
-                                    {largeSkips}
-                                </Typography>
-                                <Typography variant="body2" sx={{ marginTop: '5px'}}>
-                                    Large
-                                </Typography>
-                            </div>
-                        </div>
+                        <Typography variant="h5" sx={{ width: '100px', textAlign: 'center' }}>
+                            {smallSkips} Small
+                        </Typography>
+                        <Typography variant="h5" sx={{ width: '100px', textAlign: 'center' }}>
+                            {largeSkips} Large
+                        </Typography>
                     </div>
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} />
                     <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} error={skipError} />
