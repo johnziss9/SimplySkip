@@ -20,6 +20,7 @@ function CustomerAddEdit() {
 
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
+    const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
     const [isEdit, setIsEdit] = useState(false); // TODO Check if this is used. Currently using it but I could use id from useParams?
     const [customer, setCustomer] = useState({}); // TODO Check if this is used
     const [addEditFailed, setAddEditFailed] = useState(false);
@@ -85,6 +86,7 @@ function CustomerAddEdit() {
             });
 
             if (response.ok) {
+                handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
                 const data = await response.json();
@@ -121,6 +123,7 @@ function CustomerAddEdit() {
             });
 
             if (response.ok) {
+                handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
                 const data = await response.json();
@@ -168,6 +171,9 @@ function CustomerAddEdit() {
         }
     }
 
+    const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
+    const handleCloseAddEditDialog = () => setOpenAddEditDialog(false);
+
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
@@ -186,10 +192,19 @@ function CustomerAddEdit() {
                     <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
                     <div className="customer-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitCustomer} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>
+            <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    {isEdit ? 'Make Changes to Customer?' : 'Add Customer?'}
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={handleSubmitCustomer} />
+                </DialogActions>
+            </Dialog>
             <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
                     {isEdit ? "Customer Edited." : "Customer Added."}
