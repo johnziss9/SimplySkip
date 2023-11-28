@@ -21,6 +21,7 @@ function SkipAddEdit() {
 
     const [isEdit, setIsEdit] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
+    const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
     const [addEditFailed, setAddEditFailed] = useState(false);
     const [error, setError] = useState('');
 
@@ -74,6 +75,7 @@ function SkipAddEdit() {
             });
 
             if (response.ok) {
+                handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
                 const data = await response.json();
@@ -101,6 +103,7 @@ function SkipAddEdit() {
             });
 
             if (response.ok) {
+                handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
                 const data = await response.json();
@@ -124,6 +127,9 @@ function SkipAddEdit() {
         navigate('/Skips');
     };
 
+    const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
+    const handleCloseAddEditDialog = () => setOpenAddEditDialog(false);
+
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
@@ -140,10 +146,19 @@ function SkipAddEdit() {
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="skip-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitSkip} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>
+            <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    {isEdit ? 'Make Changes to Skip?' : 'Add Booking?'}
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={handleSubmitSkip} />
+                </DialogActions>
+            </Dialog>
             <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
                     {isEdit ? "Skip Edited." : "Skip Added."}
