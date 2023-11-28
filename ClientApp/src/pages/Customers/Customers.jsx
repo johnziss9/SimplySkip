@@ -68,9 +68,10 @@ function Customers() {
                     width={'500px'}
                     margin={'normal'}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    display={filteredCustomers.length > 0 ? '' :  'none'}
                 />
                 <div className="customers-section">
-                    {Array.isArray(filteredCustomers) ? filteredCustomers.sort((a, b) => a.lastName.localeCompare(b.lastName)).map((customer) => (
+                    {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? filteredCustomers.sort((a, b) => a.lastName.localeCompare(b.lastName)).map((customer) => (
                         <CustomerCard
                             key={customer.id}
                             statusBorder={'10px solid #83c5be'}
@@ -80,7 +81,7 @@ function Customers() {
                             onClickView={() => handleOpenViewCustomer(customer)}
                             onClickEdit={() => handleEditClick(customer.id)}
                         />
-                    )) : null}
+                    )) : <h5 style={{ marginTop: '20px' }}>There are no customers. Click Add New to create one.</h5>}
                 </div>
             </div>
             <Dialog open={openViewCustomer} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewCustomer(event, reason) } }}>

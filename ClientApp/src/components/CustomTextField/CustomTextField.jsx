@@ -45,7 +45,8 @@ function CustomTextField(props) {
                         borderBottom: 'none', // Removed 2px blue border-bottom 
                     }
                 },
-                width: props.width
+                width: props.width,
+                display: props.display
             }}
             InputProps={{
                 style: {

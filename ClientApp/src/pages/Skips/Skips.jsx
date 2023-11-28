@@ -157,13 +157,13 @@ function Skips() {
         <>
             <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
-                <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
+                <RadioGroup sx={{ marginTop: '20px', display: filteredSkips.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />
                     <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Booked" />
                     <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Available" />
                 </RadioGroup>
                 <div className="skips-section">
-                    {Array.isArray(filteredSkips) ? filteredSkips.map((skip) => (
+                    {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.map((skip) => (
                         <SkipCard
                             key={skip.id}
                             statusBorder={skip.rented ? "10px solid red" : "10px solid green"}
@@ -174,7 +174,7 @@ function Skips() {
                             onClickDelete={() => handleShowDeleteDialog(skip)}
                             disabledDeleteButton={skip.rented ? true : false}
                         />
-                    )) : null}
+                    )) : <h5 style={{ marginTop: '20px' }}>There are no skips. Click Add New to create one.</h5>}
                 </div>
             </div>
             {!skip.rented ?

@@ -122,14 +122,14 @@ function Bookings() {
         <>
             <CustomNavbar currentPage={'Bookings'} addNewClick={'/Booking'} />
             <div className='bookings-container'>
-                <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
+                <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />
                     <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Active" />
                     <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" />
                     <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Past" />
                 </RadioGroup>
                 <div className="bookings-section">
-                    {Array.isArray(filteredBookings) ? filteredBookings.map((booking) => (
+                    {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.map((booking) => (
                         <BookingCard
                             key={booking.id}
                             statusBorder={!booking.returned ? "10px solid green" : !booking.paid ? "10px solid red" : "10px solid grey"}
@@ -143,7 +143,7 @@ function Bookings() {
                             disabledEditButton={booking.returned && booking.paid ? true : false}
                             disabledCancelButton={booking.returned && booking.paid ? true : false}
                         />
-                    )) : null}
+                    )) : <h5 style={{ marginTop: '20px' }}>There are no bookings. Click Add New to create one.</h5>}
                 </div>
             </div>
             <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>
