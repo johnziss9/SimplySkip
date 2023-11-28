@@ -56,7 +56,7 @@ function CustomAutocomplete(props) {
 
     const formatSkipLabel = (skip) => {
         if (skip) {
-            return `Skip ${skip.name} - ${skip.skipSize == 1 ? 'Small' : 'Large'}`;
+            return `Skip ${skip.name} - ${skip.size == 1 ? 'Small' : 'Large'}`;
         }
         return '';
     };

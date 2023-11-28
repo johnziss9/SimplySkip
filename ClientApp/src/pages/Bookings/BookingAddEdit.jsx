@@ -132,8 +132,8 @@ function BookingAddEdit() {
         if (response.ok) {
             const data = await response.json();
 
-            setSmallSkips(data.filter(skip => skip.skipSize === 1).length);
-            setLargeSkips(data.filter(skip => skip.skipSize === 2).length);
+            setSmallSkips(data.filter(skip => skip.size === 1).length);
+            setLargeSkips(data.filter(skip => skip.size === 2).length);
         } else {
             // TODO Handle error if cards don't load
         }

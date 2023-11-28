@@ -105,7 +105,7 @@ function Skips() {
             },
             body: JSON.stringify({
                 name: skip.name,
-                skipSize: skip.skipSize,
+                size: skip.size,
                 notes: skip.notes,
                 rented: skip.rented,
                 deleted: true
@@ -168,7 +168,7 @@ function Skips() {
                             key={skip.id}
                             statusBorder={skip.rented ? "10px solid red" : "10px solid green"}
                             name={`Skip ${skip.name}`}
-                            size={skip.skipSize === 1 ? 'Small' : 'Large'}
+                            size={skip.size === 1 ? 'Small' : 'Large'}
                             onClickView={() => handleOpenViewSkip(skip)}
                             onClickEdit={() => handleEditClick(skip.id)}
                             onClickDelete={() => handleShowDeleteDialog(skip)}
@@ -187,7 +187,7 @@ function Skips() {
                             <FormLabel>Name:</FormLabel> {`Skip ${skip.name}`}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Size:</FormLabel> {skip.skipSize === 1 ? 'Small' : 'Large'}
+                            <FormLabel>Size:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Notes:</FormLabel> {skip.notes === null ? 'N/A' : skip.notes}
@@ -209,7 +209,7 @@ function Skips() {
                             <FormLabel>Name:</FormLabel> {`Skip ${skip.name}`}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Size:</FormLabel> {skip.skipSize === 1 ? 'Small' : 'Large'}
+                            <FormLabel>Size:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Notes:</FormLabel> {skip.notes === null ? 'N/A' : skip.notes}

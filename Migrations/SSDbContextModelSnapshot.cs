@@ -31,6 +31,7 @@ namespace SimplySkip.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("Cancelled")
@@ -71,6 +72,7 @@ namespace SimplySkip.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Address")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<bool>("Deleted")
@@ -80,12 +82,15 @@ namespace SimplySkip.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("FirstName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("LastName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Phone")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -105,6 +110,7 @@ namespace SimplySkip.Migrations
                         .HasColumnType("boolean");
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("Notes")
@@ -113,7 +119,7 @@ namespace SimplySkip.Migrations
                     b.Property<bool>("Rented")
                         .HasColumnType("boolean");
 
-                    b.Property<int>("SkipSize")
+                    b.Property<int>("Size")
                         .HasColumnType("integer");
 
                     b.HasKey("Id");

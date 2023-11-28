@@ -48,7 +48,7 @@ function SkipAddEdit() {
             const skip = await response.json();
 
             setName(skip.name);
-            setSize(skip.skipSize);
+            setSize(skip.size);
             setNotes(skip.notes);
             setRented(skip.rented);
             setDeleted(skip.deleted);
@@ -67,7 +67,7 @@ function SkipAddEdit() {
                 },
                 body: JSON.stringify({
                     name: name,
-                    skipSize: size,
+                    size: size,
                     notes: notes,
                     rented: rented,
                     deleted: deleted
@@ -95,7 +95,7 @@ function SkipAddEdit() {
                 },
                 body: JSON.stringify({
                     name: name,
-                    skipSize: size,
+                    size: size,
                     notes: notes,
                     rented: false,
                     deleted: false

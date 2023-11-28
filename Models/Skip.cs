@@ -11,7 +11,7 @@ namespace SimplySkip.Models
 
         [Required(ErrorMessage = "Skip Size is required.")]
         [EnumDataType(typeof(SkipSize), ErrorMessage = "Invalid Skip Size.")]
-        public SkipSize SkipSize { get; set; }
+        public SkipSize Size { get; set; }
 
         public string? Notes { get; set; }
 
