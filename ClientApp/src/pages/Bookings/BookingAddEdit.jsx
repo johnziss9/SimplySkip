@@ -8,6 +8,7 @@ import CustomAutocomplete from "../../components/CustomAutocomplete/CustomAutoco
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
 import { Alert, Dialog, DialogActions, DialogTitle, FormControlLabel, FormGroup, IconButton, Snackbar, Switch, Typography } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
+import CustomSwitch from "../../components/CustomSwitch/CustomSwitch";
 
 function BookingAddEdit() {
 
@@ -275,47 +276,13 @@ function BookingAddEdit() {
                     <CustomDatePicker label={'Hire Date'} value={hireDate} onChange={setHireDate} />
                     <FormGroup>
                         <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress ? true : false} />
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    disabled={!customer ? true : false}
-                                    onChange={handleSameAddress}
-                                />
-                            }
-                            label="Use Same Address as Customer"
-                        />
+                        <CustomSwitch disabled={!customer ? true : false} onChange={handleSameAddress} label="Use Same Address as Customer" />
                     </FormGroup>
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    disabled={isReturned && !returnedSwitchIsOn}
-                                    checked={returnedSwitchIsOn}
-                                    onChange={(e) => handleReturnSwitchChange(e)}
-                                />
-                            }
-                            label="Returned"
-                        />
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    disabled={isPaid && !paidSwitchIsOn}
-                                    checked={paidSwitchIsOn}
-                                    onChange={(e) => handlePaidSwitchChange(e)}
-                                />
-                            }
-                            label="Paid"
-                        />
-                        <FormControlLabel
-                            control={
-                                <Switch
-                                    checked={isCancelled}
-                                    onChange={(e) => setIsCancelled(e.target.checked)}
-                                />
-                            }
-                            label="Cancelled"
-                        />
+                        <CustomSwitch disabled={isReturned && !returnedSwitchIsOn} checked={returnedSwitchIsOn} onChange={(e) => handleReturnSwitchChange(e)} label="Returned" />
+                        <CustomSwitch disabled={isPaid && !paidSwitchIsOn} checked={paidSwitchIsOn} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
+                        <CustomSwitch checked={isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Cancelled" />
                     </div>
                     <div className="booking-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
