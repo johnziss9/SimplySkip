@@ -16,6 +16,8 @@ function Skips() {
     const [customer, setCustomer] = useState({});
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
     const [openViewSkip, setOpenViewSkip] = useState(false); // Handling the View Skip Dialog
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
 
     useEffect(() => {
         handleFetchSkips();
@@ -94,6 +96,30 @@ function Skips() {
         navigate(`/Skip/${id}`);
     }
 
+    const handleDeleteClick = async (id) => {
+        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                name: skip.name,
+                skipSize: skip.skipSize,
+                notes: skip.notes,
+                rented: skip.rented,
+                deleted: true
+            })
+        });
+
+        if (response.ok) {
+            handleCloseDeleteDialog();
+            handleShowDeleteSuccess();
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
     const handleOpenViewSkip = (skip) => {
         setOpenViewSkip(true);
 
@@ -104,6 +130,18 @@ function Skips() {
         setSkip(skip);
     }
     const handleCloseViewSkip = () => setOpenViewSkip(false);
+
+    const handleShowDeleteDialog = (skip) => {
+        setSkip(skip);
+        setOpenDeleteDialog(true);
+    }
+    const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
+
+    const handleShowDeleteSuccess = () => setOpenDeleteSuccess(true);
+    const handleCloseDeleteSuccess = () => {
+        setOpenDeleteSuccess(false);
+        handleFetchSkips();
+    }
 
     const filteredSkips = selectedValue === 'Booked' ? getBookedSkips() : selectedValue === 'Available' ? getAvailableSkips() : skips;
 
@@ -133,6 +171,8 @@ function Skips() {
                             size={skip.skipSize === 1 ? 'Small' : 'Large'}
                             onClickView={() => handleOpenViewSkip(skip)}
                             onClickEdit={() => handleEditClick(skip.id)}
+                            onClickDelete={() => handleShowDeleteDialog(skip)}
+                            disabledDeleteButton={skip.rented ? true : false}
                         />
                     )) : null}
                 </div>
@@ -219,7 +259,25 @@ function Skips() {
                     <DialogActions>
                         <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseViewSkip} />
                     </DialogActions>
-                </Dialog>}
+                </Dialog>
+            }
+            <Dialog open={openDeleteDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Delete Skip?
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseDeleteDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={() => handleDeleteClick(skip.id)} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openDeleteSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteSuccess(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Skip Deleted.
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseDeleteSuccess} />
+                </DialogActions>
+            </Dialog>
         </>
     );
 }

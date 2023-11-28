@@ -38,7 +38,7 @@ function SkipCard(props) {
                     <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickDelete} >
+                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickDelete} disabled={props.disabledDeleteButton} >
                         <DeleteIcon  />
                     </IconButton>
                 </Collapse>
