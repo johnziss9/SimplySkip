@@ -152,7 +152,7 @@ function SkipAddEdit() {
             </div>
             <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    {isEdit ? 'Make Changes to Skip?' : 'Add Booking?'}
+                    {isEdit ? 'Make Changes to Skip?' : 'Add Skip?'}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />

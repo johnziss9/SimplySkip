@@ -17,6 +17,7 @@ function BookingAddEdit() {
 
     const [isEdit, setIsEdit] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
+    const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
 
     const [customer, setCustomer] = useState(null);
     const [skip, setSkip] = useState(null);
@@ -160,6 +161,7 @@ function BookingAddEdit() {
             });
 
             if (response.ok) {
+                handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
                 const data = await response.json();
@@ -197,6 +199,7 @@ function BookingAddEdit() {
             });
 
             if (response.ok) {
+                handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
                 const data = await response.json();
@@ -241,6 +244,9 @@ function BookingAddEdit() {
     const handleOkAndCancel = () => {
         navigate(source === 'customer-bookings' ? `/Customer/${customer.id}/Bookings` : '/Bookings');
     }
+
+    const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
+    const handleCloseAddEditDialog = () => setOpenAddEditDialog(false);
 
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
@@ -313,10 +319,19 @@ function BookingAddEdit() {
                     </div>
                     <div className="booking-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleSubmitBooking} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>
+            <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    {isEdit ? 'Make Changes to Booking?' : 'Add Booking?'}
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={handleSubmitBooking} />
+                </DialogActions>
+            </Dialog>
             <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
                     {isEdit ? "Booking Edited." : "Booking Added."}
