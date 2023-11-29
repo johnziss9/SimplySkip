@@ -22,6 +22,7 @@ function BookingAddEdit() {
 
     const [customer, setCustomer] = useState(null);
     const [skip, setSkip] = useState(null);
+    const [previousSkipId, setPreviousSkipId] = useState(null); // Used for handling skip status
     const [smallSkips, setSmallSkips] = useState(0);
     const [largeSkips, setLargeSkips] = useState(0);
     const [hireDate, setHireDate] = useState(new Date());
@@ -29,6 +30,7 @@ function BookingAddEdit() {
     const [address, setAddress] = useState('');
     const [notes, setNotes] = useState('');
     const [isReturned, setIsReturned] = useState(false);
+    const [previousIsReturned, setPreviousIsReturned] = useState(false); // Used for handling skip status
     const [isPaid, setIsPaid] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false);
     const [error, setError] = useState('');
@@ -73,11 +75,13 @@ function BookingAddEdit() {
 
             handleFetchCustomer(booking.customerId);
             handleFetchSkip(booking.skipId);
+            setPreviousSkipId(booking.skipId); // This is to be used only if there's a skip change on edit
             setHireDate(new Date(booking.hireDate));
             setReturnDate(new Date(booking.returnDate));
             setAddress(booking.address.replace(/, /g, '\n'));
             setNotes(booking.notes);
             setIsReturned(booking.returned);
+            setPreviousIsReturned(booking.returned); // This is to be used only if there's a skip change on edit
             setIsPaid(booking.paid);
             setIsCancelled(booking.cancelled);
 
@@ -116,7 +120,6 @@ function BookingAddEdit() {
             const skip = await response.json();
 
             setSkip(skip);
-
         } else {
             // TODO Handle error if cards don't load
         }
@@ -135,6 +138,29 @@ function BookingAddEdit() {
 
             setSmallSkips(data.filter(skip => skip.size === 1).length);
             setLargeSkips(data.filter(skip => skip.size === 2).length);
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
+    const handleSkipStatus = async (id, status) => {
+        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                name: skip.name,
+                size: skip.size,
+                notes: skip.notes,
+                rented: status,
+                deleted: skip.deleted
+            })
+        });
+
+        if (response.ok) {
+            console.log('Changed')
         } else {
             // TODO Handle error if cards don't load
         }
@@ -164,6 +190,16 @@ function BookingAddEdit() {
             if (response.ok) {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
+
+                if (skip.id != previousSkipId) {
+                    handleSkipStatus(skip.id, true);
+                    handleSkipStatus(previousSkipId, false);
+                }
+
+                if (!previousIsReturned && isReturned)
+                    handleSkipStatus(previousSkipId, false);
+
+                // Check if isReturned value has changed from false to true
             } else {
                 const data = await response.json();
 
@@ -202,6 +238,7 @@ function BookingAddEdit() {
             if (response.ok) {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
+                handleSkipStatus(skip.id, true);
             } else {
                 const data = await response.json();
 
