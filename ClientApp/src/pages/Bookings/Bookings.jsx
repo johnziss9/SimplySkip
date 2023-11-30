@@ -16,6 +16,9 @@ function Bookings() {
     const [booking, setBooking] = useState({});
     const [customer, setCustomer] = useState({});
     const [openViewBooking, setOpenViewBooking] = useState(false);
+    const [skip, setSkip] = useState({}); // Used for changing skip status
+    const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
+    const [openCancelDialog, setOpenCancelDialog] = useState(false);
 
     useEffect(() => {
         handleFetchBookings();
@@ -107,6 +110,82 @@ function Bookings() {
         navigate(`/Booking/${id}/all-bookings`);
     }
 
+    const handleCancelClick = async () => {
+        const bookingResponse = await fetch(`https://localhost:7197/booking/${booking.id}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                customerId: booking.customerId,
+                skipId: booking.skipId,
+                hireDate: booking.hireDate,
+                returnDate: booking.returnDate,
+                address: booking.address.replace(/\n/g, ', '),
+                notes: booking.notes,
+                returned: booking.returned,
+                paid: booking.paid,
+                cancelled: true
+            })
+        });
+
+        if (bookingResponse.ok) {
+            const getSkipResponse = await fetch(`https://localhost:7197/skip/${booking.skipId}`, {
+                method: 'get',
+                headers: {
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                }
+            });
+
+            if (getSkipResponse.ok) {
+                const skip = await getSkipResponse.json();
+
+                setSkip(skip);
+                
+                const editSkipResponse = await fetch(`https://localhost:7197/skip/${skip.id}`, {
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        name: skip.name,
+                        size: skip.size,
+                        notes: skip.notes,
+                        rented: false,
+                        deleted: skip.deleted
+                    })
+                });
+
+                if (editSkipResponse.ok) {
+                    // TODO Check if something gets added here
+                } else {
+                    // TODO Handle error if cards don't load
+                }
+            } else {
+                // TODO Handle error if cards don't load
+            }
+
+            handleShowCancelSuccess();
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
+    const handleShowCancelDialog = (booking) => {
+        setBooking(booking)
+        setOpenCancelDialog(true);
+    }
+    const handleCloseCancelDialog = () => setOpenCancelDialog(false);
+
+    const handleShowCancelSuccess = () => {
+        handleCloseCancelDialog();
+        setOpenCancelSuccess(true);
+        handleFetchBookings();
+    }
+    const handleCloseCancelSuccess = () => setOpenCancelSuccess(false);
+
     const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid'
         ? getUnpaidBookings() : selectedValue === 'Past' ? getPastBookings() : bookings;
 
@@ -132,7 +211,15 @@ function Bookings() {
                     {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.map((booking) => (
                         <BookingCard
                             key={booking.id}
-                            statusBorder={!booking.returned ? "10px solid green" : !booking.paid ? "10px solid red" : "10px solid grey"}
+                            statusBorder={booking.cancelled && !booking.returned && !booking.paid
+                                ? "10px solid grey"
+                                : !booking.cancelled && !booking.returned && !booking.paid
+                                    ? "10px solid green"
+                                    : !booking.cancelled && booking.returned && !booking.paid
+                                        ? "10px solid red"
+                                        : !booking.cancelled && booking.returned && booking.paid
+                                            ? "10px solid blue"
+                                            : "10px solid black"}
                             lastName={customerDetails[booking.customerId]?.lastName}
                             firstName={customerDetails[booking.customerId]?.firstName}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
@@ -140,8 +227,9 @@ function Bookings() {
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
-                            disabledEditButton={booking.returned && booking.paid ? true : false}
-                            disabledCancelButton={booking.returned && booking.paid ? true : false}
+                            onClickCancel={() => handleShowCancelDialog(booking)}
+                            disabledEditButton={(booking.returned && booking.paid) || booking.cancelled ? true : false}
+                            disabledCancelButton={(booking.returned && booking.paid) || booking.cancelled ? true : false}
                         />
                     )) : <h5 style={{ marginTop: '20px' }}>There are no bookings. Click Add New to create one.</h5>}
                 </div>
@@ -194,9 +282,29 @@ function Bookings() {
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Paid:</FormLabel> {booking.paid ? 'Yes' : 'No'}
                     </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Cancelled:</FormLabel> {booking.cancelled ? 'Yes' : 'No'}
+                    </Typography>
                 </DialogContent>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseViewBooking} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCancelDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseCancelDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Cancel Booking?
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseCancelDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={handleCancelClick} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCancelSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseCancelSuccess(event, reason) } }}>
+                <DialogTitle sx={{ width: '300px' }}>
+                    Cancel Successful
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseCancelSuccess} />
                 </DialogActions>
             </Dialog>
         </>

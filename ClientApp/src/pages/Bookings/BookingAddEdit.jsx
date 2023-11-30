@@ -160,7 +160,7 @@ function BookingAddEdit() {
         });
 
         if (response.ok) {
-            console.log('Changed')
+            // TODO Check if something gets added here
         } else {
             // TODO Handle error if cards don't load
         }
@@ -191,12 +191,14 @@ function BookingAddEdit() {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
 
+                // If user edits booking and changes the skip, previous skip becomes available and new one is marked as rented.
                 if (skip.id != previousSkipId) {
                     handleSkipStatus(skip.id, true);
                     handleSkipStatus(previousSkipId, false);
                 }
-
-                if (!previousIsReturned && isReturned)
+                
+                // If user edits booking and marks skip as returned, skip becomes available
+                if ((!previousIsReturned && isReturned) || isCancelled)
                     handleSkipStatus(previousSkipId, false);
 
                 // Check if isReturned value has changed from false to true
