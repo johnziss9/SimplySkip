@@ -111,7 +111,7 @@ function CustomerBookings() {
                             key={booking.id}
                             statusBorder={!booking.returned ? "10px solid green" : !booking.paid ? "10px solid red" : "10px solid grey"}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
-                            returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : new Date(booking.returnDate).toLocaleDateString()}
+                            returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate) + ' Days'}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}

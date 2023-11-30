@@ -76,8 +76,8 @@ function BookingAddEdit() {
             handleFetchCustomer(booking.customerId);
             handleFetchSkip(booking.skipId);
             setPreviousSkipId(booking.skipId); // This is to be used only if there's a skip change on edit
-            setHireDate(new Date(booking.hireDate));
-            setReturnDate(new Date(booking.returnDate));
+            setHireDate(new Date(new Date(booking.hireDate).setHours(0, 0, 0, 0)));
+            setReturnDate(new Date(new Date(booking.returnDate).setHours(0, 0, 0, 0)));
             setAddress(booking.address.replace(/, /g, '\n'));
             setNotes(booking.notes);
             setIsReturned(booking.returned);
@@ -227,8 +227,8 @@ function BookingAddEdit() {
                 body: JSON.stringify({
                     customerId: customer ? customer.id : null,
                     skipId: skip ? skip.id : null,
-                    hireDate: hireDate,
-                    returnDate: new Date(),
+                    hireDate: new Date(hireDate.setHours(0, 0, 0, 0)),
+                    returnDate: new Date(new Date().setHours(0, 0, 0, 0)),
                     address: address.replace(/\n/g, ', '),
                     notes: notes,
                     returned: isReturned,
@@ -262,7 +262,7 @@ function BookingAddEdit() {
 
     const handleReturnSwitchChange = (e) => {
         setIsReturned(e.target.checked);
-        setReturnDate(new Date());
+        setReturnDate(new Date(new Date().setHours(0, 0, 0, 0)));
         setReturnedSwitchIsOn(e.target.checked);
     }
 

@@ -223,7 +223,7 @@ function Bookings() {
                             lastName={customerDetails[booking.customerId]?.lastName}
                             firstName={customerDetails[booking.customerId]?.firstName}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
-                            returnDateOrDays={!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : new Date(booking.returnDate).toLocaleDateString()}
+                            returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate) + ' Days'}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
