@@ -92,7 +92,14 @@ function CustomerBookings() {
         const today = new Date();
         const timeDifference = today - dateOfHire;
 
-        return Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+
+        if (days > 0)
+            return 'Rented for ' + days + ' Days';
+        else if (days == 0)
+            return 'Rented Today'
+        else
+            return 'Starting in ' + Math.abs(days);
     }
 
     return (
@@ -111,7 +118,7 @@ function CustomerBookings() {
                             key={booking.id}
                             statusBorder={!booking.returned ? "10px solid green" : !booking.paid ? "10px solid red" : "10px solid grey"}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
-                            returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate) + ' Days'}
+                            returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
@@ -158,7 +165,7 @@ function CustomerBookings() {
                         <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) + ' Days' : new Date(booking.returnDate).toLocaleDateString()}
+                        <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) : new Date(booking.returnDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Notes:</FormLabel> {booking.notes != null ? booking.notes : 'N/A'}

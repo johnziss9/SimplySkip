@@ -150,7 +150,14 @@ function Skips() {
         const today = new Date();
         const timeDifference = today - dateOfHire;
 
-        return Math.floor(timeDifference / (1000 * 60 * 60 * 24));
+        const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
+
+        if (days > 0)
+            return 'Rented for ' + days + ' Days';
+        else if (days == 0)
+            return 'Rented Today'
+        else
+            return 'Starting in ' + Math.abs(days);
     }
 
     return (
@@ -225,7 +232,7 @@ function Skips() {
                             <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Hired For:</FormLabel> {handleCalculateDays(booking.hireDate) + ' Days'}
+                            <FormLabel>Hired For:</FormLabel> {handleCalculateDays(booking.hireDate)}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Notes:</FormLabel> {booking.notes != null ? booking.notes : 'N/A'}
