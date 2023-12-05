@@ -19,6 +19,8 @@ namespace SimplySkip.Services
             _ssDbContext.Skips.Add(skip);
             await _ssDbContext.SaveChangesAsync();
 
+            skip.Notes = skip.Notes.Replace(", ", "\n");
+
             return Response<Skip>.Success(skip);
         }
 
@@ -26,12 +28,18 @@ namespace SimplySkip.Services
         {
             var skips = await _ssDbContext.Skips.Where(s => s.Deleted == false).ToListAsync();
 
+            foreach (var skip in skips)
+                skip.Notes = skip.Notes.Replace(", ", "\n");
+
             return Response<List<Skip>>.Success(skips);
         }
 
         public async Task<Response<List<Skip>>> GetAvailableSkips()
         {
             var skips = await _ssDbContext.Skips.Where(s => s.Deleted == false && s.Rented == false).ToListAsync();
+
+            foreach (var skip in skips)
+                skip.Notes = skip.Notes.Replace(", ", "\n");
 
             return Response<List<Skip>>.Success(skips);
         }
@@ -44,6 +52,8 @@ namespace SimplySkip.Services
             {
                 return Response<Skip>.Fail(404, "Skip Not Found");
             }
+
+            skip.Notes = skip.Notes.Replace(", ", "\n");
 
             return Response<Skip>.Success(skip);
         }
@@ -59,7 +69,7 @@ namespace SimplySkip.Services
 
             if (updatedSkip.Notes != null && updatedSkip.Notes != skip.Notes)
             {
-                skip.Notes = updatedSkip.Notes;
+                skip.Notes = updatedSkip.Notes.Replace("\n", ", ");
             }
 
             if (updatedSkip.Rented != skip.Rented)

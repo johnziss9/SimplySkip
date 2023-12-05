@@ -79,7 +79,7 @@ function BookingAddEdit() {
             setHireDate(new Date(new Date(booking.hireDate).setHours(0, 0, 0, 0)));
             setReturnDate(new Date(new Date(booking.returnDate).setHours(0, 0, 0, 0)));
             setAddress(booking.address.replace(/, /g, '\n'));
-            setNotes(booking.notes);
+            setNotes(booking.notes.replace(/, /g, '\n'));
             setIsReturned(booking.returned);
             setPreviousIsReturned(booking.returned); // This is to be used only if there's a skip change on edit
             setIsPaid(booking.paid);
@@ -180,7 +180,7 @@ function BookingAddEdit() {
                     hireDate: hireDate,
                     returnDate: returnDate,
                     address: address.replace(/\n/g, ', '),
-                    notes: notes,
+                    notes: notes.replace(/\n/g, ', '),
                     returned: isReturned,
                     paid: isPaid,
                     cancelled: isCancelled
@@ -230,7 +230,7 @@ function BookingAddEdit() {
                     hireDate: new Date(new Date(hireDate).setHours(0, 0, 0, 0)),
                     returnDate: new Date(new Date().setHours(0, 0, 0, 0)),
                     address: address.replace(/\n/g, ', '),
-                    notes: notes,
+                    notes: notes.replace(/\n/g, ', '),
                     returned: isReturned,
                     paid: isPaid,
                     cancelled: isCancelled

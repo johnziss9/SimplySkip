@@ -49,7 +49,7 @@ function SkipAddEdit() {
 
             setName(skip.name);
             setSize(skip.size);
-            setNotes(skip.notes);
+            setNotes(skip.notes.replace(/, /g, '\n'));
             setRented(skip.rented);
             setDeleted(skip.deleted);
         } else {
@@ -68,7 +68,7 @@ function SkipAddEdit() {
                 body: JSON.stringify({
                     name: name,
                     size: size,
-                    notes: notes,
+                    notes: notes.replace(/\n/g, ', '),
                     rented: rented,
                     deleted: deleted
                 })
@@ -96,7 +96,7 @@ function SkipAddEdit() {
                 body: JSON.stringify({
                     name: name,
                     size: size,
-                    notes: notes,
+                    notes: notes.replace(/\n/g, ', '),
                     rented: false,
                     deleted: false
                 })

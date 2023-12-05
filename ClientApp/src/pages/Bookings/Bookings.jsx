@@ -130,7 +130,7 @@ function Bookings() {
                 hireDate: booking.hireDate,
                 returnDate: booking.returnDate,
                 address: booking.address.replace(/\n/g, ', '),
-                notes: booking.notes,
+                notes: booking.notes.replace(/\n/g, ', '),
                 returned: booking.returned,
                 paid: booking.paid,
                 cancelled: true

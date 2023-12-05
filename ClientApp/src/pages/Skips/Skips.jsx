@@ -106,7 +106,7 @@ function Skips() {
             body: JSON.stringify({
                 name: skip.name,
                 size: skip.size,
-                notes: skip.notes,
+                notes: skip.notes.replace(/\n/g, ', '),
                 rented: skip.rented,
                 deleted: true
             })
