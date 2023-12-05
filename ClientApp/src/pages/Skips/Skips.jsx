@@ -165,9 +165,9 @@ function Skips() {
             <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
                 <RadioGroup sx={{ marginTop: '20px', display: filteredSkips.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
-                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />
-                    <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Booked" />
-                    <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Available" />
+                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" sx={{ display: 'inline' }} />
+                    <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Booked" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
+                    <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Available" sx={{ display: getAvailableSkips().length > 0 ? 'inline' : 'none' }} />
                 </RadioGroup>
                 <div className="skips-section">
                     {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.map((skip) => (

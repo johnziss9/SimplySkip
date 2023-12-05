@@ -227,7 +227,7 @@ function BookingAddEdit() {
                 body: JSON.stringify({
                     customerId: customer ? customer.id : null,
                     skipId: skip ? skip.id : null,
-                    hireDate: new Date(hireDate.setHours(0, 0, 0, 0)),
+                    hireDate: new Date(new Date(hireDate).setHours(0, 0, 0, 0)),
                     returnDate: new Date(new Date().setHours(0, 0, 0, 0)),
                     address: address.replace(/\n/g, ', '),
                     notes: notes,

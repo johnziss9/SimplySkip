@@ -73,19 +73,23 @@ function CustomerBookings() {
     };
 
     const getActiveBookings = () => {
-        return bookings.filter((booking) => !booking.returned);
+        return bookings.filter((booking) => !booking.returned && !booking.cancelled);
     };
 
     const getUnpaidBookings = () => {
-        return bookings.filter((booking) => booking.returned && !booking.paid);
+        return bookings.filter((booking) => booking.returned && !booking.paid && !booking.cancelled);
     };
 
     const getPastBookings = () => {
-        return bookings.filter((booking) => booking.returned && booking.paid);
+        return bookings.filter((booking) => booking.returned && booking.paid && !booking.cancelled);
+    };
+
+    const getCancelledBookings = () => {
+        return bookings.filter((booking) => booking.cancelled);
     };
 
     const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid'
-        ? getUnpaidBookings() : selectedValue === 'Past' ? getPastBookings() : bookings;
+        ? getUnpaidBookings() : selectedValue === 'Past' ? getPastBookings() : selectedValue === 'Cancelled' ? getCancelledBookings() : bookings;
 
     function handleCalculateDays(hireDate) {
         const dateOfHire = new Date(hireDate);
@@ -107,17 +111,25 @@ function CustomerBookings() {
             <CustomNavbar currentPage={`Bookings for ${customer.firstName} ${customer.lastName}`} addNewClick={'/Booking'} customerId={customer.id} />
             <div className='customer-bookings-container'>
                 <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
-                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" />
-                    <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Active" />
-                    <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" />
-                    <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Past" />
+                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" sx={{ display: 'inline' }} />
+                    <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Active" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
+                    <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }} />
+                    <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Past" sx={{ display: getPastBookings().length > 0 ? 'inline' : 'none' }} />
+                    <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Cancelled" sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }} />
                 </RadioGroup>
                 <div className="customer-bookings-section">
                     {Array.isArray(filteredBookings) ? filteredBookings.map((booking) => (
                         <CustomerBookingCard
                             key={booking.id}
-                            statusBorder={!booking.returned ? "10px solid green" : !booking.paid ? "10px solid red" : "10px solid grey"}
-                            hireDate={new Date(booking.hireDate).toLocaleDateString()}
+                            statusBorder={booking.cancelled && !booking.returned && !booking.paid
+                                ? "10px solid grey"
+                                : !booking.cancelled && !booking.returned && !booking.paid
+                                    ? "10px solid green"
+                                    : !booking.cancelled && booking.returned && !booking.paid
+                                        ? "10px solid red"
+                                        : !booking.cancelled && booking.returned && booking.paid
+                                            ? "10px solid blue"
+                                            : "10px solid black"}                            hireDate={new Date(booking.hireDate).toLocaleDateString()}
                             returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}

@@ -35,7 +35,7 @@ namespace SimplySkip.Services
 
         public async Task<Response<List<Booking>>> GetCustomerBookings(int id)
         {
-            var bookings = await _ssDbContext.Bookings.Where(b => b.CustomerId == id && b.Cancelled == false).ToListAsync();
+            var bookings = await _ssDbContext.Bookings.Where(b => b.CustomerId == id).ToListAsync();
 
             foreach (var booking in bookings)
                 booking.Address = booking.Address.Replace(", ", "\n");
