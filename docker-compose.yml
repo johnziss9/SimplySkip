@@ -1,0 +1,53 @@
+version: '3.9'
+
+services:
+  web:
+    build: .
+    ports:
+      - "5000:80"
+    depends_on:
+      - postgres
+    volumes:
+      - app-data:/app/data
+    secrets:
+      - conn_string
+
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_DB: ssdb
+      POSTGRES_USER: johnz
+      POSTGRES_PASSWORD_FILE: /run/secrets/db_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    secrets:
+      - db_password
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: johnziss9@gmail.com
+      PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
+    ports:
+      - "5050:80"
+    depends_on:
+      - postgres
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+    secrets:
+      - pgadmin_password
+
+volumes:
+  app-data:  # Define the volume named "app-data"
+  db-data:   # Define the volume named "db-data"
+  pgadmin-data:  # Define the volume named "pgadmin-data"
+
+secrets:
+  db_password:
+    file: ./db_password.txt
+  pgadmin_password:
+    file: ./pgadmin_password.txt
+  conn_string:
+    file: ./conn_string.txt

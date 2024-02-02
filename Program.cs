@@ -8,10 +8,22 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SimplySkip.Data;
+using Mcrio.Configuration.Provider.Docker;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Hosting;
+using Mcrio.Configuration.Provider.Docker.Secrets;
+using Microsoft.Extensions.Configuration;
+using System.Security.Cryptography;
+
+
+var configuration = new ConfigurationBuilder()
+    .AddDockerSecrets() 
+    .Build();
+
+// Retrieve connection string from Docker secret
+string connectionString = File.ReadAllText("/run/secrets/conn_string").Trim();
 
 var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
 
 builder.Services.AddControllersWithViews();
 
@@ -22,12 +34,14 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<SSDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
-    options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+    // options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+    options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddCors(options =>
