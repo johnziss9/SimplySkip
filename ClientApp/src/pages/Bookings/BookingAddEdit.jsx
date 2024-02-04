@@ -320,7 +320,7 @@ function BookingAddEdit() {
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
                         <CustomSwitch disabled={(isReturned && !returnedSwitchIsOn) || !isEdit} checked={returnedSwitchIsOn} onChange={(e) => handleReturnSwitchChange(e)} label="Returned" />
-                        <CustomSwitch disabled={(isPaid && !paidSwitchIsOn) || !isEdit} checked={paidSwitchIsOn} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
+                        <CustomSwitch disabled={(isPaid && !paidSwitchIsOn)} checked={paidSwitchIsOn} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
                         <CustomSwitch disabled={!isEdit} checked={isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Cancelled" />
                     </div>
                     <div className="booking-add-edit-form-buttons">
