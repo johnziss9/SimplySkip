@@ -22,6 +22,7 @@ function CustomDatePicker(props) {
                 }}
                 value={dayjs(props.value)}
                 onChange={props.onChange}
+                disabled={props.disabled}
                 sx={{
                     "& .MuiInputLabel-root.Mui-focused": { color: "#006d77" }, // Change the label colour on focus
                     "& .MuiOutlinedInput-root": {
