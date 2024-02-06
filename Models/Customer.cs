@@ -21,5 +21,11 @@ namespace SimplySkip.Models
         public string? Email { get; set; }
 
         public bool Deleted { get; set; } = false;
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public DateTime DeletedOn { get; set; }
     }
 }

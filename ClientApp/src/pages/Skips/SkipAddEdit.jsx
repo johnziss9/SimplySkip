@@ -18,6 +18,9 @@ function SkipAddEdit() {
     const [notes, setNotes] = useState('');
     const [rented, setRented] = useState(false);
     const [deleted, setDeleted] = useState(false);
+    const [createdOn, setCreatedOn] = useState(new Date());
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [deletedOn, setDeletedOn] = useState(new Date());
 
     const [isEdit, setIsEdit] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -52,6 +55,9 @@ function SkipAddEdit() {
             setNotes(skip.notes.replace(/, /g, '\n'));
             setRented(skip.rented);
             setDeleted(skip.deleted);
+            setCreatedOn(new Date(new Date(skip.createdOn).setHours(0, 0, 0, 0)));
+            setLastUpdated(new Date(new Date(skip.lastUpdated).setHours(0, 0, 0, 0)));
+            setDeletedOn(new Date(new Date(skip.deletedOn).setHours(0, 0, 0, 0)));
         } else {
             // TODO Handle error if cards don't load
         }
@@ -70,7 +76,10 @@ function SkipAddEdit() {
                     size: size,
                     notes: notes.replace(/\n/g, ', '),
                     rented: rented,
-                    deleted: deleted
+                    deleted: deleted,
+                    createdOn: createdOn,
+                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
+                    deletedOn: deleted ? new Date(new Date().setHours(0, 0, 0, 0)) : deletedOn
                 })
             });
 
@@ -98,7 +107,10 @@ function SkipAddEdit() {
                     size: size,
                     notes: notes.replace(/\n/g, ', '),
                     rented: false,
-                    deleted: false
+                    deleted: false,
+                    createdOn: new Date(new Date().setHours(0, 0, 0, 0)),
+                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
+                    deletedOn: new Date(new Date().setHours(0, 0, 0, 0))
                 })
             });
 

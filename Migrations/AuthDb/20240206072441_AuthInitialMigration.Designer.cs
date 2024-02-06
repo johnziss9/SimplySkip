@@ -12,7 +12,7 @@ using SimplySkip.Data;
 namespace SimplySkip.Migrations.AuthDb
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20231128140207_AuthInitialMigration")]
+    [Migration("20240206072441_AuthInitialMigration")]
     partial class AuthInitialMigration
     {
         /// <inheritdoc />

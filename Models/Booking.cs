@@ -25,6 +25,13 @@ namespace SimplySkip.Models
         public bool Cancelled { get; set; } = false;
 
         [Required(ErrorMessage = "Customer is required.")]
+
         public int CustomerId { get; set; }
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public DateTime CancelledOn { get; set; }
     }
 }

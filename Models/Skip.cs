@@ -18,5 +18,11 @@ namespace SimplySkip.Models
         public bool Rented { get; set; } = false;
 
         public bool Deleted { get; set; } = false;
+
+        public DateTime CreatedOn { get; set; }
+
+        public DateTime LastUpdated { get; set; }
+
+        public DateTime DeletedOn { get; set; }
     }
 }

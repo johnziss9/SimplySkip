@@ -17,6 +17,9 @@ function CustomerAddEdit() {
     const [phone, setPhone] = useState('');
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
+    const [createdOn, setCreatedOn] = useState(new Date());
+    const [lastUpdated, setLastUpdated] = useState(new Date());
+    const [deletedOn, setDeletedOn] = useState(new Date());
 
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
@@ -81,7 +84,10 @@ function CustomerAddEdit() {
                     lastName: lastName,
                     phone: phone,
                     email: email,
-                    address: address.replace(/\n/g, ', ')
+                    address: address.replace(/\n/g, ', '),
+                    createdOn: createdOn,
+                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
+                    // deletedOn: deleted ? new Date(new Date().setHours(0, 0, 0, 0)) : deletedOn
                 })
             });
 
@@ -118,7 +124,10 @@ function CustomerAddEdit() {
                     phone: phone,
                     email: email,
                     address: address.replace(/\n/g, ', '),
-                    deleted: false
+                    deleted: false,
+                    createdOn: new Date(new Date().setHours(0, 0, 0, 0)),
+                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
+                    deletedOn: new Date(new Date().setHours(0, 0, 0, 0))
                 })
             });
 
@@ -166,6 +175,9 @@ function CustomerAddEdit() {
             setPhone(customer.phone);
             setAddress(customer.address.replace(/, /g, '\n'));
             setEmail(customer.email);
+            setCreatedOn(new Date(new Date(customer.createdOn).setHours(0, 0, 0, 0)));
+            setLastUpdated(new Date(new Date(customer.lastUpdated).setHours(0, 0, 0, 0)));
+            setDeletedOn(new Date(new Date(customer.deletedOn).setHours(0, 0, 0, 0)));
         } else {
             // TODO Handle error if cards don't load
         }

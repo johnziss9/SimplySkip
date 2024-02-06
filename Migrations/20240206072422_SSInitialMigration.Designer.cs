@@ -12,7 +12,7 @@ using SimplySkip;
 namespace SimplySkip.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    [Migration("20231128140147_SSInitialMigration")]
+    [Migration("20240206072422_SSInitialMigration")]
     partial class SSInitialMigration
     {
         /// <inheritdoc />
@@ -40,10 +40,19 @@ namespace SimplySkip.Migrations
                     b.Property<bool>("Cancelled")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTime>("CancelledOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("CustomerId")
                         .HasColumnType("integer");
 
                     b.Property<DateTime>("HireDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUpdated")
                         .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Notes")
@@ -78,8 +87,14 @@ namespace SimplySkip.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime>("DeletedOn")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Email")
                         .HasColumnType("text");
@@ -91,6 +106,9 @@ namespace SimplySkip.Migrations
                     b.Property<string>("LastName")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Phone")
                         .IsRequired()
@@ -109,8 +127,17 @@ namespace SimplySkip.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<DateTime>("CreatedOn")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<bool>("Deleted")
                         .HasColumnType("boolean");
+
+                    b.Property<DateTime>("DeletedOn")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTime>("LastUpdated")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Name")
                         .IsRequired()
