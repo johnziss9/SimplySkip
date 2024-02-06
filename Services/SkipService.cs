@@ -82,6 +82,16 @@ namespace SimplySkip.Services
                 skip.Deleted = updatedSkip.Deleted;
             }
 
+            if (updatedSkip.LastUpdated != skip.LastUpdated)
+            {
+                skip.LastUpdated = updatedSkip.LastUpdated;
+            }
+
+            if (updatedSkip.DeletedOn != skip.DeletedOn)
+            {
+                skip.DeletedOn = updatedSkip.DeletedOn;
+            }
+
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Skip>.Success(skip);

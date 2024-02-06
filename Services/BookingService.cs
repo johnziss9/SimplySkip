@@ -132,6 +132,16 @@ namespace SimplySkip.Services
                 booking.CustomerId = updatedBooking.CustomerId;
             }
 
+            if (updatedBooking.LastUpdated != booking.LastUpdated)
+            {
+                booking.LastUpdated = updatedBooking.LastUpdated;
+            }
+
+            if (updatedBooking.CancelledOn != booking.CancelledOn)
+            {
+                booking.CancelledOn = updatedBooking.CancelledOn;
+            }
+
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Booking>.Success(booking);

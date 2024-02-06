@@ -87,6 +87,7 @@ function CustomerAddEdit() {
                     address: address.replace(/\n/g, ', '),
                     createdOn: createdOn,
                     lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
+                    deletedOn: deletedOn // TODO to change with line below
                     // deletedOn: deleted ? new Date(new Date().setHours(0, 0, 0, 0)) : deletedOn
                 })
             });

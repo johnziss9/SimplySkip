@@ -95,6 +95,16 @@ namespace SimplySkip.Services
                 customer.Deleted = updatedCustomer.Deleted;
             }
 
+            if (updatedCustomer.LastUpdated != customer.LastUpdated)
+            {
+                customer.LastUpdated = updatedCustomer.LastUpdated;
+            }
+
+            if (updatedCustomer.DeletedOn != customer.DeletedOn)
+            {
+                customer.DeletedOn = updatedCustomer.DeletedOn;
+            }
+
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Customer>.Success(customer);
