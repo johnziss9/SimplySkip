@@ -98,7 +98,7 @@ function CustomerBookings() {
 
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
 
-        if (days < 0)
+        if (days > 0)
             return 'Rented for ' + Math.abs(days) + ' Days';
         else if (days == 0)
             return 'Rented Today'

@@ -87,9 +87,9 @@ function BookingAddEdit() {
             setPreviousIsReturned(booking.returned); // This is to be used only if there's a skip change on edit
             setIsPaid(booking.paid);
             setIsCancelled(booking.cancelled);
-            setCreatedOn(new Date(new Date(booking.createdOn).setHours(0, 0, 0, 0)));
-            setLastUpdated(new Date(new Date(booking.lastUpdated).setHours(0, 0, 0, 0)));
-            setCancelledOn(new Date(new Date(booking.cancelledOn).setHours(0, 0, 0, 0)));
+            setCreatedOn(new Date(new Date(booking.createdOn)));
+            setLastUpdated(new Date(new Date(booking.lastUpdated)));
+            setCancelledOn(new Date(new Date(booking.cancelledOn)));
 
         } else {
             // TODO Handle error if cards don't load
@@ -191,8 +191,8 @@ function BookingAddEdit() {
                     paid: isPaid,
                     cancelled: isCancelled,
                     createdOn: createdOn,
-                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
-                    cancelledOn: isCancelled ? new Date(new Date().setHours(0, 0, 0, 0)) : cancelledOn
+                    lastUpdated: new Date(new Date()),
+                    cancelledOn: isCancelled ? new Date(new Date()) : cancelledOn
                 })
             });
 
@@ -243,9 +243,9 @@ function BookingAddEdit() {
                     returned: isReturned,
                     paid: isPaid,
                     cancelled: isCancelled,
-                    createdOn: new Date(new Date().setHours(0, 0, 0, 0)),
-                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
-                    cancelledOn: new Date(new Date().setHours(0, 0, 0, 0))
+                    createdOn: new Date(new Date()),
+                    lastUpdated: new Date(new Date()),
+                    cancelledOn: new Date(new Date())
                 })
             });
 

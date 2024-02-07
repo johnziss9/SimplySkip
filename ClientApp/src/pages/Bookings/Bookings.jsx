@@ -200,7 +200,7 @@ function Bookings() {
 
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
 
-        if (days < 0)
+        if (days > 0)
             return 'Rented for ' + Math.abs(days) + ' Days';
         else if (days == 0)
             return 'Rented Today'
@@ -220,7 +220,7 @@ function Bookings() {
                     <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Cancelled" sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }} />
                 </RadioGroup>
                 <div className="bookings-section">
-                    {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.map((booking) => (
+                    {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <BookingCard
                             key={booking.id}
                             statusBorder={booking.cancelled && !booking.returned && !booking.paid

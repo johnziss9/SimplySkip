@@ -152,7 +152,7 @@ function Skips() {
 
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
 
-        if (days < 0)
+        if (days > 0)
             return 'Rented for ' + Math.abs(days) + ' Days';
         else if (days == 0)
             return 'Rented Today'
@@ -170,7 +170,7 @@ function Skips() {
                     <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Available" sx={{ display: getAvailableSkips().length > 0 ? 'inline' : 'none' }} />
                 </RadioGroup>
                 <div className="skips-section">
-                    {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.map((skip) => (
+                    {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
                         <SkipCard
                             key={skip.id}
                             statusBorder={skip.rented ? "10px solid red" : "10px solid green"}

@@ -86,9 +86,9 @@ function CustomerAddEdit() {
                     email: email,
                     address: address.replace(/\n/g, ', '),
                     createdOn: createdOn,
-                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
+                    lastUpdated: new Date(new Date()),
                     deletedOn: deletedOn // TODO to change with line below
-                    // deletedOn: deleted ? new Date(new Date().setHours(0, 0, 0, 0)) : deletedOn
+                    // deletedOn: deleted ? new Date(new Date()) : deletedOn
                 })
             });
 
@@ -126,9 +126,9 @@ function CustomerAddEdit() {
                     email: email,
                     address: address.replace(/\n/g, ', '),
                     deleted: false,
-                    createdOn: new Date(new Date().setHours(0, 0, 0, 0)),
-                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
-                    deletedOn: new Date(new Date().setHours(0, 0, 0, 0))
+                    createdOn: new Date(new Date()),
+                    lastUpdated: new Date(new Date()),
+                    deletedOn: new Date(new Date())
                 })
             });
 
@@ -176,9 +176,9 @@ function CustomerAddEdit() {
             setPhone(customer.phone);
             setAddress(customer.address.replace(/, /g, '\n'));
             setEmail(customer.email);
-            setCreatedOn(new Date(new Date(customer.createdOn).setHours(0, 0, 0, 0)));
-            setLastUpdated(new Date(new Date(customer.lastUpdated).setHours(0, 0, 0, 0)));
-            setDeletedOn(new Date(new Date(customer.deletedOn).setHours(0, 0, 0, 0)));
+            setCreatedOn(new Date(new Date(customer.createdOn)));
+            setLastUpdated(new Date(new Date(customer.lastUpdated)));
+            setDeletedOn(new Date(new Date(customer.deletedOn)));
         } else {
             // TODO Handle error if cards don't load
         }

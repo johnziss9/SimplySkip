@@ -55,9 +55,9 @@ function SkipAddEdit() {
             setNotes(skip.notes.replace(/, /g, '\n'));
             setRented(skip.rented);
             setDeleted(skip.deleted);
-            setCreatedOn(new Date(new Date(skip.createdOn).setHours(0, 0, 0, 0)));
-            setLastUpdated(new Date(new Date(skip.lastUpdated).setHours(0, 0, 0, 0)));
-            setDeletedOn(new Date(new Date(skip.deletedOn).setHours(0, 0, 0, 0)));
+            setCreatedOn(new Date(new Date(skip.createdOn)));
+            setLastUpdated(new Date(new Date(skip.lastUpdated)));
+            setDeletedOn(new Date(new Date(skip.deletedOn)));
         } else {
             // TODO Handle error if cards don't load
         }
@@ -78,8 +78,8 @@ function SkipAddEdit() {
                     rented: rented,
                     deleted: deleted,
                     createdOn: createdOn,
-                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
-                    deletedOn: deleted ? new Date(new Date().setHours(0, 0, 0, 0)) : deletedOn
+                    lastUpdated: new Date(new Date()),
+                    deletedOn: deleted ? new Date(new Date()) : deletedOn
                 })
             });
 
@@ -108,9 +108,9 @@ function SkipAddEdit() {
                     notes: notes.replace(/\n/g, ', '),
                     rented: false,
                     deleted: false,
-                    createdOn: new Date(new Date().setHours(0, 0, 0, 0)),
-                    lastUpdated: new Date(new Date().setHours(0, 0, 0, 0)),
-                    deletedOn: new Date(new Date().setHours(0, 0, 0, 0))
+                    createdOn: new Date(new Date()),
+                    lastUpdated: new Date(new Date()),
+                    deletedOn: new Date(new Date())
                 })
             });
 

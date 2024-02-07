@@ -71,7 +71,7 @@ function Customers() {
                     display={filteredCustomers.length > 0 ? '' :  'none'}
                 />
                 <div className="customers-section">
-                    {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? filteredCustomers.sort((a, b) => a.lastName.localeCompare(b.lastName)).map((customer) => (
+                    {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? filteredCustomers.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((customer) => (
                         <CustomerCard
                             key={customer.id}
                             statusBorder={'10px solid #83c5be'}
