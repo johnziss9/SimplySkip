@@ -154,7 +154,7 @@ function Skips() {
 
         if (days > 0)
             return 'Rented for ' + Math.abs(days) + ' Days';
-        else if (days == 0)
+        else if (days === 0)
             return 'Rented Today'
         else
             return 'Starting in ' + Math.abs(days);
