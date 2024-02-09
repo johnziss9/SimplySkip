@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import { Alert, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 function CustomerAddEdit() {
@@ -24,10 +24,12 @@ function CustomerAddEdit() {
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
+    const [openBookingsAddressDialog, setOpenBookingsAddressDialog] = useState(false);
     const [isEdit, setIsEdit] = useState(false); // TODO Check if this is used. Currently using it but I could use id from useParams?
     const [customer, setCustomer] = useState({}); // TODO Check if this is used
     const [addEditFailed, setAddEditFailed] = useState(false);
     const [error, setError] = useState('');
+    const [previousAddress, setPreviousAddress] = useState('');
 
     const [firstNameError, setFirstNameError] = useState(false);
     const [lastNameError, setLastNameError] = useState(false);
@@ -95,6 +97,9 @@ function CustomerAddEdit() {
             if (response.ok) {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
+
+                if (previousAddress !== address)
+                    handleFutureBookingAddress();
             } else {
                 const data = await response.json();
 
@@ -175,6 +180,7 @@ function CustomerAddEdit() {
             setLastName(customer.lastName);
             setPhone(customer.phone);
             setAddress(customer.address.replace(/, /g, '\n'));
+            setPreviousAddress(customer.address);
             setEmail(customer.email);
             setCreatedOn(new Date(new Date(customer.createdOn)));
             setLastUpdated(new Date(new Date(customer.lastUpdated)));
@@ -182,6 +188,27 @@ function CustomerAddEdit() {
         } else {
             // TODO Handle error if cards don't load
         }
+    }
+
+    const handleFutureBookingAddress = async () => {
+        const response = await fetch(`https://localhost:7197/booking/customer/${customer.id}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const bookings = await response.json();
+            const futureBookings = bookings.filter(booking => new Date(booking.hireDate) > new Date());
+
+            if (futureBookings.length > 0)
+                handleShowBookingsAddressDialog()
+        }
+    }
+
+    const handleViewBookings = () => {
+        navigate(`/Customer/${customer.id}/Bookings`);
     }
 
     const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
@@ -192,6 +219,9 @@ function CustomerAddEdit() {
 
     const handleShowFailedAddEdit = () => setAddEditFailed(true);
     const handleHideFailedAddEdit = () => setAddEditFailed(false);
+
+    const handleShowBookingsAddressDialog = () => setOpenBookingsAddressDialog(true);
+    const handleCloseBookingsAddressDialog = () => setOpenBookingsAddressDialog(false);
 
     return (
         <>
@@ -224,6 +254,18 @@ function CustomerAddEdit() {
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openBookingsAddressDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseBookingsAddressDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Customer Address Changed
+                </DialogTitle>
+                <DialogContent>
+                    Future bookings found with the same address as the customer. Make sure they are changed.
+                </DialogContent>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Later"} width={"100px"} height={"45px"} onClick={handleCloseBookingsAddressDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Go To Bookings"} width={"150px"} height={"45px"} onClick={handleViewBookings} />
                 </DialogActions>
             </Dialog>
             <Snackbar
