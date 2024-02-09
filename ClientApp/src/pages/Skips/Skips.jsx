@@ -197,7 +197,7 @@ function Skips() {
                             <FormLabel>Size:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Notes:</FormLabel> {skip.notes === null ? 'N/A' : skip.notes}
+                            <FormLabel>Notes:</FormLabel> {skip.notes ? skip.notes : 'N/A'}
                         </Typography>
                     </DialogContent>
                     <DialogActions>
@@ -219,7 +219,7 @@ function Skips() {
                             <FormLabel>Size:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Notes:</FormLabel> {skip.notes === null ? 'N/A' : skip.notes}
+                            <FormLabel>Notes:</FormLabel> {skip.notes ? skip.notes : 'N/A'}
                         </Typography>
                         <hr />
                         <Typography variant="h6" sx={{ margin: '5px' }} >
@@ -235,7 +235,7 @@ function Skips() {
                             <FormLabel>Hired For:</FormLabel> {handleCalculateDays(booking.hireDate)}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Notes:</FormLabel> {booking.notes != null ? booking.notes : 'N/A'}
+                            <FormLabel>Notes:</FormLabel> {booking.notes ? booking.notes : 'N/A'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Returned:</FormLabel> {booking.returned ? 'Yes' : 'No'}
@@ -260,7 +260,7 @@ function Skips() {
                             <FormLabel>Address:</FormLabel> {customer.address}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Email:</FormLabel> {customer.email != null ? customer.email : 'N/A'}
+                            <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'N/A'}
                         </Typography>
                     </DialogContent>
                     <DialogActions>

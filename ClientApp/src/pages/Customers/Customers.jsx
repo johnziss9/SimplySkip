@@ -102,7 +102,7 @@ function Customers() {
                         <FormLabel>Address:</FormLabel> {customer.address}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Email:</FormLabel> {customer.email != null ? customer.email : 'N/A'}
+                        <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'N/A'}
                     </Typography>
                     <Button
                         variant="outlined"
