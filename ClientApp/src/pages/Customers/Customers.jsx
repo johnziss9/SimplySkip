@@ -14,6 +14,9 @@ function Customers() {
     const [searchQuery, setSearchQuery] = useState('');
     const [openViewCustomer, setOpenViewCustomer] = useState(false);
     const [customer, setCustomer] = useState({});
+    const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+    const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
+    const [openActiveBookingsDialog, setOpenActiveBookingsDialog] = useState(false);
 
     useEffect(() => {
         handleFetchCustomers();
@@ -37,6 +40,34 @@ function Customers() {
         }
     }
 
+    const handleDeleteClick = async (id) => {
+        const response = await fetch(`https://localhost:7197/customer/${id}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                firstName: customer.firstName,
+                lastName: customer.lastName,
+                phone: customer.phone,
+                email: customer.email,
+                address: customer.address.replace(/\n/g, ', '),
+                deleted: true,
+                createdOn: customer.createdOn,
+                lastUpdated: new Date(new Date()),
+                deletedOn: new Date(new Date())
+            })
+        });
+
+        if (response.ok) {
+            handleCloseDeleteDialog();
+            handleShowDeleteSuccess();
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
     const handleEditClick = (customerId) => {
         navigate(`/Customer/${customerId}`);
     }
@@ -50,6 +81,40 @@ function Customers() {
         setOpenViewCustomer(true);
     }
     const handleCloseViewCustomer = () => setOpenViewCustomer(false);
+
+    const handleCheckDeleteCustomer = async (customer) => {
+        const response = await fetch(`https://localhost:7197/booking/customer/${customer.id}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const bookings = await response.json();
+            const activeBookings = bookings.filter(booking => (!booking.returned || !booking.paid) && !booking.cancelled);
+
+            if (activeBookings.length > 0)
+                handleShowActiveBookingsDialog();
+            else
+                handleShowDeleteDialog(customer);
+        }
+    }
+
+    const handleShowDeleteDialog = (customer) => {
+        setCustomer(customer);
+        setOpenDeleteDialog(true);
+    }
+    const handleCloseDeleteDialog = () => setOpenDeleteDialog(false);
+
+    const handleShowDeleteSuccess = () => setOpenDeleteSuccess(true);
+    const handleCloseDeleteSuccess = () => {
+        setOpenDeleteSuccess(false);
+        handleFetchCustomers();
+    }
+
+    const handleShowActiveBookingsDialog = () => setOpenActiveBookingsDialog(true);
+    const handleCloseActiveBookingsDialog = () => setOpenActiveBookingsDialog(false);
 
     const filteredCustomers = customers.filter((customer) =>
         customer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -80,6 +145,7 @@ function Customers() {
                             phone={customer.phone}
                             onClickView={() => handleOpenViewCustomer(customer)}
                             onClickEdit={() => handleEditClick(customer.id)}
+                            onClickDelete={() => handleCheckDeleteCustomer(customer)}
                         />
                     )) : <h5 style={{ marginTop: '20px' }}>There are no customers. Click Add New to create one.</h5>}
                 </div>
@@ -120,6 +186,31 @@ function Customers() {
                 </DialogContent>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseViewCustomer} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openDeleteDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Delete Customer?
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseDeleteDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={() => handleDeleteClick(customer.id)} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openDeleteSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteSuccess(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Customer Deleted.
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseDeleteSuccess} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openActiveBookingsDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseActiveBookingsDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Deletion failed. Active bookings exist.
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseActiveBookingsDialog} />
                 </DialogActions>
             </Dialog>
         </>
