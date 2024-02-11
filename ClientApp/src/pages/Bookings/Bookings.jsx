@@ -44,10 +44,7 @@ function Bookings() {
     }
 
     const handleGetCustomer = async (activeBookings) => {
-        const details = {};
-
-        for (const booking of activeBookings) {
-
+        const promises = activeBookings.map(async (booking) => {
             const response = await fetch(`https://localhost:7197/customer/${booking.customerId}`, {
                 method: 'get',
                 headers: {
@@ -56,15 +53,25 @@ function Bookings() {
             });
             if (response.ok) {
                 const customer = await response.json();
-
-                details[booking.customerId] = customer;
+                return { [booking.customerId]: customer };
             } else {
                 // TODO Handle error if cards don't load
+                return null;
             }
-        }
+        });
+
+        const results = await Promise.all(promises);
+
+        const details = {};
+        results.forEach((result) => {
+            if (result) {
+                const customerId = Object.keys(result)[0];
+                details[customerId] = result[customerId];
+            }
+        });
 
         setCustomerDetails(details);
-    }
+    };
 
     const handleFetchCustomer = async (id) => {
         const response = await fetch(`https://localhost:7197/customer/${id}`, {
@@ -149,7 +156,7 @@ function Bookings() {
                 const skip = await getSkipResponse.json();
 
                 setSkip(skip);
-                
+
                 const editSkipResponse = await fetch(`https://localhost:7197/skip/${skip.id}`, {
                     method: 'put',
                     headers: {
