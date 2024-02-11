@@ -110,7 +110,7 @@ function CustomerBookings() {
         <>
             <CustomNavbar currentPage={`Bookings for ${customer.firstName} ${customer.lastName}`} addNewClick={'/Booking'} customerId={customer.id} />
             <div className='customer-bookings-container'>
-                <RadioGroup sx={{ marginTop: '20px' }} value={selectedValue} onChange={handleRadioChange} row>
+                <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" sx={{ display: 'inline' }} />
                     <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Active" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
                     <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }} />
@@ -118,7 +118,7 @@ function CustomerBookings() {
                     <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Cancelled" sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }} />
                 </RadioGroup>
                 <div className="customer-bookings-section">
-                    {Array.isArray(filteredBookings) ? filteredBookings.map((booking) => (
+                    {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <CustomerBookingCard
                             key={booking.id}
                             statusBorder={booking.cancelled && !booking.returned && !booking.paid
@@ -137,7 +137,7 @@ function CustomerBookings() {
                             disabledEditButton={booking.returned && booking.paid ? true : false}
                             disabledCancelButton={booking.returned && booking.paid ? true : false}
                         />
-                    )) : null}
+                    )) : <h5 style={{ marginTop: '20px' }}>There are no bookings. Click Add New to create one.</h5>}
                 </div>
             </div>
             <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>
