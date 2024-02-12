@@ -220,8 +220,8 @@ function CustomerBookings() {
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
                             onClickCancel={() => handleShowCancelDialog(booking)}
-                            disabledEditButton={booking.returned && booking.paid ? true : false}
-                            disabledCancelButton={booking.returned && booking.paid ? true : false}
+                            disabledEditButton={(booking.returned && booking.paid) || booking.cancelled}
+                            disabledCancelButton={booking.returned || booking.paid || booking.cancelled || new Date(booking.hireDate) <= new Date()}
                         />
                     )) : <h5 style={{ marginTop: '20px' }}>There are no bookings. Click Add New to create one.</h5>}
                 </div>
