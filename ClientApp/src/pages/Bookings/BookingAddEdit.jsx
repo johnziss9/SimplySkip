@@ -338,9 +338,9 @@ function BookingAddEdit() {
                     </FormGroup>
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
-                        <CustomSwitch disabled={(isReturned && !returnedSwitchIsOn) || !isEdit} checked={returnedSwitchIsOn} onChange={(e) => handleReturnSwitchChange(e)} label="Returned" />
-                        <CustomSwitch disabled={(isPaid && !paidSwitchIsOn)} checked={paidSwitchIsOn} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
-                        <CustomSwitch disabled={!isEdit || hireDate <= new Date()} checked={isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Cancelled" />
+                        <CustomSwitch disabled={(isReturned && !returnedSwitchIsOn) || !isEdit} checked={returnedSwitchIsOn || isReturned} onChange={(e) => handleReturnSwitchChange(e)} label="Returned" />
+                        <CustomSwitch disabled={(isPaid && !paidSwitchIsOn)} checked={paidSwitchIsOn || isPaid} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
+                        <CustomSwitch disabled={!isEdit || hireDate <= new Date()} checked={isCancelled || isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Cancelled" />
                     </div>
                     <div className="booking-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
