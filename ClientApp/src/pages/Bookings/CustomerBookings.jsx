@@ -206,15 +206,16 @@ function CustomerBookings() {
                     {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <CustomerBookingCard
                             key={booking.id}
-                            statusBorder={booking.cancelled && !booking.returned && !booking.paid
-                                ? "10px solid grey"
-                                : !booking.cancelled && !booking.returned && !booking.paid
+                            statusBorder={booking.cancelled // cancelled
+                                ? "10px solid black"
+                                : !booking.cancelled && !booking.returned && !booking.paid // active
                                     ? "10px solid green"
-                                    : !booking.cancelled && booking.returned && !booking.paid
+                                    : !booking.cancelled && booking.returned && !booking.paid // retuend & unpaid
                                         ? "10px solid red"
-                                        : !booking.cancelled && booking.returned && booking.paid
-                                            ? "10px solid blue"
-                                            : "10px solid black"}                            hireDate={new Date(booking.hireDate).toLocaleDateString()}
+                                        : !booking.cancelled && booking.returned && booking.paid // past
+                                            ? "10px solid grey"
+                                            : "10px solid white"}                          
+                            hireDate={new Date(booking.hireDate).toLocaleDateString()}
                             returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
