@@ -301,7 +301,10 @@ function BookingAddEdit() {
     };
 
     const handleOkAndCancel = () => {
-        navigate(source === 'customer-bookings' ? `/Customer/${customer.id}/Bookings` : '/Bookings');
+        const addNewSource = sessionStorage.getItem('AddNewSource');
+
+        navigate(source === 'customer-bookings' || addNewSource === 'customer-bookings' ? `/Customer/${customer.id}/Bookings` : '/Bookings');
+        sessionStorage.removeItem('AddNewSource');
     }
 
     const handleShowAddEditDialog = () => setOpenAddEditDialog(true);

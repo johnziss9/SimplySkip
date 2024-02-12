@@ -223,7 +223,7 @@ function Bookings() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Bookings'} addNewClick={'/Booking'} />
+            <CustomNavbar currentPage={'Bookings'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
                 <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" sx={{ display: 'inline' }} />

@@ -24,6 +24,7 @@ function CustomNavbar(props) {
         if (props.customerId)
             localStorage.setItem('CustomerId', props.customerId);
 
+        sessionStorage.setItem('AddNewSource', props.addNewSource);
         navigate(props.addNewClick);
     }
 
