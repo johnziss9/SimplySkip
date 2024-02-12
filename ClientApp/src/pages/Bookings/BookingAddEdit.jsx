@@ -161,7 +161,10 @@ function BookingAddEdit() {
                 size: skip.size,
                 notes: skip.notes,
                 rented: status,
-                deleted: skip.deleted
+                deleted: skip.deleted,
+                createdOn: skip.createdOn,
+                lastUpdated: new Date(new Date()),
+                deleteOn: skip.deleteOn
             })
         });
 

@@ -17,6 +17,9 @@ function CustomerBookings() {
     const [customer, setCustomer] = useState({});
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
     const [openViewBooking, setOpenViewBooking] = useState(false);
+    const [openCancelDialog, setOpenCancelDialog] = useState(false);
+    const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
+    const [skip, setSkip] = useState({}); // Used for changing skip status
 
     useEffect(() => {
         handleFetchCustomerBookings();
@@ -58,6 +61,75 @@ function CustomerBookings() {
         }
     }
 
+    const handleCancelClick = async () => {
+        const bookingResponse = await fetch(`https://localhost:7197/booking/${booking.id}`, {
+            method: 'put',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            },
+            body: JSON.stringify({
+                customerId: booking.customerId,
+                skipId: booking.skipId,
+                hireDate: booking.hireDate,
+                returnDate: booking.returnDate,
+                address: booking.address.replace(/\n/g, ', '),
+                notes: booking.notes.replace(/\n/g, ', '),
+                returned: booking.returned,
+                paid: booking.paid,
+                cancelled: true,
+                createdOn: booking.createdOn,
+                lastUpdated: new Date(new Date()),
+                cancelledOn: new Date(new Date())
+            })
+        });
+
+        if (bookingResponse.ok) {
+            const getSkipResponse = await fetch(`https://localhost:7197/skip/${booking.skipId}`, {
+                method: 'get',
+                headers: {
+                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                }
+            });
+
+            if (getSkipResponse.ok) {
+                const skip = await getSkipResponse.json();
+
+                setSkip(skip);
+
+                const editSkipResponse = await fetch(`https://localhost:7197/skip/${skip.id}`, {
+                    method: 'put',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+                    },
+                    body: JSON.stringify({
+                        name: skip.name,
+                        size: skip.size,
+                        notes: skip.notes,
+                        rented: false,
+                        deleted: skip.deleted,
+                        createdOn: skip.createdOn,
+                        lastUpdated: new Date(new Date()),
+                        deleteOn: skip.deleteOn
+                    })
+                });
+
+                if (editSkipResponse.ok) {
+                    // TODO Check if something gets added here
+                } else {
+                    // TODO Handle error if cards don't load
+                }
+            } else {
+                // TODO Handle error if cards don't load
+            }
+
+            handleShowCancelSuccess();
+        } else {
+            // TODO Handle error if cards don't load
+        }
+    }
+
     const handleOpenViewBooking = (booking) => {
         setBooking(booking);
         setOpenViewBooking(true);
@@ -67,6 +139,19 @@ function CustomerBookings() {
     const handleEditClick = (bookingId) => {
         navigate(`/Booking/${bookingId}/customer-bookings`);
     }
+
+    const handleShowCancelDialog = (booking) => {
+        setBooking(booking)
+        setOpenCancelDialog(true);
+    }
+    const handleCloseCancelDialog = () => setOpenCancelDialog(false);
+
+    const handleShowCancelSuccess = () => {
+        handleCloseCancelDialog();
+        setOpenCancelSuccess(true);
+        handleFetchCustomerBookings();
+    }
+    const handleCloseCancelSuccess = () => setOpenCancelSuccess(false);
 
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
@@ -134,6 +219,7 @@ function CustomerBookings() {
                             address={booking.address}
                             onClickView={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
+                            onClickCancel={() => handleShowCancelDialog(booking)}
                             disabledEditButton={booking.returned && booking.paid ? true : false}
                             disabledCancelButton={booking.returned && booking.paid ? true : false}
                         />
@@ -191,6 +277,23 @@ function CustomerBookings() {
                 </DialogContent>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseViewBooking} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCancelDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseCancelDialog(event, reason) } }}>
+                <DialogTitle sx={{ width: '400px' }}>
+                    Cancel Booking?
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseCancelDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={handleCancelClick} />
+                </DialogActions>
+            </Dialog>
+            <Dialog open={openCancelSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseCancelSuccess(event, reason) } }}>
+                <DialogTitle sx={{ width: '300px' }}>
+                    Cancel Successful
+                </DialogTitle>
+                <DialogActions>
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseCancelSuccess} />
                 </DialogActions>
             </Dialog>
         </>

@@ -79,7 +79,7 @@ function SkipAddEdit() {
                     deleted: deleted,
                     createdOn: createdOn,
                     lastUpdated: new Date(new Date()),
-                    deletedOn: deleted ? new Date(new Date()) : deletedOn
+                    deletedOn: deletedOn
                 })
             });
 

@@ -140,7 +140,10 @@ function Bookings() {
                 notes: booking.notes.replace(/\n/g, ', '),
                 returned: booking.returned,
                 paid: booking.paid,
-                cancelled: true
+                cancelled: true,
+                createdOn: booking.createdOn,
+                lastUpdated: new Date(new Date()),
+                cancelledOn: new Date(new Date())
             })
         });
 
@@ -168,7 +171,10 @@ function Bookings() {
                         size: skip.size,
                         notes: skip.notes,
                         rented: false,
-                        deleted: skip.deleted
+                        deleted: skip.deleted,
+                        createdOn: skip.createdOn,
+                        lastUpdated: new Date(new Date()),
+                        deleteOn: skip.deleteOn
                     })
                 });
 

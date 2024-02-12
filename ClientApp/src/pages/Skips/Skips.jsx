@@ -108,7 +108,10 @@ function Skips() {
                 size: skip.size,
                 notes: skip.notes.replace(/\n/g, ', '),
                 rented: skip.rented,
-                deleted: true
+                deleted: true,
+                createdOn: skip.createdOn,
+                lastUpdated: new Date(new Date()),
+                deleteOn: new Date(new Date()),
             })
         });
 
