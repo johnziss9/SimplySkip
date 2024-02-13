@@ -6,7 +6,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomAutocomplete from "../../components/CustomAutocomplete/CustomAutocomplete";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
-import { Alert, Dialog, DialogActions, DialogTitle, FormGroup, IconButton, Snackbar, Typography } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogTitle, FormGroup, IconButton, Snackbar, Typography, useMediaQuery } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 import CustomSwitch from "../../components/CustomSwitch/CustomSwitch";
 
@@ -46,6 +46,8 @@ function BookingAddEdit() {
 
     const [returnedSwitchIsOn, setReturnedSwitchIsOn] = useState(false);
     const [paidSwitchIsOn, setPaidSwitchIsOn] = useState(false);
+
+    const fieldsWidth = useMediaQuery('(max-width: 500px)');
 
     useEffect(() => {
         if (id) {
@@ -321,7 +323,7 @@ function BookingAddEdit() {
             <CustomNavbar currentPage={'Booking Information'} />
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
-                    <div className="booking-add-edit-available-skips-container2">
+                    <div className="booking-add-edit-available-skips-container">
                         <Typography variant="h6" sx={{ width: '160px' }}>
                             Available Skips:
                         </Typography>
@@ -332,22 +334,22 @@ function BookingAddEdit() {
                             {largeSkips} Large
                         </Typography>
                     </div>
-                    <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} />
-                    <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} error={skipError} />
-                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} onChange={setHireDate} />
+                    <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} width={fieldsWidth ? '300px' : '440px'} />
+                    <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} error={skipError} width={fieldsWidth ? '300px' : '440px'} />
+                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
                     <FormGroup>
-                        <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) || isCustomerAddressSameAsBookingAddress() ? true : false} />
+                        <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) || isCustomerAddressSameAsBookingAddress() ? true : false} />
                         <CustomSwitch checked={isCustomerAddressSameAsBookingAddress()} disabled={!customer || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) ? true : false} onChange={handleSameAddress} label="Use Same Address as Customer" />
                     </FormGroup>
-                    <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
+                    <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
                         <CustomSwitch disabled={(isReturned && !returnedSwitchIsOn) || !isEdit} checked={returnedSwitchIsOn || isReturned} onChange={(e) => handleReturnSwitchChange(e)} label="Returned" />
                         <CustomSwitch disabled={(isPaid && !paidSwitchIsOn)} checked={paidSwitchIsOn || isPaid} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
                         <CustomSwitch disabled={!isEdit || hireDate <= new Date()} checked={isCancelled || isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Cancelled" />
                     </div>
                     <div className="booking-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleShowAddEditDialog} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>

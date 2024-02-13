@@ -3,7 +3,7 @@ import { FormControl, InputLabel, MenuItem, Select } from "@mui/material";
 
 function CustomSelect(props) {
     return (
-        <FormControl margin="normal" sx={{ width: '440px' }}>
+        <FormControl margin="normal" sx={{ width: props.width }}>
             <InputLabel
                 required
                 error={props.error}

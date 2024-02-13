@@ -4,7 +4,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomerCard from "../../components/CustomerCard/CustomerCard";
 import { useNavigate } from "react-router-dom";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 
 function Customers() {
@@ -17,6 +17,8 @@ function Customers() {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
     const [openActiveBookingsDialog, setOpenActiveBookingsDialog] = useState(false);
+
+    const searchbarWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
         handleFetchCustomers();
@@ -130,7 +132,7 @@ function Customers() {
                     label={'Search...'}
                     variant={'standard'}
                     type={'search'}
-                    width={'500px'}
+                    width={searchbarWidth ? '300px' : '500px'}
                     margin={'normal'}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     // display={filteredCustomers.length > 0 ? '' :  'none'}

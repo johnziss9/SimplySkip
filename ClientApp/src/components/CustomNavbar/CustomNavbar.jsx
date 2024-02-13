@@ -1,13 +1,15 @@
 import React, { useState } from "react";
 import './CustomNavbar.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppBar, Button, IconButton, Toolbar, Typography, Fab } from "@mui/material";
+import { AppBar, Button, IconButton, Toolbar, Typography, Fab, useMediaQuery } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 
 function CustomNavbar(props) {
     const [open, setOpen] = useState(false);
+
+    const addNewButtonWidth = useMediaQuery('(max-width: 550px)');
 
     const navigate = useNavigate();
 
@@ -46,9 +48,9 @@ function CustomNavbar(props) {
                         {props.currentPage}
                     </Typography>
                     {props.currentPage === 'Customers' || props.currentPage === 'Bookings' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Bookings for')) ?
-                    <Fab sx={{ background: '#edf6f9', width: '150px', height:'40px', marginLeft: '20px', borderRadius: '5px' }} onClick={handleAddNew}>
+                    <Fab sx={{ background: '#edf6f9', width: addNewButtonWidth ? '50px' : '150px', height:'40px', marginLeft: '20px', borderRadius: '5px' }} onClick={handleAddNew}>
                         <AddIcon sx={{ color: '#006d77' }} />
-                        ADD NEW
+                        {addNewButtonWidth ? '' : 'ADD NEW'}
                     </Fab>
                     : null}
                 </div>

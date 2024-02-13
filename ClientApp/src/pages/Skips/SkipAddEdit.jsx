@@ -6,7 +6,7 @@ import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import { useNavigate, useParams } from "react-router-dom";
 import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Dialog, DialogActions, DialogTitle, IconButton, Snackbar } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogTitle, IconButton, Snackbar, useMediaQuery } from "@mui/material";
 
 function SkipAddEdit() {
     const navigate = useNavigate();
@@ -30,6 +30,8 @@ function SkipAddEdit() {
 
     const [nameError, setNameError] = useState(false);
     const [sizeError, setSizeError] = useState(false);
+
+    const fieldsWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
         if (id) {
@@ -153,12 +155,12 @@ function SkipAddEdit() {
             <CustomNavbar currentPage={'Skip Information'} />
             <div className='skip-add-edit-container'>
                 <div className="skip-add-edit-form">
-                    <CustomTextField label={'Skip Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setName(e.target.value)} value={name} disabled={isEdit ? true : false} error={nameError} />
-                    <CustomSelect value={size} onChange={e => setSize(e.target.value)} disabled={isEdit ? true : false} error={sizeError} />
-                    <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={'440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
+                    <CustomTextField label={'Skip Name'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setName(e.target.value)} value={name} disabled={isEdit ? true : false} error={nameError} />
+                    <CustomSelect value={size} onChange={e => setSize(e.target.value)} disabled={isEdit ? true : false} error={sizeError} width={fieldsWidth ? '300px' : '440px'} />
+                    <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="skip-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleShowAddEditDialog} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>

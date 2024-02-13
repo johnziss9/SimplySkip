@@ -41,7 +41,7 @@ function CustomDatePicker(props) {
                     input: { color: '#006d77' }, // Changes the colour of the font inside the datepicker
                     svg: { color: '#006d77' }, // Changes the colour of the calendar icon
                     label: { color: '#006d77' }, // Changes the colour of the label when not focused
-                    width: '440px',
+                    width: props.width,
                     margin: '16px 0 8px 0'
                 }}
             />

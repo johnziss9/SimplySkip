@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar } from "@mui/material";
+import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar, useMediaQuery } from "@mui/material";
 import CloseIcon from '@mui/icons-material/Close';
 
 function CustomerAddEdit() {
@@ -36,6 +36,8 @@ function CustomerAddEdit() {
     const [addressError, setAddressError] = useState(false);
     const [phoneError, setPhoneError] = useState(false);
     const [emailError, setEmailError] = useState(false);
+
+    const fieldsWidth = useMediaQuery('(max-width: 500px)');
 
     useEffect(() => {
         if (id) {
@@ -227,14 +229,14 @@ function CustomerAddEdit() {
             <CustomNavbar currentPage={'Customer Information'} />
             <div className='customer-add-edit-container'>
                 <div className="customer-add-edit-form">
-                    <CustomTextField label={'First Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setFirstName(e.target.value)} value={firstName} error={firstNameError} />
-                    <CustomTextField label={'Last Name'} variant={'outlined'} required={true} margin={'normal'} width={'440px'} onChange={e => setLastName(e.target.value)} value={lastName} error={lastNameError} />
-                    <CustomTextField label={'Phone Number'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={'440px'} error={phoneError} />
-                    <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={'440px'} onChange={(e) => handleEmailInput(e)} value={email} error={emailError} />
-                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={'440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
+                    <CustomTextField label={'First Name'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setFirstName(e.target.value)} value={firstName} error={firstNameError} />
+                    <CustomTextField label={'Last Name'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setLastName(e.target.value)} value={lastName} error={lastNameError} />
+                    <CustomTextField label={'Phone Number'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={fieldsWidth ? '300px' : '440px'} error={phoneError} />
+                    <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={(e) => handleEmailInput(e)} value={email} error={emailError} />
+                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
                     <div className="customer-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={'20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={'20px 0 0 10px'} onClick={handleShowAddEditDialog} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>

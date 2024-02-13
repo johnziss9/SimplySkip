@@ -66,7 +66,7 @@ function CustomAutocomplete(props) {
             disablePortal
             options={props.fill == 'Customers' ? customers : skips}
             getOptionLabel={props.fill == 'Customers' ? formatCustomerLabel : formatSkipLabel}
-            sx={{ width: '440px' }}
+            sx={{ width: props.width }}
             value={props.value}
             onChange={props.onChange}
             disabled={props.disabled}

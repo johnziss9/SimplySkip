@@ -3,7 +3,7 @@ import './CustomerBookings.css';
 import { useNavigate, useParams } from "react-router-dom";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBookingCard";
-import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 
 function CustomerBookings() {
@@ -20,6 +20,8 @@ function CustomerBookings() {
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
     const [skip, setSkip] = useState({}); // Used for changing skip status
+
+    const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
         handleFetchCustomerBookings();
@@ -195,7 +197,7 @@ function CustomerBookings() {
         <>
             <CustomNavbar currentPage={`Bookings for ${customer.firstName} ${customer.lastName}`} addNewClick={'/Booking'} customerId={customer.id} addNewSource="customer-bookings" />
             <div className='customer-bookings-container'>
-                <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
+                <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? 'flex' : 'none', width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" sx={{ display: 'inline' }} />
                     <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Active" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
                     <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Unpaid" sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }} />
