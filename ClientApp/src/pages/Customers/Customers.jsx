@@ -133,7 +133,7 @@ function Customers() {
                     width={'500px'}
                     margin={'normal'}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    display={filteredCustomers.length > 0 ? '' :  'none'}
+                    // display={filteredCustomers.length > 0 ? '' :  'none'}
                 />
                 <div className="customers-section">
                     {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? filteredCustomers.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((customer) => (
