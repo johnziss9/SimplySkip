@@ -1,0 +1,32 @@
+.not-found-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #edf6f9;
+}
+
+.not-found-section {
+    width: 600px;
+    height: 400px;
+    margin-top: 30px;
+    background-color: #83c5be;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+    color: #006d77;
+    text-align: center;
+    padding: 0 15px;
+}
+
+.not-found-title {
+    font-size: 60px;
+}
+
+.not-found-text {
+    font-size: 30px;
+    margin-top: 30px;
+    margin-bottom: 50px;
+}
