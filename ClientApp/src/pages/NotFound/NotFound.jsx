@@ -18,7 +18,7 @@ function NotFound() {
                     <div className="not-found-message">
                         <h1 className="not-found-title">OOPS...</h1>
                         <p className="not-found-text">The page you're looking for cannot be found. Click the button to go back to bookings.</p>
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Bookings"} width={"100px"} height={"45px"} onClick={handleNagivation} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"Bookings"} width={"150px"} height={"45px"} onClick={handleNagivation} />
                     </div>
                 </div>
             </div>
