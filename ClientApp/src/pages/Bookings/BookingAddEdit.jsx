@@ -69,7 +69,7 @@ function BookingAddEdit() {
     }, [id]);
 
     const handleFetchBooking = async () => {
-        const response = await fetch(`https://localhost:7197/booking/${id}`, {
+        const response = await fetch(`http://localhost:5000/booking/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -101,7 +101,7 @@ function BookingAddEdit() {
     }
 
     const handleFetchCustomer = async (id) => {
-        const response = await fetch(`https://localhost:7197/customer/${id}`, {
+        const response = await fetch(`http://localhost:5000/customer/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -120,7 +120,7 @@ function BookingAddEdit() {
     }
 
     const handleFetchSkip = async (id) => {
-        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+        const response = await fetch(`http://localhost:5000/skip/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -138,7 +138,7 @@ function BookingAddEdit() {
     }
 
     const handleFetchAvailableSkips = async () => {
-        const response = await fetch("https://localhost:7197/skip/available/", {
+        const response = await fetch("http://localhost:5000/skip/available/", {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -157,7 +157,7 @@ function BookingAddEdit() {
     }
 
     const handleSkipStatus = async (id, status) => {
-        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+        const response = await fetch(`http://localhost:5000/skip/${id}`, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
@@ -188,7 +188,7 @@ function BookingAddEdit() {
 
     const handleSubmitBooking = async () => {
         if (isEdit) {
-            const response = await fetch(`https://localhost:7197/booking/${id}`, {
+            const response = await fetch(`http://localhost:5000/booking/${id}`, {
                 method: 'put',
                 headers: {
                     'Content-Type': 'application/json',
@@ -238,7 +238,7 @@ function BookingAddEdit() {
                 handleCloseAddEditDialog();
             }
         } else {
-            const response = await fetch('https://localhost:7197/booking', {
+            const response = await fetch('http://localhost:5000/booking', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',

@@ -16,7 +16,7 @@ function CustomAutocomplete(props) {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const response = await fetch("https://localhost:7197/customer/", {
+        const response = await fetch("http://localhost:5000/customer/", {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -34,7 +34,7 @@ function CustomAutocomplete(props) {
     }
 
     const handleFetchSkips = async () => {
-        const response = await fetch("https://localhost:7197/skip/available/", {
+        const response = await fetch("http://localhost:5000/skip/available/", {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')

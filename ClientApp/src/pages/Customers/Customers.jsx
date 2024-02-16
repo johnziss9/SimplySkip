@@ -29,7 +29,7 @@ function Customers() {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const response = await fetch("https://localhost:7197/customer/", {
+        const response = await fetch("http://localhost:5000/customer/", {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -47,7 +47,7 @@ function Customers() {
     }
 
     const handleDeleteClick = async (id) => {
-        const response = await fetch(`https://localhost:7197/customer/${id}`, {
+        const response = await fetch(`http://localhost:5000/customer/${id}`, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,7 +90,7 @@ function Customers() {
     const handleCloseViewCustomer = () => setOpenViewCustomer(false);
 
     const handleCheckDeleteCustomer = async (customer) => {
-        const response = await fetch(`https://localhost:7197/booking/customer/${customer.id}`, {
+        const response = await fetch(`http://localhost:5000/booking/customer/${customer.id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
