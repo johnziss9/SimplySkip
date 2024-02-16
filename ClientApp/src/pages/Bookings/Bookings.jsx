@@ -98,9 +98,28 @@ function Bookings() {
         }
     }
 
+    const handleFetchSkip = async (id) => {
+        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+            method: 'get',
+            headers: {
+                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
+            }
+        });
+
+        if (response.ok) {
+            const skipData = await response.json();
+
+            setSkip(skipData);
+        } else {
+            setSnackbarMessage('Failed to load customer.'); 
+            setShowSnackbar(true);
+        }
+    }
+
     const handleOpenViewBooking = (booking) => {
         setBooking(booking);
         handleFetchCustomer(booking.customerId)
+        handleFetchSkip(booking.skipId);
         setOpenViewBooking(true);
     }
     const handleCloseViewBooking = () => setOpenViewBooking(false);
@@ -166,7 +185,7 @@ function Bookings() {
             if (getSkipResponse.ok) {
                 const skip = await getSkipResponse.json();
 
-                setSkip(skip);
+                1(skip);
 
                 const editSkipResponse = await fetch(`https://localhost:7197/skip/${skip.id}`, {
                     method: 'put',
@@ -306,7 +325,7 @@ function Bookings() {
                         Booking
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Skip:</FormLabel> {booking.skipId}
+                        <FormLabel>Skip:</FormLabel> {skip.name}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Address:</FormLabel> {booking.address}
