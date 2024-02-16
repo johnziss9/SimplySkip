@@ -5,8 +5,8 @@ import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import { useNavigate, useParams } from "react-router-dom";
-import CloseIcon from '@mui/icons-material/Close';
-import { Alert, Dialog, DialogActions, DialogTitle, IconButton, Snackbar, useMediaQuery } from "@mui/material";
+import { Dialog, DialogActions, DialogTitle, useMediaQuery } from "@mui/material";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function SkipAddEdit() {
     const navigate = useNavigate();
@@ -25,8 +25,8 @@ function SkipAddEdit() {
     const [isEdit, setIsEdit] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
-    const [addEditFailed, setAddEditFailed] = useState(false);
-    const [error, setError] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
 
     const [nameError, setNameError] = useState(false);
     const [sizeError, setSizeError] = useState(false);
@@ -61,7 +61,8 @@ function SkipAddEdit() {
             setLastUpdated(new Date(new Date(skip.lastUpdated)));
             setDeletedOn(new Date(new Date(skip.deletedOn)));
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load skip.');
+            setShowSnackbar(true);
         }
     }
 
@@ -89,13 +90,8 @@ function SkipAddEdit() {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
-                const data = await response.json();
-
-                const { title } = data;
-
-                setError(title);
-                
-                handleShowFailedAddEdit();
+                setSnackbarMessage('Failed to add booking.');
+                setShowSnackbar(true);
             }
         } else {
             const response = await fetch('https://localhost:7197/skip', {
@@ -120,19 +116,15 @@ function SkipAddEdit() {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
-                const data = await response.json();
-
                 if (!name || !size) {
-                    setError('Please fill in required fields.')
+                    setSnackbarMessage('Please fill in required fields.')
                     setNameError(true);
                     setSizeError(true);
                 } else {
-                    const { title } = data;
-
-                    setError(title);
+                    setSnackbarMessage('Failed to add booking.');
                 }
 
-                handleShowFailedAddEdit();
+                setShowSnackbar(true);
             }
         }
     }
@@ -141,14 +133,16 @@ function SkipAddEdit() {
         navigate('/Skips');
     };
 
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+    };
+
     const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
     const handleCloseAddEditDialog = () => setOpenAddEditDialog(false);
 
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
-
-    const handleShowFailedAddEdit = () => setAddEditFailed(true);
-    const handleHideFailedAddEdit = () => setAddEditFailed(false);
 
     return (
         <>
@@ -181,32 +175,7 @@ function SkipAddEdit() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
                 </DialogActions>
             </Dialog>
-            <Snackbar
-                open={addEditFailed}
-                autoHideDuration={4000}
-                onClose={handleHideFailedAddEdit}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                ClickAwayListenerProps={{ onClickAway: () => null }}
-            >
-                <Alert
-                    severity="error"
-                    sx={{
-                        margin: '20px 0'
-                    }}
-                    action={(
-                        <IconButton
-                            size="small"
-                            aria-label="close"
-                            color="inherit"
-                            onClick={handleHideFailedAddEdit}
-                        >
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    )}
-                >
-                    {error}
-                </Alert>
-            </Snackbar>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />
         </>
     );
 }

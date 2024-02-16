@@ -5,6 +5,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Fo
 import BookingCard from "../../components/BookingCard/BookingCard";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function Bookings() {
 
@@ -19,6 +20,9 @@ function Bookings() {
     const [skip, setSkip] = useState({}); // Used for changing skip status
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
@@ -41,7 +45,8 @@ function Bookings() {
             setBookings(bookings);
             handleGetCustomer(bookings);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load bookings.');
+            setShowSnackbar(true);
         }
     }
 
@@ -57,8 +62,8 @@ function Bookings() {
                 const customer = await response.json();
                 return { [booking.customerId]: customer };
             } else {
-                // TODO Handle error if cards don't load
-                return null;
+                setSnackbarMessage('Failed to load customer for current booking.'); 
+                setShowSnackbar(true);
             }
         });
 
@@ -88,7 +93,8 @@ function Bookings() {
 
             setCustomer(customer);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customer.'); 
+            setShowSnackbar(true);
         }
     }
 
@@ -181,19 +187,30 @@ function Bookings() {
                 });
 
                 if (editSkipResponse.ok) {
-                    // TODO Check if something gets added here
+                    setSnackbarMessage(`Booking Cancelled. Skip ${skip.name} is now available.`); 
+                    setSnackbarSuccess(true);
+                    setShowSnackbar(true);
                 } else {
-                    // TODO Handle error if cards don't load
+                    setSnackbarMessage('Failed to update skip availability.'); 
+                    setShowSnackbar(true);
                 }
             } else {
-                // TODO Handle error if cards don't load
+                setSnackbarMessage('Failed to find skip associated to this booking.'); 
+                setShowSnackbar(true);
             }
 
             handleShowCancelSuccess();
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to update booking to cancelled.'); 
+            setShowSnackbar(true);
         }
     }
+
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+        setSnackbarSuccess(false);
+    };
 
     const handleShowCancelDialog = (booking) => {
         setBooking(booking)
@@ -298,7 +315,7 @@ function Bookings() {
                         <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>{!booking.returned ? 'Hired For:' : 'Return Date:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) : new Date(booking.returnDate).toLocaleDateString()}
+                        <FormLabel>{booking.cancelled  || booking.returned ? 'Return Date:' : 'Hired For:'}</FormLabel> {booking.cancelled ? 'Cancelled' : !booking.returned ? handleCalculateDays(booking.hireDate) : new Date(booking.returnDate).toLocaleDateString()}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Notes:</FormLabel> {booking.notes ? booking.notes : 'N/A'}
@@ -334,6 +351,7 @@ function Bookings() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseCancelSuccess} />
                 </DialogActions>
             </Dialog>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error'} />
         </>
     );
 }

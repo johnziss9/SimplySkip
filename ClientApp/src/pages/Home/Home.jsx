@@ -6,6 +6,7 @@ import CustomButton from '../../components/CustomButton/CustomButton';
 import { Alert, Snackbar, IconButton } from '@mui/material';
 import CloseIcon from '@mui/icons-material/Close';
 import Logo from '../../images/logo.png';
+import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
 
 function Home() {
 
@@ -13,8 +14,8 @@ function Home() {
 
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const [userLoginFailed, setUserLoginFailed] = useState(false);
-    const [errorStatus, setErrorStatus] = useState('');
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     const handleLogin = async () => {
         const response = await fetch("https://localhost:7197/auth/login", {
@@ -38,14 +39,15 @@ function Home() {
             const data = await response.json();
             const { title } = data;
 
-            setErrorStatus(title);
-
-            handleShowFailedLogin();
+            setSnackbarMessage(title);
+            setShowSnackbar(true);
         }
     }
 
-    const handleShowFailedLogin = () => setUserLoginFailed(true);
-    const handleHideFailedLogin = () => setUserLoginFailed(false);
+    const handleCloseSnackbar = () => {
+        setSnackbarMessage(false);
+        setShowSnackbar('');
+    };
 
     return (
         <>
@@ -59,26 +61,7 @@ function Home() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Login"} width={"200px"} height={"50px"} margin={"20px 0 0 0"} onClick={handleLogin} />
                 </div>
             </div>
-            <Snackbar
-                open={userLoginFailed}
-                autoHideDuration={4000}
-                onClose={handleHideFailedLogin}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                ClickAwayListenerProps={{ onClickAway: () => null }}
-            >
-                <Alert
-                    severity="error"
-                    action={(
-                        <IconButton
-                            size="small"
-                            aria-label="close"
-                            color="inherit"
-                            onClick={handleHideFailedLogin}
-                        >
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    )}>{errorStatus}</Alert>
-            </Snackbar>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />
         </>
     )
 }

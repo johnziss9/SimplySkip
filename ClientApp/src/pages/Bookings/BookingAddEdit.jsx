@@ -6,9 +6,9 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomAutocomplete from "../../components/CustomAutocomplete/CustomAutocomplete";
 import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker";
-import { Alert, Dialog, DialogActions, DialogTitle, FormGroup, IconButton, Snackbar, Typography, useMediaQuery } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, DialogActions, DialogTitle, FormGroup, Typography, useMediaQuery } from "@mui/material";
 import CustomSwitch from "../../components/CustomSwitch/CustomSwitch";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function BookingAddEdit() {
 
@@ -33,8 +33,9 @@ function BookingAddEdit() {
     const [previousIsReturned, setPreviousIsReturned] = useState(false); // Used for handling skip status
     const [isPaid, setIsPaid] = useState(false);
     const [isCancelled, setIsCancelled] = useState(false);
-    const [error, setError] = useState('');
-    const [addEditFailed, setAddEditFailed] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState(''); 
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarSuccess, setSnackbarSuccess] = useState(false); // Used to change snackbar alert severity
     const [useSameAddress, setUseSameAddress] = useState(false);
     const [createdOn, setCreatedOn] = useState(new Date());
     const [lastUpdated, setLastUpdated] = useState(new Date());
@@ -94,7 +95,8 @@ function BookingAddEdit() {
             setCancelledOn(new Date(new Date(booking.cancelledOn)));
 
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load bookings.');
+            setShowSnackbar(true);
         }
     }
 
@@ -112,7 +114,8 @@ function BookingAddEdit() {
             setCustomer(customer);
 
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customer.'); 
+            setShowSnackbar(true);
         }
     }
 
@@ -129,7 +132,8 @@ function BookingAddEdit() {
 
             setSkip(skip);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load skip.'); 
+            setShowSnackbar(true);
         }
     }
 
@@ -147,7 +151,8 @@ function BookingAddEdit() {
             setSmallSkips(data.filter(skip => skip.size === 1).length);
             setLargeSkips(data.filter(skip => skip.size === 2).length);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load available skips.'); 
+            setShowSnackbar(true);
         }
     }
 
@@ -171,9 +176,13 @@ function BookingAddEdit() {
         });
 
         if (response.ok) {
-            // TODO Check if something gets added here
+            const data = await response.json();
+            setSnackbarMessage(`Skip ${skip.name} has been updated.`); 
+            setSnackbarSuccess(true);
+            setShowSnackbar(true);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage(`Failed to update skip ${skip.name}.`);
+            setShowSnackbar(true);
         }
     }
 
@@ -217,19 +226,16 @@ function BookingAddEdit() {
 
                 // Check if isReturned value has changed from false to true
             } else {
-                const data = await response.json();
-
-                if (!customer || !skip || !address) {
-                    setError('Please fill in required fields.')
+                if (!skip || !address) {
+                    setSnackbarMessage('Please fill in required fields.')
                     setSkipError(true);
                     setAddressError(true);
                 } else {
-                    const { title } = data;
-
-                    setError(title);
+                    setSnackbarMessage('Failed to update booking.');
                 }
 
-                handleShowFailedAddEdit();
+                setShowSnackbar(true);
+                handleCloseAddEditDialog();
             }
         } else {
             const response = await fetch('https://localhost:7197/booking', {
@@ -259,20 +265,18 @@ function BookingAddEdit() {
                 handleShowSuccess();
                 handleSkipStatus(skip.id, true);
             } else {
-                const data = await response.json();
 
                 if (!customer || !skip || !address) {
-                    setError('Please fill in required fields.')
+                    setSnackbarMessage('Please fill in required fields.')
                     setSkipError(true);
                     setCustomerError(true);
                     setAddressError(true);
                 } else {
-                    const { title } = data;
-
-                    setError(title);
+                    setSnackbarMessage('Failed to add booking.');
                 }
 
-                handleShowFailedAddEdit();
+                setShowSnackbar(true);
+                handleCloseAddEditDialog();
             }
         }
     }
@@ -309,14 +313,17 @@ function BookingAddEdit() {
         sessionStorage.removeItem('AddNewSource');
     }
 
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+        setSnackbarSuccess(false);
+    };
+
     const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
     const handleCloseAddEditDialog = () => setOpenAddEditDialog(false);
 
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
-
-    const handleShowFailedAddEdit = () => setAddEditFailed(true);
-    const handleHideFailedAddEdit = () => setAddEditFailed(false);
 
     return (
         <>
@@ -370,32 +377,7 @@ function BookingAddEdit() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
                 </DialogActions>
             </Dialog>
-            <Snackbar
-                open={addEditFailed}
-                autoHideDuration={4000}
-                onClose={handleHideFailedAddEdit}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                ClickAwayListenerProps={{ onClickAway: () => null }}
-            >
-                <Alert
-                    severity="error"
-                    sx={{
-                        margin: '20px 0'
-                    }}
-                    action={(
-                        <IconButton
-                            size="small"
-                            aria-label="close"
-                            color="inherit"
-                            onClick={handleHideFailedAddEdit}
-                        >
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    )}
-                >
-                    {error}
-                </Alert>
-            </Snackbar>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error'} />
         </>
     )
 }

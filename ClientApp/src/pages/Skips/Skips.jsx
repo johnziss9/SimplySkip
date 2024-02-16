@@ -5,6 +5,7 @@ import SkipCard from "../../components/SkipCard/SkipCard";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { useNavigate } from "react-router-dom";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function Skips() {
 
@@ -18,6 +19,8 @@ function Skips() {
     const [openViewSkip, setOpenViewSkip] = useState(false); // Handling the View Skip Dialog
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     useEffect(() => {
         handleFetchSkips();
@@ -37,13 +40,14 @@ function Skips() {
 
             setSkips(skips);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load skips.');
+            setShowSnackbar(true);
         }
     }
 
-    const handleFetchBookingDetails = async (bookingId) => {
+    const handleFetchBookingDetails = async (skipId) => {
         try {
-            const bookingResponse = await fetch(`https://localhost:7197/booking/skip/${bookingId}`, {
+            const bookingResponse = await fetch(`https://localhost:7197/booking/skip/${skipId}`, {
                 method: 'get',
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -69,14 +73,16 @@ function Skips() {
 
                     setCustomer(customer)
                 } else {
-                    // TODO Handle error if cards don't load
+                    setSnackbarMessage('Failed to load customer.');
+                    setShowSnackbar(true);
                 }
             } else {
-                // TODO Handle error if cards don't load
+                setSnackbarMessage('Failed to load booking.');
+                setShowSnackbar(true);
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
-            // TODO Handle generic error
+            setSnackbarMessage(error || 'Something went wrong. Failed to load booking details.');
+            setShowSnackbar(true);
         }
     }
 
@@ -119,9 +125,15 @@ function Skips() {
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to delete skip.');
+            setShowSnackbar(true);
         }
     }
+
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+    };
 
     const handleOpenViewSkip = (skip) => {
         setOpenViewSkip(true);
@@ -235,7 +247,7 @@ function Skips() {
                             <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Hired For:</FormLabel> {handleCalculateDays(booking.hireDate)}
+                            <FormLabel>{booking.returned ? 'Return Date:' : 'Hired For:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) : new Date(booking.returnDate).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Notes:</FormLabel> {booking.notes ? booking.notes : 'N/A'}
@@ -288,6 +300,7 @@ function Skips() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseDeleteSuccess} />
                 </DialogActions>
             </Dialog>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />
         </>
     );
 }

@@ -1,10 +1,13 @@
 import { Autocomplete, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
+import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
 
 function CustomAutocomplete(props) {
 
     const [customers, setCustomers] = useState([]);
     const [skips, setSkips] = useState([]);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     useEffect(() => {
         handleFetchCustomers();
@@ -25,7 +28,8 @@ function CustomAutocomplete(props) {
 
             setCustomers(data);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customers.');
+            setShowSnackbar(true);
         }
     }
 
@@ -42,7 +46,8 @@ function CustomAutocomplete(props) {
 
             setSkips(data);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load skips.');
+            setShowSnackbar(true);
         }
     }
 
@@ -61,47 +66,55 @@ function CustomAutocomplete(props) {
         return '';
     };
 
+    const handleCloseSnackbar = () => {
+        setSnackbarMessage(false);
+        setShowSnackbar('');
+    };
+
     return (
-        <Autocomplete
-            disablePortal
-            options={props.fill == 'Customers' ? customers : skips}
-            getOptionLabel={props.fill == 'Customers' ? formatCustomerLabel : formatSkipLabel}
-            sx={{ width: props.width }}
-            value={props.value}
-            onChange={props.onChange}
-            disabled={props.disabled}
-            renderInput={(params) => (
-                <TextField
-                    margin="normal"
-                    {...params}
-                    required
-                    label={props.fill == 'Customers' ? "Customer" : "Skip"}
-                    sx={{
-                        '& .MuiOutlinedInput-root': {
-                            '& fieldset': {
-                                borderColor: '#006d77', // Changes border style when not focused
-                                borderRadius: 0,
+        <>
+            <Autocomplete
+                disablePortal
+                options={props.fill == 'Customers' ? customers : skips}
+                getOptionLabel={props.fill == 'Customers' ? formatCustomerLabel : formatSkipLabel}
+                sx={{ width: props.width }}
+                value={props.value}
+                onChange={props.onChange}
+                disabled={props.disabled}
+                renderInput={(params) => (
+                    <TextField
+                        margin="normal"
+                        {...params}
+                        required
+                        label={props.fill == 'Customers' ? "Customer" : "Skip"}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: '#006d77', // Changes border style when not focused
+                                    borderRadius: 0,
+                                },
+                                '&:hover fieldset': {
+                                    border: '2px solid #006d77', // Changes border style on hover
+                                },
+                                '&.Mui-focused fieldset': {
+                                    borderColor: '#006d77 !important', // Changes border style when focused
+                                }
                             },
-                            '&:hover fieldset': {
-                                border: '2px solid #006d77', // Changes border style on hover
-                            },
-                            '&.Mui-focused fieldset': {
-                                borderColor: '#006d77 !important', // Changes border style when focused
+                            '& input': {
+                                color: '#006d77', // Changes the font color
                             }
-                        },
-                        '& input': {
-                            color: '#006d77', // Changes the font color
-                        }
-                    }}
-                    InputLabelProps={{
-                        style: {
-                            color: '#006d77', // Changes the label color
-                        },
-                    }}
-                    error={props.error}
-                />
-            )}
-        />
+                        }}
+                        InputLabelProps={{
+                            style: {
+                                color: '#006d77', // Changes the label color
+                            },
+                        }}
+                        error={props.error}
+                    />
+                )}
+            />
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />
+        </>
     );
 }
 

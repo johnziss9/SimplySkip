@@ -6,6 +6,7 @@ import CustomerCard from "../../components/CustomerCard/CustomerCard";
 import { useNavigate } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function Customers() {
     const navigate = useNavigate();
@@ -17,6 +18,8 @@ function Customers() {
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
     const [openActiveBookingsDialog, setOpenActiveBookingsDialog] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
 
     const searchbarWidth = useMediaQuery('(max-width: 550px)');
 
@@ -38,7 +41,8 @@ function Customers() {
 
             setCustomers(data);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customers.');
+            setShowSnackbar(true);
         }
     }
 
@@ -66,7 +70,8 @@ function Customers() {
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to delete customer.');
+            setShowSnackbar(true);
         }
     }
 
@@ -102,6 +107,11 @@ function Customers() {
                 handleShowDeleteDialog(customer);
         }
     }
+
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+    };
 
     const handleShowDeleteDialog = (customer) => {
         setCustomer(customer);
@@ -215,6 +225,7 @@ function Customers() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseActiveBookingsDialog} />
                 </DialogActions>
             </Dialog>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />
         </>
     );
 }

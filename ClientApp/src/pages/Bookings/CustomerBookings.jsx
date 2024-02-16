@@ -5,6 +5,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBookingCard";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function CustomerBookings() {
 
@@ -20,6 +21,9 @@ function CustomerBookings() {
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
     const [skip, setSkip] = useState({}); // Used for changing skip status
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
+    const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
@@ -42,7 +46,8 @@ function CustomerBookings() {
 
             setBookings(bookings);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customer bookings.');
+            setShowSnackbar(true);
         }
     }
 
@@ -59,7 +64,8 @@ function CustomerBookings() {
 
             setCustomer(customer);
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customer.'); 
+            setShowSnackbar(true);
         }
     }
 
@@ -118,19 +124,32 @@ function CustomerBookings() {
                 });
 
                 if (editSkipResponse.ok) {
-                    // TODO Check if something gets added here
+                    const response = await bookingResponse.json();
+                    setSnackbarMessage(`Booking Cancelled. Skip ${skip.name} is now available.`);
+                    setSnackbarSuccess(true); 
+                    setShowSnackbar(true);
                 } else {
-                    // TODO Handle error if cards don't load
+                    setSnackbarMessage('Failed to update skip availability.'); 
+                    setShowSnackbar(true);
                 }
             } else {
-                // TODO Handle error if cards don't load
+                setSnackbarMessage('Failed to find skip associated with this booking.'); 
+                setShowSnackbar(true);
             }
 
             handleShowCancelSuccess();
         } else {
-            // TODO Handle error if cards don't load
+            const errorData = await bookingResponse.json();
+            setSnackbarMessage('Failed to set booking to cancelled.'); 
+            setShowSnackbar(true);
         }
     }
+
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+        setSnackbarSuccess(false)
+    };
 
     const handleOpenViewBooking = (booking) => {
         setBooking(booking);
@@ -299,6 +318,7 @@ function CustomerBookings() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseCancelSuccess} />
                 </DialogActions>
             </Dialog>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error' } />
         </>
     );
 }

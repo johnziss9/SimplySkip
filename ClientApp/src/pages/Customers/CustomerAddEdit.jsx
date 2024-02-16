@@ -4,8 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import { Alert, Dialog, DialogActions, DialogContent, DialogTitle, IconButton, Snackbar, useMediaQuery } from "@mui/material";
-import CloseIcon from '@mui/icons-material/Close';
+import { Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
@@ -25,10 +25,10 @@ function CustomerAddEdit() {
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
     const [openBookingsAddressDialog, setOpenBookingsAddressDialog] = useState(false);
-    const [isEdit, setIsEdit] = useState(false); // TODO Check if this is used. Currently using it but I could use id from useParams?
-    const [customer, setCustomer] = useState({}); // TODO Check if this is used
-    const [addEditFailed, setAddEditFailed] = useState(false);
-    const [error, setError] = useState('');
+    const [isEdit, setIsEdit] = useState(false);
+    const [customer, setCustomer] = useState({});
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [showSnackbar, setShowSnackbar] = useState(false);
     const [previousAddress, setPreviousAddress] = useState('');
 
     const [firstNameError, setFirstNameError] = useState(false);
@@ -70,9 +70,9 @@ function CustomerAddEdit() {
 
     const handleSubmitCustomer = async () => {
         if (!isValidEmail && email !== null && email.trim() !== "") {
-            setError("Please enter a valid email address");
+            setSnackbarMessage("Please enter a valid email address");
             setEmailError(true);
-            handleShowFailedAddEdit();
+            setShowSnackbar(true);
             return; // Stop further execution if email is not valid
         }
         
@@ -102,21 +102,17 @@ function CustomerAddEdit() {
                 if (previousAddress !== address)
                     handleFutureBookingAddress();
             } else {
-                const data = await response.json();
-
                 if (!firstName || !lastName || !address || !phone) {
-                    setError('Please fill in required fields.')
+                    setSnackbarMessage('Please fill in required fields.')
                     setFirstNameError(true);
                     setLastNameError(true);
                     setAddressError(true);
                     setPhoneError(true);
                 } else {
-                    const { title } = data;
-
-                    setError(title);
+                    setSnackbarMessage('Failed to add booking.');
                 }
 
-                handleShowFailedAddEdit();
+                setShowSnackbar(true);
             }
         } else {
             const response = await fetch('https://localhost:7197/customer', {
@@ -142,21 +138,17 @@ function CustomerAddEdit() {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
-                const data = await response.json();
-
                 if (!firstName || !lastName || !address || !phone) {
-                    setError('Please fill in required fields.')
+                    setSnackbarMessage('Please fill in required fields.')
                     setFirstNameError(true);
                     setLastNameError(true);
                     setAddressError(true);
                     setPhoneError(true);
                 } else {
-                    const { title } = data;
-
-                    setError(title);
+                    setSnackbarMessage('Failed to add booking.');
                 }
 
-                handleShowFailedAddEdit();
+                setShowSnackbar(true);
             }
         }
     }
@@ -174,20 +166,22 @@ function CustomerAddEdit() {
         });
 
         if (response.ok) {
-            const customer = await response.json();
+            const customerData = await response.json();
 
-            setCustomer(customer);
-            setFirstName(customer.firstName);
-            setLastName(customer.lastName);
-            setPhone(customer.phone);
-            setAddress(customer.address.replace(/, /g, '\n'));
-            setPreviousAddress(customer.address);
-            setEmail(customer.email);
-            setCreatedOn(new Date(new Date(customer.createdOn)));
-            setLastUpdated(new Date(new Date(customer.lastUpdated)));
-            setDeletedOn(new Date(new Date(customer.deletedOn)));
+            setCustomer(customerData);
+
+            setFirstName(customerData.firstName);
+            setLastName(customerData.lastName);
+            setPhone(customerData.phone);
+            setAddress(customerData.address.replace(/, /g, '\n'));
+            setPreviousAddress(customerData.address);
+            setEmail(customerData.email);
+            setCreatedOn(new Date(new Date(customerData.createdOn)));
+            setLastUpdated(new Date(new Date(customerData.lastUpdated)));
+            setDeletedOn(new Date(new Date(customerData.deletedOn)));
         } else {
-            // TODO Handle error if cards don't load
+            setSnackbarMessage('Failed to load customer.');
+            setShowSnackbar(true);
         }
     }
 
@@ -212,14 +206,16 @@ function CustomerAddEdit() {
         navigate(`/Customer/${customer.id}/Bookings`);
     }
 
+    const handleCloseSnackbar = () => {
+        setShowSnackbar(false);
+        setSnackbarMessage('');
+    };
+
     const handleShowAddEditDialog = () => setOpenAddEditDialog(true);
     const handleCloseAddEditDialog = () => setOpenAddEditDialog(false);
 
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
-
-    const handleShowFailedAddEdit = () => setAddEditFailed(true);
-    const handleHideFailedAddEdit = () => setAddEditFailed(false);
 
     const handleShowBookingsAddressDialog = () => setOpenBookingsAddressDialog(true);
     const handleCloseBookingsAddressDialog = () => setOpenBookingsAddressDialog(false);
@@ -269,32 +265,7 @@ function CustomerAddEdit() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Go To Bookings"} width={"150px"} height={"45px"} onClick={handleViewBookings} />
                 </DialogActions>
             </Dialog>
-            <Snackbar
-                open={addEditFailed}
-                autoHideDuration={4000}
-                onClose={handleHideFailedAddEdit}
-                anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-                ClickAwayListenerProps={{ onClickAway: () => null }}
-            >
-                <Alert
-                    severity="error"
-                    sx={{
-                        margin: '20px 0'
-                    }}
-                    action={(
-                        <IconButton
-                            size="small"
-                            aria-label="close"
-                            color="inherit"
-                            onClick={handleHideFailedAddEdit}
-                        >
-                            <CloseIcon fontSize="small" />
-                        </IconButton>
-                    )}
-                >
-                    {error}
-                </Alert>
-            </Snackbar>
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />
         </>
     )
 }
