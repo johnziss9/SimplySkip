@@ -32,7 +32,7 @@ function Bookings() {
     }, []);
 
     const handleFetchBookings = async () => {
-        const response = await fetch('http://localhost:5000/booking/', {
+        const response = await fetch('https://localhost:7197/booking/', {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -52,7 +52,7 @@ function Bookings() {
 
     const handleGetCustomer = async (activeBookings) => {
         const promises = activeBookings.map(async (booking) => {
-            const response = await fetch(`http://localhost:5000/customer/${booking.customerId}`, {
+            const response = await fetch(`https://localhost:7197/customer/${booking.customerId}`, {
                 method: 'get',
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -81,7 +81,7 @@ function Bookings() {
     };
 
     const handleFetchCustomer = async (id) => {
-        const response = await fetch(`http://localhost:5000/customer/${id}`, {
+        const response = await fetch(`https://localhost:7197/customer/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -99,7 +99,7 @@ function Bookings() {
     }
 
     const handleFetchSkip = async (id) => {
-        const response = await fetch(`http://localhost:5000/skip/${id}`, {
+        const response = await fetch(`https://localhost:7197/skip/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -152,7 +152,7 @@ function Bookings() {
     }
 
     const handleCancelClick = async () => {
-        const bookingResponse = await fetch(`http://localhost:5000/booking/${booking.id}`, {
+        const bookingResponse = await fetch(`https://localhost:7197/booking/${booking.id}`, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
@@ -175,7 +175,7 @@ function Bookings() {
         });
 
         if (bookingResponse.ok) {
-            const getSkipResponse = await fetch(`http://localhost:5000/skip/${booking.skipId}`, {
+            const getSkipResponse = await fetch(`https://localhost:7197/skip/${booking.skipId}`, {
                 method: 'get',
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -187,7 +187,7 @@ function Bookings() {
 
                 1(skip);
 
-                const editSkipResponse = await fetch(`http://localhost:5000/skip/${skip.id}`, {
+                const editSkipResponse = await fetch(`https://localhost:7197/skip/${skip.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',

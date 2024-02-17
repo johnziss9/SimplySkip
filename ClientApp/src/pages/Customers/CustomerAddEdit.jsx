@@ -77,7 +77,7 @@ function CustomerAddEdit() {
         }
         
         if (isEdit) {
-            const response = await fetch(`http://localhost:5000/customer/${id}`, {
+            const response = await fetch(`https://localhost:7197/customer/${id}`, {
                 method: 'put',
                 headers: {
                     'Content-Type': 'application/json',
@@ -115,7 +115,7 @@ function CustomerAddEdit() {
                 setShowSnackbar(true);
             }
         } else {
-            const response = await fetch('http://localhost:5000/customer', {
+            const response = await fetch('https://localhost:7197/customer', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
@@ -158,7 +158,7 @@ function CustomerAddEdit() {
     };
 
     const handleFetchCustomer = async () => {
-        const response = await fetch(`http://localhost:5000/customer/${id}`, {
+        const response = await fetch(`https://localhost:7197/customer/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -186,7 +186,7 @@ function CustomerAddEdit() {
     }
 
     const handleFutureBookingAddress = async () => {
-        const response = await fetch(`http://localhost:5000/booking/customer/${customer.id}`, {
+        const response = await fetch(`https://localhost:7197/booking/customer/${customer.id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')

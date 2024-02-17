@@ -19,7 +19,8 @@ namespace SimplySkip.Services
             _ssDbContext.Skips.Add(skip);
             await _ssDbContext.SaveChangesAsync();
 
-            skip.Notes = skip.Notes.Replace(", ", "\n");
+            if (skip.Notes != null)
+                skip.Notes = skip.Notes.Replace(", ", "\n");
 
             return Response<Skip>.Success(skip);
         }

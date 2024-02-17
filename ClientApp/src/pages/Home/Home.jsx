@@ -18,7 +18,7 @@ function Home() {
     const [showSnackbar, setShowSnackbar] = useState(false);
 
     const handleLogin = async () => {
-        const response = await fetch("http://localhost:5000/auth/login", {
+        const response = await fetch("https://localhost:7197/auth/login", {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',

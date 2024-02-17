@@ -42,7 +42,7 @@ function SkipAddEdit() {
     }, [id]);
 
     const handleFetchSkip = async () => {
-        const response = await fetch(`http://localhost:5000/skip/${id}`, {
+        const response = await fetch(`https://localhost:7197/skip/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -68,7 +68,7 @@ function SkipAddEdit() {
 
     const handleSubmitSkip = async () => {
         if (isEdit) {
-            const response = await fetch(`http://localhost:5000/skip/${id}`, {
+            const response = await fetch(`https://localhost:7197/skip/${id}`, {
                 method: 'put',
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,7 +94,7 @@ function SkipAddEdit() {
                 setShowSnackbar(true);
             }
         } else {
-            const response = await fetch('http://localhost:5000/skip', {
+            const response = await fetch('https://localhost:7197/skip', {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',
