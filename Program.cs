@@ -8,20 +8,15 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using SimplySkip.Data;
-using Mcrio.Configuration.Provider.Docker;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 using Mcrio.Configuration.Provider.Docker.Secrets;
-using Microsoft.Extensions.Configuration;
-using System.Security.Cryptography;
 
 
 var configuration = new ConfigurationBuilder()
     .AddDockerSecrets() 
     .Build();
 
-// Retrieve connection string from Docker secret
-string connectionString = File.ReadAllText("/run/secrets/conn_string").Trim();
+// TODO ENABLE FOR DOCKER IF USING THE conn_string secret
+// string connectionString = File.ReadAllText("/run/secrets/conn_string").Trim();
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -34,14 +29,16 @@ builder.Services.AddSwaggerGen(c =>
 
 builder.Services.AddDbContext<SSDbContext>(options =>
 {
-    // options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+    // TODO ENABLE FOR DOCKER IF USING THE conn_string secret
+    // options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddDbContext<AuthDbContext>(options =>
 {
-    // options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
-    options.UseNpgsql(connectionString);
+    options.UseNpgsql(builder.Configuration.GetConnectionString("SSPostgresConnection"));
+    // TODO ENABLE FOR DOCKER IF USING THE conn_string secret
+    // options.UseNpgsql(connectionString);
 });
 
 builder.Services.AddCors(options =>
@@ -57,6 +54,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
 
+string jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key configuration value is missing or empty.");
+
 builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -66,7 +65,7 @@ builder.Services.AddAuthentication(options =>
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,
-            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"])),
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey)),
             ValidateIssuer = true,
             ValidIssuer = builder.Configuration["Jwt:Issuer"],
             ValidateAudience = true,

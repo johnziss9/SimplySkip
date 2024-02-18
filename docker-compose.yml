@@ -9,8 +9,8 @@ services:
       - postgres
     volumes:
       - app-data:/app/data
-    secrets:
-      - conn_string
+    # secrets:
+    #   - conn_string
 
   postgres:
     image: postgres
@@ -28,7 +28,7 @@ services:
   pgadmin:
     image: dpage/pgadmin4
     environment:
-      PGADMIN_DEFAULT_EMAIL: johnziss9@gmail.com
+      PGADMIN_DEFAULT_EMAIL: /run/secrets/pgadmin_email
       PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
     ports:
       - "5050:80"
@@ -37,6 +37,7 @@ services:
     volumes:
       - pgadmin-data:/var/lib/pgadmin
     secrets:
+      - pgadmin_email
       - pgadmin_password
 
 volumes:
@@ -47,7 +48,9 @@ volumes:
 secrets:
   db_password:
     file: ./db_password.txt
+  pgadmin_email:
+    file: ./pgadmin_email.txt
   pgadmin_password:
     file: ./pgadmin_password.txt
-  conn_string:
-    file: ./conn_string.txt
+  # conn_string:
+  #   file: ./conn_string.txt
