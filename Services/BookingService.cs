@@ -18,8 +18,11 @@ namespace SimplySkip.Services
             _ssDbContext.Bookings.Add(booking);
             await _ssDbContext.SaveChangesAsync();
 
-            booking.Address = booking.Address.Replace(", ", "\n");
-            booking.Notes = booking.Notes.Replace(", ", "\n");
+            if (booking.Address != null)
+                booking.Address = booking.Address.Replace(", ", "\n");
+
+            if (booking.Notes != null)
+                booking.Notes = booking.Notes.Replace(", ", "\n");
 
             return Response<Booking>.Success(booking);
         }
@@ -29,8 +32,12 @@ namespace SimplySkip.Services
             var bookings = await _ssDbContext.Bookings.ToListAsync();
 
             foreach (var booking in bookings) {
-                booking.Address = booking.Address.Replace(", ", "\n");
-                booking.Notes = booking.Notes.Replace(", ", "\n");
+
+                if (booking.Address != null)
+                    booking.Address = booking.Address.Replace(", ", "\n");
+
+                if (booking.Notes != null)
+                    booking.Notes = booking.Notes.Replace(", ", "\n");
             }
 
             return Response<List<Booking>>.Success(bookings);
@@ -41,8 +48,12 @@ namespace SimplySkip.Services
             var bookings = await _ssDbContext.Bookings.Where(b => b.CustomerId == id).ToListAsync();
 
             foreach (var booking in bookings) {
-                booking.Address = booking.Address.Replace(", ", "\n");
-                booking.Notes = booking.Notes.Replace(", ", "\n");
+
+                if (booking.Address != null)
+                    booking.Address = booking.Address.Replace(", ", "\n");
+                
+                if (booking.Notes != null)
+                    booking.Notes = booking.Notes.Replace(", ", "\n");
             }
 
             return Response<List<Booking>>.Success(bookings);
@@ -57,8 +68,11 @@ namespace SimplySkip.Services
                 return Response<Booking>.Fail(404, "Booking Not Found");
             }
 
-            booking.Address = booking.Address.Replace(", ", "\n");
-            booking.Notes = booking.Notes.Replace(", ", "\n");
+            if (booking.Address != null)
+                booking.Address = booking.Address.Replace(", ", "\n");
+
+            if (booking.Notes != null)
+                booking.Notes = booking.Notes.Replace(", ", "\n");
 
             return Response<Booking>.Success(booking);
         }
@@ -72,8 +86,11 @@ namespace SimplySkip.Services
                 return Response<Booking>.Fail(404, "Booking Not Found");
             }
 
-            booking.Address = booking.Address.Replace(", ", "\n");
-            booking.Notes = booking.Notes.Replace(", ", "\n");
+            if (booking.Address != null)
+                booking.Address = booking.Address.Replace(", ", "\n");
+            
+            if (booking.Notes != null)
+                booking.Notes = booking.Notes.Replace(", ", "\n");
 
             return Response<Booking>.Success(booking);
         }
