@@ -3,8 +3,6 @@ import './Home.css';
 import { useNavigate } from "react-router-dom";
 import CustomTextField from '../../components/CustomTextField/CustomTextField';
 import CustomButton from '../../components/CustomButton/CustomButton';
-import { Alert, Snackbar, IconButton } from '@mui/material';
-import CloseIcon from '@mui/icons-material/Close';
 import Logo from '../../images/logo.png';
 import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
 
