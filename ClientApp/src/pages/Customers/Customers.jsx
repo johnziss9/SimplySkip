@@ -23,13 +23,15 @@ function Customers() {
 
     const searchbarWidth = useMediaQuery('(max-width: 550px)');
 
+    const baseUrl = process.env.REACT_APP_URL;
+
     useEffect(() => {
         handleFetchCustomers();
         // eslint-disable-next-line
     }, []);
 
     const handleFetchCustomers = async () => {
-        const response = await fetch("https://localhost:7197/customer/", {
+        const response = await fetch(`${baseUrl}/customer/`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -47,7 +49,7 @@ function Customers() {
     }
 
     const handleDeleteClick = async (id) => {
-        const response = await fetch(`https://localhost:7197/customer/${id}`, {
+        const response = await fetch(`${baseUrl}/customer/${id}`, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
@@ -90,7 +92,7 @@ function Customers() {
     const handleCloseViewCustomer = () => setOpenViewCustomer(false);
 
     const handleCheckDeleteCustomer = async (customer) => {
-        const response = await fetch(`https://localhost:7197/booking/customer/${customer.id}`, {
+        const response = await fetch(`${baseUrl}/booking/customer/${customer.id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')

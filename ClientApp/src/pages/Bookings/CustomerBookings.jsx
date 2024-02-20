@@ -27,6 +27,8 @@ function CustomerBookings() {
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
+    const baseUrl = process.env.REACT_APP_URL;
+
     useEffect(() => {
         handleFetchCustomerBookings();
         handleFetchCustomer();
@@ -34,7 +36,7 @@ function CustomerBookings() {
     }, []);
 
     const handleFetchCustomerBookings = async () => {
-        const response = await fetch(`https://localhost:7197/booking/customer/${id}`, {
+        const response = await fetch(`${baseUrl}/booking/customer/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -52,7 +54,7 @@ function CustomerBookings() {
     }
 
     const handleFetchCustomer = async () => {
-        const response = await fetch(`https://localhost:7197/customer/${id}`, {
+        const response = await fetch(`${baseUrl}/customer/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -70,7 +72,7 @@ function CustomerBookings() {
     }
 
     const handleCancelClick = async () => {
-        const bookingResponse = await fetch(`https://localhost:7197/booking/${booking.id}`, {
+        const bookingResponse = await fetch(`${baseUrl}/booking/${booking.id}`, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
@@ -93,7 +95,7 @@ function CustomerBookings() {
         });
 
         if (bookingResponse.ok) {
-            const getSkipResponse = await fetch(`https://localhost:7197/skip/${booking.skipId}`, {
+            const getSkipResponse = await fetch(`${baseUrl}/skip/${booking.skipId}`, {
                 method: 'get',
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -105,7 +107,7 @@ function CustomerBookings() {
 
                 setSkip(skip);
 
-                const editSkipResponse = await fetch(`https://localhost:7197/skip/${skip.id}`, {
+                const editSkipResponse = await fetch(`${baseUrl}/skip/${skip.id}`, {
                     method: 'put',
                     headers: {
                         'Content-Type': 'application/json',

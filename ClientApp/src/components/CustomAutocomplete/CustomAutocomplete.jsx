@@ -9,6 +9,8 @@ function CustomAutocomplete(props) {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
 
+    const baseUrl = process.env.REACT_APP_URL;
+
     useEffect(() => {
         handleFetchCustomers();
         handleFetchSkips();
@@ -16,7 +18,7 @@ function CustomAutocomplete(props) {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const response = await fetch("https://localhost:7197/customer/", {
+        const response = await fetch(`${baseUrl}/customer/`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -34,7 +36,7 @@ function CustomAutocomplete(props) {
     }
 
     const handleFetchSkips = async () => {
-        const response = await fetch("https://localhost:7197/skip/available/", {
+        const response = await fetch(`${baseUrl}/skip/available/`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')

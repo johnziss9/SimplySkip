@@ -15,8 +15,10 @@ function Home() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
 
+    const baseUrl = process.env.REACT_APP_URL;
+
     const handleLogin = async () => {
-        const response = await fetch("https://localhost:7197/auth/login", {
+        const response = await fetch(`${baseUrl}/auth/login`, {
             method: 'post',
             headers: {
                 'Content-Type': 'application/json',

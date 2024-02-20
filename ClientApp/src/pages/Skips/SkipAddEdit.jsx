@@ -33,6 +33,8 @@ function SkipAddEdit() {
 
     const fieldsWidth = useMediaQuery('(max-width: 550px)');
 
+    const baseUrl = process.env.REACT_APP_URL;
+
     useEffect(() => {
         if (id) {
             handleFetchSkip();
@@ -42,7 +44,7 @@ function SkipAddEdit() {
     }, [id]);
 
     const handleFetchSkip = async () => {
-        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+        const response = await fetch(`${baseUrl}/skip/${id}`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -68,7 +70,7 @@ function SkipAddEdit() {
 
     const handleSubmitSkip = async () => {
         if (isEdit) {
-            const response = await fetch(`https://localhost:7197/skip/${id}`, {
+            const response = await fetch(`${baseUrl}/skip/${id}`, {
                 method: 'put',
                 headers: {
                     'Content-Type': 'application/json',
@@ -94,7 +96,7 @@ function SkipAddEdit() {
                 setShowSnackbar(true);
             }
         } else {
-            const response = await fetch('https://localhost:7197/skip', {
+            const response = await fetch(`${baseUrl}/skip`, {
                 method: 'post',
                 headers: {
                     'Content-Type': 'application/json',

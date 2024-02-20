@@ -22,13 +22,15 @@ function Skips() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
 
+    const baseUrl = process.env.REACT_APP_URL;
+
     useEffect(() => {
         handleFetchSkips();
         // eslint-disable-next-line
     }, []);
 
     const handleFetchSkips = async () => {
-        const response = await fetch("https://localhost:7197/skip/", {
+        const response = await fetch(`${baseUrl}/skip/`, {
             method: 'get',
             headers: {
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -47,7 +49,7 @@ function Skips() {
 
     const handleFetchBookingDetails = async (skipId) => {
         try {
-            const bookingResponse = await fetch(`https://localhost:7197/booking/skip/${skipId}`, {
+            const bookingResponse = await fetch(`${baseUrl}/booking/skip/${skipId}`, {
                 method: 'get',
                 headers: {
                     'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -61,7 +63,7 @@ function Skips() {
 
                 const customerId = booking.customerId;
 
-                const customerResponse = await fetch(`https://localhost:7197/customer/${customerId}`, {
+                const customerResponse = await fetch(`${baseUrl}/customer/${customerId}`, {
                     method: 'get',
                     headers: {
                         'Authorization': 'Bearer ' + sessionStorage.getItem('token')
@@ -103,7 +105,7 @@ function Skips() {
     }
 
     const handleDeleteClick = async (id) => {
-        const response = await fetch(`https://localhost:7197/skip/${id}`, {
+        const response = await fetch(`${baseUrl}/skip/${id}`, {
             method: 'put',
             headers: {
                 'Content-Type': 'application/json',
