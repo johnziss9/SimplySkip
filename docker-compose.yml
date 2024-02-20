@@ -31,7 +31,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: /run/secrets/pgadmin_email
       PGADMIN_DEFAULT_PASSWORD_FILE: /run/secrets/pgadmin_password
     ports:
-      - "80:80"
+      - "5050:80"
     depends_on:
       - postgres
     volumes:
