@@ -147,6 +147,7 @@ function Customers() {
                     width={searchbarWidth ? '300px' : '500px'}
                     margin={'normal'}
                     onChange={(e) => setSearchQuery(e.target.value)}
+                    disabled={filteredCustomers.length < 0 ? false :  true}
                     // display={filteredCustomers.length > 0 ? '' :  'none'}
                 />
                 <div className="customers-section">
