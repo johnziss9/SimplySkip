@@ -40,6 +40,13 @@ services:
       - pgadmin_email
       - pgadmin_password
 
+  nginx:
+    build: ./nginx
+    ports:
+      - "80:80"
+    depends_on:
+      - web
+
 volumes:
   app-data:  # Define the volume named "app-data"
   db-data:   # Define the volume named "db-data"
