@@ -1,0 +1,49 @@
+version: 2.1
+
+jobs:
+  build:
+    docker:
+      - image: mcr.microsoft.com/dotnet/sdk:7.0
+
+    working_directory: /home/circleci/repo
+
+    steps:
+      - checkout
+
+      # Install SSH key
+      - add_ssh_keys:
+          fingerprints:
+            - "${SSH_KEY_FINGERPRINT}"
+
+      # SSH into your Linode VM and pull latest changes
+      - run:
+          name: Pull latest changes
+          command: ssh ${LINODE_SSH_USER}@${LINODE_IP} 'cd SimplySkip && git pull origin production'
+
+      # Build .NET project
+      - run:
+          name: Build .NET Project
+          command: dotnet build
+
+      # Build React application
+      - run:
+          name: Install Node.js dependencies
+          command: |
+            cd ClientApp
+            npm install
+
+      - run:
+          name: Build React Application
+          command: |
+            cd ClientApp
+            npm run build
+
+workflows:
+  version: 2
+  build_and_deploy:
+    jobs:
+      - build:
+          filters:
+            branches:
+              only:
+                - production
