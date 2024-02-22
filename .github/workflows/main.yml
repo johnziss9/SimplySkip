@@ -19,6 +19,7 @@ jobs:
           host: ${{ secrets.LINODE_HOST }}
           username: ${{ secrets.LINODE_USERNAME }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
           script: |
             cd SimplySkip
             git pull origin production
