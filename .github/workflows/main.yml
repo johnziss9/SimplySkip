@@ -5,23 +5,35 @@ on:
     branches:
       - production
 
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+    
+#     steps:
+#       - name: Checkout repository
+#         uses: actions/checkout@v2
+
+#       - name: SSH into Linode VM and deploy changes
+#         uses: appleboy/ssh-action@master
+#         with:
+#           host: ${{ secrets.LINODE_HOST }}
+#           username: ${{ secrets.LINODE_USERNAME }}
+#           key: ${{ secrets.SSH_PRIVATE_KEY }}
+#           port: ${{ secrets.SSH_PORT }}
+#           script: |
+#             cd SimplySkip
+#             git pull origin production
+#             docker-compose pull
+#             docker-compose up -d
+
+
 jobs:
-  deploy:
+  print-message:
     runs-on: ubuntu-latest
     
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
+    env:
+      NAME: ${{ secrets.NAME }}
 
-      - name: SSH into Linode VM and deploy changes
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.LINODE_HOST }}
-          username: ${{ secrets.LINODE_USERNAME }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: ${{ secrets.SSH_PORT }}
-          script: |
-            cd SimplySkip
-            git pull origin production
-            docker-compose pull
-            docker-compose up -d
+    steps:
+      - name: Print message
+        run: echo "Hey, my name is $NAME"
