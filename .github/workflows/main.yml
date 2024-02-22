@@ -13,8 +13,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Pull latest Docker image
-        run: docker-compose pull
-
-      - name: Restart Docker containers
-        run: docker-compose up -d
+      - name: SSH into Linode VM and deploy changes
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          script: |
+            cd SimplySkip
+            git pull origin production
+            docker-compose pull
+            docker-compose up -d
