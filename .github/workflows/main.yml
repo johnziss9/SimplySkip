@@ -35,5 +35,10 @@ jobs:
       NAME: ${{ secrets.NAME }}
 
     steps:
-      - name: Print message
-        run: echo "Hey, my name is $NAME"
+      - name: Check if NAME is foo
+        run: |
+          if [ "$NAME" == "foo" ]; then
+            echo "true"
+          else
+            echo "false"
+          fi
