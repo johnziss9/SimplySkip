@@ -5,40 +5,37 @@ on:
     branches:
       - production
 
-# jobs:
-#   deploy:
-#     runs-on: ubuntu-latest
-    
-#     steps:
-#       - name: Checkout repository
-#         uses: actions/checkout@v2
-
-#       - name: SSH into Linode VM and deploy changes
-#         uses: appleboy/ssh-action@master
-#         with:
-#           host: ${{ secrets.LINODE_HOST }}
-#           username: ${{ secrets.LINODE_USERNAME }}
-#           key: ${{ secrets.SSH_PRIVATE_KEY }}
-#           port: ${{ secrets.SSH_PORT }}
-#           script: |
-#             cd SimplySkip
-#             git pull origin production
-#             docker-compose pull
-#             docker-compose up -d
-
-
 jobs:
-  print-message:
+  deploy:
     runs-on: ubuntu-latest
     
-    env:
-      NAME: ${{ secrets.NAME }}
-
     steps:
-      - name: Check if NAME is foo
-        run: |
-          if [ "$NAME" == "foo" ]; then
-            echo "true"
-          else
-            echo "false"
-          fi
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: SSH into Linode VM and deploy changes
+        run: echo $SSH_PRIVATE_KEY
+
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd SimplySkip
+            git pull origin production
+            docker-compose pull
+            docker-compose up -d
+
+
+# jobs:
+#   print-message:
+#     runs-on: ubuntu-latest
+    
+#     env:
+#       NAME: ${{ secrets.NAME }}
+
+#     steps:
+#       - name: Print message
+#         run: echo $SSH_PRIVATE_KEY
