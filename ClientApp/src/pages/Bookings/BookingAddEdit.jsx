@@ -9,6 +9,7 @@ import CustomDatePicker from "../../components/CustomDatePicker/CustomDatePicker
 import { Dialog, DialogActions, DialogTitle, FormGroup, Typography, useMediaQuery } from "@mui/material";
 import CustomSwitch from "../../components/CustomSwitch/CustomSwitch";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import dayjs from 'dayjs';
 
 function BookingAddEdit() {
 
@@ -327,6 +328,8 @@ function BookingAddEdit() {
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
+    const today = dayjs();
+
     return (
         <>
             <CustomNavbar currentPage={'Booking Information'} />
@@ -345,10 +348,10 @@ function BookingAddEdit() {
                     </div>
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} width={fieldsWidth ? '300px' : '440px'} />
                     <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} error={skipError} width={fieldsWidth ? '300px' : '440px'} />
-                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
+                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date()} minDate={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate > new Date() ? today : null} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
                     <FormGroup>
                         <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) || isCustomerAddressSameAsBookingAddress() ? true : false} />
-                        <CustomSwitch checked={isCustomerAddressSameAsBookingAddress()} disabled={!customer || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) ? true : false} onChange={handleSameAddress} label="Use Same Address as Customer" />
+                        <CustomSwitch checked={isCustomerAddressSameAsBookingAddress()} disabled={!customer || (isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date())} onChange={handleSameAddress} label="Use Same Address as Customer" />
                     </FormGroup>
                     <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
