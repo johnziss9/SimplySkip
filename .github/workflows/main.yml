@@ -23,5 +23,5 @@ jobs:
           script: |
             cd SimplySkip
             git pull origin production
-            docker compose pull
+            docker compose build --parallel
             docker compose up -d
