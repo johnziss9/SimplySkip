@@ -39,7 +39,6 @@ function BookingAddEdit() {
     const [snackbarSuccess, setSnackbarSuccess] = useState(false); // Used to change snackbar alert severity
     const [useSameAddress, setUseSameAddress] = useState(false);
     const [createdOn, setCreatedOn] = useState(new Date());
-    const [lastUpdated, setLastUpdated] = useState(new Date());
     const [cancelledOn, setCancelledOn] = useState(new Date());
 
     const [skipError, setSkipError] = useState(false);
@@ -69,6 +68,7 @@ function BookingAddEdit() {
         }
 
         handleFetchAvailableSkips();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [id]);
 
     const handleFetchBooking = async () => {
@@ -94,7 +94,6 @@ function BookingAddEdit() {
             setIsPaid(booking.paid);
             setIsCancelled(booking.cancelled);
             setCreatedOn(new Date(new Date(booking.createdOn)));
-            setLastUpdated(new Date(new Date(booking.lastUpdated)));
             setCancelledOn(new Date(new Date(booking.cancelledOn)));
 
         } else {
@@ -179,7 +178,6 @@ function BookingAddEdit() {
         });
 
         if (response.ok) {
-            const data = await response.json();
             setSnackbarMessage(`Skip ${skip.name} has been updated.`); 
             setSnackbarSuccess(true);
             setShowSnackbar(true);
