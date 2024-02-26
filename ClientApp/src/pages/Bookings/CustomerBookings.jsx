@@ -6,6 +6,7 @@ import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBo
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import handleCustomerHttpRequest from "../../api/api";
 
 function CustomerBookings() {
 
@@ -20,7 +21,6 @@ function CustomerBookings() {
     const [openViewBooking, setOpenViewBooking] = useState(false);
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
-    const [skip, setSkip] = useState({}); // Used for changing skip status
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
@@ -54,22 +54,18 @@ function CustomerBookings() {
     }
 
     const handleFetchCustomer = async () => {
-        const response = await fetch(`${baseUrl}/customer/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const customer = await response.json();
+        const { success, data } = await handleCustomerHttpRequest(url, method);
 
-            setCustomer(customer);
+        if (success) {            
+            setCustomer(data);
         } else {
-            setSnackbarMessage('Failed to load customer.'); 
+            setSnackbarMessage('Failed to load customer.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleCancelClick = async () => {
         const bookingResponse = await fetch(`${baseUrl}/booking/${booking.id}`, {
@@ -105,8 +101,6 @@ function CustomerBookings() {
             if (getSkipResponse.ok) {
                 const skip = await getSkipResponse.json();
 
-                setSkip(skip);
-
                 const editSkipResponse = await fetch(`${baseUrl}/skip/${skip.id}`, {
                     method: 'put',
                     headers: {
@@ -126,7 +120,6 @@ function CustomerBookings() {
                 });
 
                 if (editSkipResponse.ok) {
-                    const response = await bookingResponse.json();
                     setSnackbarMessage(`Booking Cancelled. Skip ${skip.name} is now available.`);
                     setSnackbarSuccess(true); 
                     setShowSnackbar(true);
@@ -141,7 +134,6 @@ function CustomerBookings() {
 
             handleShowCancelSuccess();
         } else {
-            const errorData = await bookingResponse.json();
             setSnackbarMessage('Failed to set booking to cancelled.'); 
             setShowSnackbar(true);
         }

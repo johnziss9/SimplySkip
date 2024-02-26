@@ -10,6 +10,7 @@ import { Dialog, DialogActions, DialogTitle, FormGroup, Typography, useMediaQuer
 import CustomSwitch from "../../components/CustomSwitch/CustomSwitch";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import dayjs from 'dayjs';
+import handleCustomerHttpRequest from "../../api/api";
 
 function BookingAddEdit() {
 
@@ -68,7 +69,7 @@ function BookingAddEdit() {
         }
 
         handleFetchAvailableSkips();
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        // eslint-disable-next-line
     }, [id]);
 
     const handleFetchBooking = async () => {
@@ -103,23 +104,18 @@ function BookingAddEdit() {
     }
 
     const handleFetchCustomer = async (id) => {
-        const response = await fetch(`${baseUrl}/customer/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const customer = await response.json();
+        const { success, data } = await handleCustomerHttpRequest(url, method);
 
-            setCustomer(customer);
-
+        if (success) {            
+            setCustomer(data);
         } else {
-            setSnackbarMessage('Failed to load customer.'); 
+            setSnackbarMessage('Failed to load customer.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFetchSkip = async (id) => {
         const response = await fetch(`${baseUrl}/skip/${id}`, {

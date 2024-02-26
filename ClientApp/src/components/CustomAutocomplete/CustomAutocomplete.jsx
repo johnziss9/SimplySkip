@@ -1,6 +1,7 @@
 import { Autocomplete, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
+import handleCustomerHttpRequest from "../../api/api";
 
 function CustomAutocomplete(props) {
 
@@ -18,22 +19,18 @@ function CustomAutocomplete(props) {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const response = await fetch(`${baseUrl}/customer/`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = '';
+        const method = 'GET';
 
-        if (response.ok) {
-            const data = await response.json();
+        const { success, data } = await handleCustomerHttpRequest(url, method);
 
+        if (success) {            
             setCustomers(data);
         } else {
-            setSnackbarMessage('Failed to load customers.');
+            setSnackbarMessage('Failed to load customers');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFetchSkips = async () => {
         const response = await fetch(`${baseUrl}/skip/available/`, {
@@ -63,7 +60,7 @@ function CustomAutocomplete(props) {
 
     const formatSkipLabel = (skip) => {
         if (skip) {
-            return `Skip ${skip.name} - ${skip.size == 1 ? 'Small' : 'Large'}`;
+            return `Skip ${skip.name} - ${skip.size === 1 ? 'Small' : 'Large'}`;
         }
         return '';
     };
@@ -77,8 +74,8 @@ function CustomAutocomplete(props) {
         <>
             <Autocomplete
                 disablePortal
-                options={props.fill == 'Customers' ? customers : skips}
-                getOptionLabel={props.fill == 'Customers' ? formatCustomerLabel : formatSkipLabel}
+                options={props.fill === 'Customers' ? customers : skips}
+                getOptionLabel={props.fill === 'Customers' ? formatCustomerLabel : formatSkipLabel}
                 sx={{ width: props.width }}
                 value={props.value}
                 onChange={props.onChange}
@@ -88,7 +85,7 @@ function CustomAutocomplete(props) {
                         margin="normal"
                         {...params}
                         required
-                        label={props.fill == 'Customers' ? "Customer" : "Skip"}
+                        label={props.fill === 'Customers' ? "Customer" : "Skip"}
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {

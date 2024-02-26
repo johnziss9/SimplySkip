@@ -6,10 +6,11 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import handleCustomerHttpRequest from "../../api/api";
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
-    
+
     const { id } = useParams();
 
     const [firstName, setFirstName] = useState('');
@@ -18,7 +19,6 @@ function CustomerAddEdit() {
     const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [createdOn, setCreatedOn] = useState(new Date());
-    const [lastUpdated, setLastUpdated] = useState(new Date());
     const [deletedOn, setDeletedOn] = useState(new Date());
 
     const [isValidEmail, setIsValidEmail] = useState(false);
@@ -47,6 +47,7 @@ function CustomerAddEdit() {
 
             setIsEdit(true);
         }
+        // eslint-disable-next-line
     }, [id]);
 
     const handlePhoneInput = (event) => {
@@ -77,27 +78,24 @@ function CustomerAddEdit() {
             setShowSnackbar(true);
             return; // Stop further execution if email is not valid
         }
-        
-        if (isEdit) {
-            const response = await fetch(`${baseUrl}/customer/${id}`, {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    firstName: firstName,
-                    lastName: lastName,
-                    phone: phone,
-                    email: email,
-                    address: address.replace(/\n/g, ', '),
-                    createdOn: createdOn,
-                    lastUpdated: new Date(new Date()),
-                    deletedOn: deletedOn
-                })
-            });
 
-            if (response.ok) {
+        if (isEdit) {
+            const url = `${id}`;
+            const method = 'PUT';
+            const body = {
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone,
+                email: email,
+                address: address.replace(/\n/g, ', '),
+                createdOn: createdOn,
+                lastUpdated: new Date(new Date()),
+                deletedOn: deletedOn
+            };
+
+            const { success } = await handleCustomerHttpRequest(url, method, body);
+
+            if (success) {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
 
@@ -117,26 +115,23 @@ function CustomerAddEdit() {
                 setShowSnackbar(true);
             }
         } else {
-            const response = await fetch(`${baseUrl}/customer`, {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    firstName: firstName,
-                    lastName: lastName,
-                    phone: phone,
-                    email: email,
-                    address: address.replace(/\n/g, ', '),
-                    deleted: false,
-                    createdOn: new Date(new Date()),
-                    lastUpdated: new Date(new Date()),
-                    deletedOn: new Date(new Date())
-                })
-            });
+            const url = '';
+            const method = 'POST';
+            const body = {
+                firstName: firstName,
+                lastName: lastName,
+                phone: phone,
+                email: email,
+                address: address.replace(/\n/g, ', '),
+                deleted: false,
+                createdOn: new Date(new Date()),
+                lastUpdated: new Date(new Date()),
+                deletedOn: new Date(new Date())
+            };
 
-            if (response.ok) {
+            const { success } = await handleCustomerHttpRequest(url, method, body);
+
+            if (success) {
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
@@ -160,32 +155,27 @@ function CustomerAddEdit() {
     };
 
     const handleFetchCustomer = async () => {
-        const response = await fetch(`${baseUrl}/customer/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const customerData = await response.json();
+        const { success, data } = await handleCustomerHttpRequest(url, method);
 
-            setCustomer(customerData);
+        if (success) {            
+            setCustomer(data);
 
-            setFirstName(customerData.firstName);
-            setLastName(customerData.lastName);
-            setPhone(customerData.phone);
-            setAddress(customerData.address.replace(/, /g, '\n'));
-            setPreviousAddress(customerData.address);
-            setEmail(customerData.email);
-            setCreatedOn(new Date(new Date(customerData.createdOn)));
-            setLastUpdated(new Date(new Date(customerData.lastUpdated)));
-            setDeletedOn(new Date(new Date(customerData.deletedOn)));
+            setFirstName(data.firstName);
+            setLastName(data.lastName);
+            setPhone(data.phone);
+            setAddress(data.address.replace(/, /g, '\n'));
+            setPreviousAddress(data.address);
+            setEmail(data.email);
+            setCreatedOn(new Date(new Date(data.createdOn)));
+            setDeletedOn(new Date(new Date(data.deletedOn)));
         } else {
             setSnackbarMessage('Failed to load customer.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFutureBookingAddress = async () => {
         const response = await fetch(`${baseUrl}/booking/customer/${customer.id}`, {

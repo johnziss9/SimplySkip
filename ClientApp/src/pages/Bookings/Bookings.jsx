@@ -6,6 +6,7 @@ import BookingCard from "../../components/BookingCard/BookingCard";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import handleCustomerHttpRequest from "../../api/api";
 
 function Bookings() {
 
@@ -54,51 +55,50 @@ function Bookings() {
 
     const handleGetCustomer = async (activeBookings) => {
         const promises = activeBookings.map(async (booking) => {
-            const response = await fetch(`${baseUrl}/customer/${booking.customerId}`, {
-                method: 'get',
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                }
-            });
-            if (response.ok) {
-                const customer = await response.json();
-                return { [booking.customerId]: customer };
+            const url = `${booking.customerId}`;
+            const method = 'GET';
+    
+            const { success, data } = await handleCustomerHttpRequest(url, method);
+    
+            if (success) {
+                return { [booking.customerId]: data };
             } else {
                 setSnackbarMessage('Failed to load customer for current booking.'); 
                 setShowSnackbar(true);
             }
         });
-
-        const results = await Promise.all(promises);
-
-        const details = {};
-        results.forEach((result) => {
-            if (result) {
-                const customerId = Object.keys(result)[0];
-                details[customerId] = result[customerId];
-            }
-        });
-
-        setCustomerDetails(details);
-    };
-
-    const handleFetchCustomer = async (id) => {
-        const response = await fetch(`${baseUrl}/customer/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
-
-        if (response.ok) {
-            const customer = await response.json();
-
-            setCustomer(customer);
-        } else {
-            setSnackbarMessage('Failed to load customer.'); 
+    
+        try {
+            const results = await Promise.all(promises);
+    
+            const details = {};
+            results.forEach((result) => {
+                if (result) {
+                    const customerId = Object.keys(result)[0];
+                    details[customerId] = result[customerId];
+                }
+            });
+    
+            setCustomerDetails(details);
+        } catch (error) {
+            setSnackbarMessage('An error occurred. Please try again later.');
             setShowSnackbar(true);
         }
-    }
+    };
+    
+    const handleFetchCustomer = async (id) => {
+        const url = `${id}`;
+        const method = 'GET';
+
+        const { success, data } = await handleCustomerHttpRequest(url, method);
+
+        if (success) {            
+            setCustomer(data);
+        } else {
+            setSnackbarMessage('Failed to load customer.');
+            setShowSnackbar(true);
+        }
+    };
 
     const handleFetchSkip = async (id) => {
         const response = await fetch(`${baseUrl}/skip/${id}`, {

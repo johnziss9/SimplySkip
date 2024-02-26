@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import handleCustomerHttpRequest from "../../api/api";
 
 function Customers() {
     const navigate = useNavigate();
@@ -31,51 +32,44 @@ function Customers() {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const response = await fetch(`${baseUrl}/customer/`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = '';
+        const method = 'GET';
 
-        if (response.ok) {
-            const data = await response.json();
+        const { success, data } = await handleCustomerHttpRequest(url, method);
 
+        if (success) {            
             setCustomers(data);
         } else {
             setSnackbarMessage('Failed to load customers.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleDeleteClick = async (id) => {
-        const response = await fetch(`${baseUrl}/customer/${id}`, {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify({
-                firstName: customer.firstName,
-                lastName: customer.lastName,
-                phone: customer.phone,
-                email: customer.email,
-                address: customer.address.replace(/\n/g, ', '),
-                deleted: true,
-                createdOn: customer.createdOn,
-                lastUpdated: new Date(new Date()),
-                deletedOn: new Date(new Date())
-            })
-        });
+        const url = `${id}`;
+        const method = 'PUT';
+        const body = {
+            firstName: customer.firstName,
+            lastName: customer.lastName,
+            phone: customer.phone,
+            email: customer.email,
+            address: customer.address.replace(/\n/g, ', '),
+            deleted: true,
+            createdOn: customer.createdOn,
+            lastUpdated: new Date(new Date()),
+            deletedOn: new Date(new Date())
+        };
 
-        if (response.ok) {
+        const { success } = await handleCustomerHttpRequest(url, method, body);
+
+        if (success) {            
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {
             setSnackbarMessage('Failed to delete customer.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleEditClick = (customerId) => {
         navigate(`/Customer/${customerId}`);

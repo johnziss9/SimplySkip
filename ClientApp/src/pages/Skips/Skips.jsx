@@ -6,6 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Fo
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import handleCustomerHttpRequest from "../../api/api";
 
 function Skips() {
 
@@ -63,17 +64,13 @@ function Skips() {
 
                 const customerId = booking.customerId;
 
-                const customerResponse = await fetch(`${baseUrl}/customer/${customerId}`, {
-                    method: 'get',
-                    headers: {
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                    }
-                });
-
-                if (customerResponse.ok) {
-                    const customer = await customerResponse.json();
-
-                    setCustomer(customer)
+                const url = `${customerId}`;
+                const method = 'GET';
+        
+                const { success, data } = await handleCustomerHttpRequest(url, method);
+        
+                if (success) {            
+                    setCustomer(data);
                 } else {
                     setSnackbarMessage('Failed to load customer.');
                     setShowSnackbar(true);
