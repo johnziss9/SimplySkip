@@ -50,16 +50,13 @@ function Skips() {
 
     const handleFetchBookingDetails = async (skipId) => {
         try {
-            const bookingResponse = await fetch(`${baseUrl}/booking/skip/${skipId}`, {
-                method: 'get',
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                }
-            });
+            const url = `/booking/skip/${skipId}`;
+            const method = 'GET';
 
-            if (bookingResponse.ok) {
-                const booking = await bookingResponse.json();
+            const { success, data } = await handleHttpRequest(url, method);
+            const booking = data;
 
+            if (success) {            
                 setBooking(booking);
 
                 const customerId = booking.customerId;

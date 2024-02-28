@@ -178,21 +178,21 @@ function CustomerAddEdit() {
     };
 
     const handleFutureBookingAddress = async () => {
-        const response = await fetch(`${baseUrl}/booking/customer/${customer.id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/booking/customer/${customer.id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const bookings = await response.json();
-            const futureBookings = bookings.filter(booking => new Date(booking.hireDate) > new Date());
+        const { success, data } = await handleHttpRequest(url, method);
+
+        if (success) {            
+            const futureBookings = data.filter(booking => new Date(booking.hireDate) > new Date());
 
             if (futureBookings.length > 0)
                 handleShowBookingsAddressDialog()
+        } else {
+            setSnackbarMessage('Failed to load bookings.');
+            setShowSnackbar(true);
         }
-    }
+    };
 
     const handleViewBookings = () => {
         navigate(`/Customer/${customer.id}/Bookings`);

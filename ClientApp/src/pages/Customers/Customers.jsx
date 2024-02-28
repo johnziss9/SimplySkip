@@ -86,23 +86,23 @@ function Customers() {
     const handleCloseViewCustomer = () => setOpenViewCustomer(false);
 
     const handleCheckDeleteCustomer = async (customer) => {
-        const response = await fetch(`${baseUrl}/booking/customer/${customer.id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/booking/customer/${customer.id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const bookings = await response.json();
-            const activeBookings = bookings.filter(booking => (!booking.returned || !booking.paid) && !booking.cancelled);
+        const { success, data } = await handleHttpRequest(url, method);
+
+        if (success) {            
+            const activeBookings = data.filter(booking => (!booking.returned || !booking.paid) && !booking.cancelled);
 
             if (activeBookings.length > 0)
                 handleShowActiveBookingsDialog();
             else
                 handleShowDeleteDialog(customer);
+        } else {
+            setSnackbarMessage('Failed to load bookings.');
+            setShowSnackbar(true);
         }
-    }
+    };
 
     const handleCloseSnackbar = () => {
         setShowSnackbar(false);

@@ -73,35 +73,30 @@ function BookingAddEdit() {
     }, [id]);
 
     const handleFetchBooking = async () => {
-        const response = await fetch(`${baseUrl}/booking/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/booking/${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const booking = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
-            handleFetchCustomer(booking.customerId);
-            handleFetchSkip(booking.skipId);
-            setPreviousSkipId(booking.skipId); // This is to be used only if there's a skip change on edit
-            setHireDate(new Date(new Date(booking.hireDate).setHours(0, 0, 0, 0)));
-            setReturnDate(new Date(new Date(booking.returnDate).setHours(0, 0, 0, 0)));
-            setAddress(booking.address.replace(/, /g, '\n'));
-            setNotes(booking.notes.replace(/, /g, '\n'));
-            setIsReturned(booking.returned);
-            setPreviousIsReturned(booking.returned); // This is to be used only if there's a skip change on edit
-            setIsPaid(booking.paid);
-            setIsCancelled(booking.cancelled);
-            setCreatedOn(new Date(new Date(booking.createdOn)));
-            setCancelledOn(new Date(new Date(booking.cancelledOn)));
-
+        if (success) {            
+            handleFetchCustomer(data.customerId);
+            handleFetchSkip(data.skipId);
+            setPreviousSkipId(data.skipId); // This is to be used only if there's a skip change on edit
+            setHireDate(new Date(new Date(data.hireDate).setHours(0, 0, 0, 0)));
+            setReturnDate(new Date(new Date(data.returnDate).setHours(0, 0, 0, 0)));
+            setAddress(data.address.replace(/, /g, '\n'));
+            setNotes(data.notes.replace(/, /g, '\n'));
+            setIsReturned(data.returned);
+            setPreviousIsReturned(data.returned); // This is to be used only if there's a skip change on edit
+            setIsPaid(data.paid);
+            setIsCancelled(data.cancelled);
+            setCreatedOn(new Date(new Date(data.createdOn)));
+            setCancelledOn(new Date(new Date(data.cancelledOn)));
         } else {
             setSnackbarMessage('Failed to load bookings.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFetchCustomer = async (id) => {
         const url = `/customer/${id}`;
@@ -185,29 +180,26 @@ function BookingAddEdit() {
 
     const handleSubmitBooking = async () => {
         if (isEdit) {
-            const response = await fetch(`${baseUrl}/booking/${id}`, {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    customerId: customer.id,
-                    skipId: skip.id,
-                    hireDate: hireDate,
-                    returnDate: returnDate,
-                    address: address.replace(/\n/g, ', '),
-                    notes: notes.replace(/\n/g, ', '),
-                    returned: isReturned,
-                    paid: isPaid,
-                    cancelled: isCancelled,
-                    createdOn: createdOn,
-                    lastUpdated: new Date(new Date()),
-                    cancelledOn: isCancelled ? new Date(new Date()) : cancelledOn
-                })
-            });
+            const url = `/booking/${id}`;
+            const method = 'PUT';
+            const body = {
+                customerId: customer.id,
+                skipId: skip.id,
+                hireDate: hireDate,
+                returnDate: returnDate,
+                address: address.replace(/\n/g, ', '),
+                notes: notes.replace(/\n/g, ', '),
+                returned: isReturned,
+                paid: isPaid,
+                cancelled: isCancelled,
+                createdOn: createdOn,
+                lastUpdated: new Date(new Date()),
+                cancelledOn: isCancelled ? new Date(new Date()) : cancelledOn
+            };
 
-            if (response.ok) {
+            const { success } = await handleHttpRequest(url, method, body);
+
+            if (success) {            
                 handleCloseAddEditDialog()
                 handleShowSuccess();
 
@@ -221,7 +213,7 @@ function BookingAddEdit() {
                 if ((!previousIsReturned && isReturned) || isCancelled)
                     handleSkipStatus(previousSkipId, false);
 
-                // Check if isReturned value has changed from false to true
+                // TODO Check if isReturned value has changed from false to true
             } else {
                 if (!skip || !address) {
                     setSnackbarMessage('Please fill in required fields.')
@@ -235,34 +227,30 @@ function BookingAddEdit() {
                 handleCloseAddEditDialog();
             }
         } else {
-            const response = await fetch(`${baseUrl}/booking`, {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    customerId: customer ? customer.id : null,
-                    skipId: skip ? skip.id : null,
-                    hireDate: new Date(new Date(hireDate).setHours(0, 0, 0, 0)),
-                    returnDate: new Date(new Date().setHours(0, 0, 0, 0)),
-                    address: address.replace(/\n/g, ', '),
-                    notes: notes.replace(/\n/g, ', '),
-                    returned: isReturned,
-                    paid: isPaid,
-                    cancelled: isCancelled,
-                    createdOn: new Date(new Date()),
-                    lastUpdated: new Date(new Date()),
-                    cancelledOn: new Date(new Date())
-                })
-            });
+            const url = '/booking/';
+            const method = 'POST';
+            const body = {
+                customerId: customer ? customer.id : null,
+                skipId: skip ? skip.id : null,
+                hireDate: new Date(new Date(hireDate).setHours(0, 0, 0, 0)),
+                returnDate: new Date(new Date().setHours(0, 0, 0, 0)),
+                address: address.replace(/\n/g, ', '),
+                notes: notes.replace(/\n/g, ', '),
+                returned: isReturned,
+                paid: isPaid,
+                cancelled: isCancelled,
+                createdOn: new Date(new Date()),
+                lastUpdated: new Date(new Date()),
+                cancelledOn: new Date(new Date())
+            };
 
-            if (response.ok) {
+            const { success } = await handleHttpRequest(url, method, body);
+
+            if (success) {            
                 handleCloseAddEditDialog()
                 handleShowSuccess();
                 handleSkipStatus(skip.id, true);
             } else {
-
                 if (!customer || !skip || !address) {
                     setSnackbarMessage('Please fill in required fields.')
                     setSkipError(true);

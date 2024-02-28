@@ -36,22 +36,18 @@ function CustomerBookings() {
     }, []);
 
     const handleFetchCustomerBookings = async () => {
-        const response = await fetch(`${baseUrl}/booking/customer/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/booking/customer/${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const bookings = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
-            setBookings(bookings);
+        if (success) {            
+            setBookings(data);
         } else {
             setSnackbarMessage('Failed to load customer bookings.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFetchCustomer = async () => {
         const url = `/customer/${id}`;
@@ -68,29 +64,26 @@ function CustomerBookings() {
     };
 
     const handleCancelClick = async () => {
-        const bookingResponse = await fetch(`${baseUrl}/booking/${booking.id}`, {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify({
-                customerId: booking.customerId,
-                skipId: booking.skipId,
-                hireDate: booking.hireDate,
-                returnDate: booking.returnDate,
-                address: booking.address.replace(/\n/g, ', '),
-                notes: booking.notes.replace(/\n/g, ', '),
-                returned: booking.returned,
-                paid: booking.paid,
-                cancelled: true,
-                createdOn: booking.createdOn,
-                lastUpdated: new Date(new Date()),
-                cancelledOn: new Date(new Date())
-            })
-        });
+        const url = `/booking/${booking.id}`;
+        const method = 'PUT';
+        const body = {
+            customerId: booking.customerId,
+            skipId: booking.skipId,
+            hireDate: booking.hireDate,
+            returnDate: booking.returnDate,
+            address: booking.address.replace(/\n/g, ', '),
+            notes: booking.notes.replace(/\n/g, ', '),
+            returned: booking.returned,
+            paid: booking.paid,
+            cancelled: true,
+            createdOn: booking.createdOn,
+            lastUpdated: new Date(new Date()),
+            cancelledOn: new Date(new Date())
+        };
 
-        if (bookingResponse.ok) {
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (success) {
             const getSkipResponse = await fetch(`${baseUrl}/skip/${booking.skipId}`, {
                 method: 'get',
                 headers: {
