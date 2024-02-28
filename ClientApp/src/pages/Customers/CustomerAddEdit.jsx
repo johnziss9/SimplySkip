@@ -39,8 +39,6 @@ function CustomerAddEdit() {
 
     const fieldsWidth = useMediaQuery('(max-width: 500px)');
 
-    const baseUrl = process.env.REACT_APP_URL;
-
     useEffect(() => {
         if (id) {
             handleFetchCustomer();

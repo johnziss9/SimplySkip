@@ -24,8 +24,6 @@ function Customers() {
 
     const searchbarWidth = useMediaQuery('(max-width: 550px)');
 
-    const baseUrl = process.env.REACT_APP_URL;
-
     useEffect(() => {
         handleFetchCustomers();
         // eslint-disable-next-line
