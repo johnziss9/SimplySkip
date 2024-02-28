@@ -1,7 +1,7 @@
 import { Autocomplete, TextField } from "@mui/material";
 import React, { useState, useEffect } from "react";
 import CustomSnackbar from "../CustomSnackbar/CustomSnackbar";
-import handleCustomerHttpRequest from "../../api/api";
+import handleHttpRequest from "../../api/api";
 
 function CustomAutocomplete(props) {
 
@@ -19,10 +19,10 @@ function CustomAutocomplete(props) {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const url = '';
+        const url = '/customer/';
         const method = 'GET';
 
-        const { success, data } = await handleCustomerHttpRequest(url, method);
+        const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
             setCustomers(data);

@@ -6,7 +6,7 @@ import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
-import handleCustomerHttpRequest from "../../api/api";
+import handleHttpRequest from "../../api/api";
 
 function CustomerAddEdit() {
     const navigate = useNavigate();
@@ -80,7 +80,7 @@ function CustomerAddEdit() {
         }
 
         if (isEdit) {
-            const url = `${id}`;
+            const url = `/customer/${id}`;
             const method = 'PUT';
             const body = {
                 firstName: firstName,
@@ -93,7 +93,7 @@ function CustomerAddEdit() {
                 deletedOn: deletedOn
             };
 
-            const { success } = await handleCustomerHttpRequest(url, method, body);
+            const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
                 handleCloseAddEditDialog()
@@ -115,7 +115,7 @@ function CustomerAddEdit() {
                 setShowSnackbar(true);
             }
         } else {
-            const url = '';
+            const url = '/customer/';
             const method = 'POST';
             const body = {
                 firstName: firstName,
@@ -129,7 +129,7 @@ function CustomerAddEdit() {
                 deletedOn: new Date(new Date())
             };
 
-            const { success } = await handleCustomerHttpRequest(url, method, body);
+            const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
                 handleCloseAddEditDialog()
@@ -155,10 +155,10 @@ function CustomerAddEdit() {
     };
 
     const handleFetchCustomer = async () => {
-        const url = `${id}`;
+        const url = `/customer/${id}`;
         const method = 'GET';
 
-        const { success, data } = await handleCustomerHttpRequest(url, method);
+        const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
             setCustomer(data);

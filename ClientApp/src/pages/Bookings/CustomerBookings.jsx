@@ -6,7 +6,7 @@ import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBo
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
-import handleCustomerHttpRequest from "../../api/api";
+import handleHttpRequest from "../../api/api";
 
 function CustomerBookings() {
 
@@ -54,10 +54,10 @@ function CustomerBookings() {
     }
 
     const handleFetchCustomer = async () => {
-        const url = `${id}`;
+        const url = `/customer/${id}`;
         const method = 'GET';
 
-        const { success, data } = await handleCustomerHttpRequest(url, method);
+        const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
             setCustomer(data);

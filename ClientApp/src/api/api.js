@@ -1,8 +1,8 @@
 import baseUrl from './config';
 
-const handleCustomerHttpRequest = async (url, method, body) => {
+const handleHttpRequest = async (url, method, body) => {
     try {
-        const response = await fetch(`${baseUrl}/customer/${url}`, {
+        const response = await fetch(`${baseUrl}${url}`, {
             method,
             headers: {
                 'Content-Type': 'application/json',
@@ -21,4 +21,4 @@ const handleCustomerHttpRequest = async (url, method, body) => {
     }
 };
 
-export default handleCustomerHttpRequest;
+export default handleHttpRequest;

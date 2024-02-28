@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
-import handleCustomerHttpRequest from "../../api/api";
+import handleHttpRequest from "../../api/api";
 
 function Customers() {
     const navigate = useNavigate();
@@ -32,10 +32,10 @@ function Customers() {
     }, []);
 
     const handleFetchCustomers = async () => {
-        const url = '';
+        const url = '/customer/';
         const method = 'GET';
 
-        const { success, data } = await handleCustomerHttpRequest(url, method);
+        const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
             setCustomers(data);
@@ -46,7 +46,7 @@ function Customers() {
     };
 
     const handleDeleteClick = async (id) => {
-        const url = `${id}`;
+        const url = `/customer/${id}`;
         const method = 'PUT';
         const body = {
             firstName: customer.firstName,
@@ -60,7 +60,7 @@ function Customers() {
             deletedOn: new Date(new Date())
         };
 
-        const { success } = await handleCustomerHttpRequest(url, method, body);
+        const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {            
             handleCloseDeleteDialog();

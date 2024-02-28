@@ -6,7 +6,7 @@ import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, Fo
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
-import handleCustomerHttpRequest from "../../api/api";
+import handleHttpRequest from "../../api/api";
 
 function Skips() {
 
@@ -64,10 +64,10 @@ function Skips() {
 
                 const customerId = booking.customerId;
 
-                const url = `${customerId}`;
+                const url = `/customer/${customerId}`;
                 const method = 'GET';
         
-                const { success, data } = await handleCustomerHttpRequest(url, method);
+                const { success, data } = await handleHttpRequest(url, method);
         
                 if (success) {            
                     setCustomer(data);

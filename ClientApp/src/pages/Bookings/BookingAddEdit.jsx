@@ -10,7 +10,7 @@ import { Dialog, DialogActions, DialogTitle, FormGroup, Typography, useMediaQuer
 import CustomSwitch from "../../components/CustomSwitch/CustomSwitch";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import dayjs from 'dayjs';
-import handleCustomerHttpRequest from "../../api/api";
+import handleHttpRequest from "../../api/api";
 
 function BookingAddEdit() {
 
@@ -104,10 +104,10 @@ function BookingAddEdit() {
     }
 
     const handleFetchCustomer = async (id) => {
-        const url = `${id}`;
+        const url = `/customer/${id}`;
         const method = 'GET';
 
-        const { success, data } = await handleCustomerHttpRequest(url, method);
+        const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
             setCustomer(data);
