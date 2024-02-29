@@ -84,36 +84,29 @@ function CustomerBookings() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {
-            const getSkipResponse = await fetch(`${baseUrl}/skip/${booking.skipId}`, {
-                method: 'get',
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                }
-            });
+            const url = `/skip/${booking.skipId}`;
+            const method = 'GET';
+    
+            const { success, data } = await handleHttpRequest(url, method);
+    
+            if (success) {            
+                const url = `/skip/${data.id}`;
+                const method = 'PUT';
+                const body = {
+                    name: data.name,
+                    size: data.size,
+                    notes: data.notes,
+                    rented: false,
+                    deleted: data.deleted,
+                    createdOn: data.createdOn,
+                    lastUpdated: new Date(new Date()),
+                    deleteOn: data.deleteOn
+                };
 
-            if (getSkipResponse.ok) {
-                const skip = await getSkipResponse.json();
+                const { success } = await handleHttpRequest(url, method, body);
 
-                const editSkipResponse = await fetch(`${baseUrl}/skip/${skip.id}`, {
-                    method: 'put',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                    },
-                    body: JSON.stringify({
-                        name: skip.name,
-                        size: skip.size,
-                        notes: skip.notes,
-                        rented: false,
-                        deleted: skip.deleted,
-                        createdOn: skip.createdOn,
-                        lastUpdated: new Date(new Date()),
-                        deleteOn: skip.deleteOn
-                    })
-                });
-
-                if (editSkipResponse.ok) {
-                    setSnackbarMessage(`Booking Cancelled. Skip ${skip.name} is now available.`);
+                if (success) {            
+                    setSnackbarMessage(`Booking Cancelled. Skip ${data.name} is now available.`);
                     setSnackbarSuccess(true); 
                     setShowSnackbar(true);
                 } else {

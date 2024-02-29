@@ -31,22 +31,18 @@ function Skips() {
     }, []);
 
     const handleFetchSkips = async () => {
-        const response = await fetch(`${baseUrl}/skip/`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = '/skip/';
+        const method = 'GET';
 
-        if (response.ok) {
-            const skips = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
-            setSkips(skips);
+        if (success) {            
+            setSkips(data);
         } else {
             setSnackbarMessage('Failed to load skips.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFetchBookingDetails = async (skipId) => {
         try {
@@ -99,25 +95,22 @@ function Skips() {
     }
 
     const handleDeleteClick = async (id) => {
-        const response = await fetch(`${baseUrl}/skip/${id}`, {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify({
-                name: skip.name,
-                size: skip.size,
-                notes: skip.notes.replace(/\n/g, ', '),
-                rented: skip.rented,
-                deleted: true,
-                createdOn: skip.createdOn,
-                lastUpdated: new Date(new Date()),
-                deleteOn: new Date(new Date()),
-            })
-        });
+        const url = `/skip/${id}`;
+        const method = 'PUT';
+        const body = {
+            name: skip.name,
+            size: skip.size,
+            notes: skip.notes.replace(/\n/g, ', '),
+            rented: skip.rented,
+            deleted: true,
+            createdOn: skip.createdOn,
+            lastUpdated: new Date(new Date()),
+            deleteOn: new Date(new Date())
+        };
 
-        if (response.ok) {
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (success) {            
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {

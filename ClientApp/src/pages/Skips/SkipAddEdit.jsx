@@ -44,51 +44,44 @@ function SkipAddEdit() {
     }, [id]);
 
     const handleFetchSkip = async () => {
-        const response = await fetch(`${baseUrl}/skip/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/skip/${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const skip = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
-            setName(skip.name);
-            setSize(skip.size);
-            setNotes(skip.notes.replace(/, /g, '\n'));
-            setRented(skip.rented);
-            setDeleted(skip.deleted);
-            setCreatedOn(new Date(new Date(skip.createdOn)));
-            setLastUpdated(new Date(new Date(skip.lastUpdated)));
-            setDeletedOn(new Date(new Date(skip.deletedOn)));
+        if (success) {            
+            setName(data.name);
+            setSize(data.size);
+            setNotes(data.notes.replace(/, /g, '\n'));
+            setRented(data.rented);
+            setDeleted(data.deleted);
+            setCreatedOn(new Date(new Date(data.createdOn)));
+            setLastUpdated(new Date(new Date(data.lastUpdated)));
+            setDeletedOn(new Date(new Date(data.deletedOn)));
         } else {
             setSnackbarMessage('Failed to load skip.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleSubmitSkip = async () => {
         if (isEdit) {
-            const response = await fetch(`${baseUrl}/skip/${id}`, {
-                method: 'put',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    name: name,
-                    size: size,
-                    notes: notes.replace(/\n/g, ', '),
-                    rented: rented,
-                    deleted: deleted,
-                    createdOn: createdOn,
-                    lastUpdated: new Date(new Date()),
-                    deletedOn: deletedOn
-                })
-            });
+            const url = `/skip/${id}`;
+            const method = 'PUT';
+            const body = {
+                name: name,
+                size: size,
+                notes: notes.replace(/\n/g, ', '),
+                rented: rented,
+                deleted: deleted,
+                createdOn: createdOn,
+                lastUpdated: new Date(new Date()),
+                deletedOn: deletedOn
+            };
 
-            if (response.ok) {
+            const { success } = await handleHttpRequest(url, method, body);
+
+            if (success) {            
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
@@ -96,25 +89,22 @@ function SkipAddEdit() {
                 setShowSnackbar(true);
             }
         } else {
-            const response = await fetch(`${baseUrl}/skip`, {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                },
-                body: JSON.stringify({
-                    name: name,
-                    size: size,
-                    notes: notes.replace(/\n/g, ', '),
-                    rented: false,
-                    deleted: false,
-                    createdOn: new Date(new Date()),
-                    lastUpdated: new Date(new Date()),
-                    deletedOn: new Date(new Date())
-                })
-            });
+            const url = '/skip/';
+            const method = 'POST';
+            const body = {
+                name: name,
+                size: size,
+                notes: notes.replace(/\n/g, ', '),
+                rented: false,
+                deleted: false,
+                createdOn: new Date(new Date()),
+                lastUpdated: new Date(new Date()),
+                deletedOn: new Date(new Date())
+            };
 
-            if (response.ok) {
+            const { success } = await handleHttpRequest(url, method, body);
+
+            if (success) {            
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {

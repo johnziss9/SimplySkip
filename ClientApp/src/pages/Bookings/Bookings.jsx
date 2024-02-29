@@ -97,22 +97,18 @@ function Bookings() {
     };
 
     const handleFetchSkip = async (id) => {
-        const response = await fetch(`${baseUrl}/skip/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/skip/${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const skipData = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
-            setSkip(skipData);
+        if (success) {            
+            setSkip(data);
         } else {
-            setSnackbarMessage('Failed to load customer.'); 
+            setSnackbarMessage('Failed to load skip.'); 
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleOpenViewBooking = (booking) => {
         setBooking(booking);
@@ -170,37 +166,30 @@ function Bookings() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {            
-            const getSkipResponse = await fetch(`${baseUrl}/skip/${booking.skipId}`, {
-                method: 'get',
-                headers: {
-                    'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                }
-            });
+            const url = `skip/${booking.skipId}`;
+            const method = 'GET';
 
-            if (getSkipResponse.ok) {
-                const skip = await getSkipResponse.json();
+            const { success, data } = await handleHttpRequest(url, method);
 
-                1(skip);
+            if (success) {
+                setSkip(data);
+                
+                const url = `/skip/${skip.id}`;
+                const method = 'PUT';
+                const body = {
+                    name: skip.name,
+                    size: skip.size,
+                    notes: skip.notes,
+                    rented: false,
+                    deleted: skip.deleted,
+                    createdOn: skip.createdOn,
+                    lastUpdated: new Date(new Date()),
+                    deleteOn: skip.deleteOn
+                };
 
-                const editSkipResponse = await fetch(`${baseUrl}/skip/${skip.id}`, {
-                    method: 'put',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-                    },
-                    body: JSON.stringify({
-                        name: skip.name,
-                        size: skip.size,
-                        notes: skip.notes,
-                        rented: false,
-                        deleted: skip.deleted,
-                        createdOn: skip.createdOn,
-                        lastUpdated: new Date(new Date()),
-                        deleteOn: skip.deleteOn
-                    })
-                });
+                const { success } = await handleHttpRequest(url, method, body);
 
-                if (editSkipResponse.ok) {
+                if (success) {            
                     setSnackbarMessage(`Booking Cancelled. Skip ${skip.name} is now available.`); 
                     setSnackbarSuccess(true);
                     setShowSnackbar(true);

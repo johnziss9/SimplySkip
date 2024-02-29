@@ -51,8 +51,6 @@ function BookingAddEdit() {
 
     const fieldsWidth = useMediaQuery('(max-width: 500px)');
 
-    const baseUrl = process.env.REACT_APP_URL;
-
     useEffect(() => {
         if (id) {
             handleFetchBooking();
@@ -113,62 +111,51 @@ function BookingAddEdit() {
     };
 
     const handleFetchSkip = async (id) => {
-        const response = await fetch(`${baseUrl}/skip/${id}`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = `/skip/${id}`;
+        const method = 'GET';
 
-        if (response.ok) {
-            const skip = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
-            setSkip(skip);
+        if (success) {            
+            setSkip(data);
         } else {
-            setSnackbarMessage('Failed to load skip.'); 
+            setSnackbarMessage('Failed to load skip.');
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleFetchAvailableSkips = async () => {
-        const response = await fetch(`${baseUrl}/skip/available/`, {
-            method: 'get',
-            headers: {
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            }
-        });
+        const url = '/skip/available/';
+        const method = 'GET';
 
-        if (response.ok) {
-            const data = await response.json();
+        const { success, data } = await handleHttpRequest(url, method);
 
+        if (success) {            
             setSmallSkips(data.filter(skip => skip.size === 1).length);
             setLargeSkips(data.filter(skip => skip.size === 2).length);
         } else {
             setSnackbarMessage('Failed to load available skips.'); 
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleSkipStatus = async (id, status) => {
-        const response = await fetch(`${baseUrl}/skip/${id}`, {
-            method: 'put',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify({
-                name: skip.name,
-                size: skip.size,
-                notes: skip.notes,
-                rented: status,
-                deleted: skip.deleted,
-                createdOn: skip.createdOn,
-                lastUpdated: new Date(new Date()),
-                deleteOn: skip.deleteOn
-            })
-        });
+        const url = `/skip/${id}`;
+        const method = 'PUT';
+        const body = {
+            name: skip.name,
+            size: skip.size,
+            notes: skip.notes,
+            rented: status,
+            deleted: skip.deleted,
+            createdOn: skip.createdOn,
+            lastUpdated: new Date(new Date()),
+            deleteOn: skip.deleteOn
+        };
 
-        if (response.ok) {
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (success) {            
             setSnackbarMessage(`Skip ${skip.name} has been updated.`); 
             setSnackbarSuccess(true);
             setShowSnackbar(true);
@@ -176,7 +163,7 @@ function BookingAddEdit() {
             setSnackbarMessage(`Failed to update skip ${skip.name}.`);
             setShowSnackbar(true);
         }
-    }
+    };
 
     const handleSubmitBooking = async () => {
         if (isEdit) {
