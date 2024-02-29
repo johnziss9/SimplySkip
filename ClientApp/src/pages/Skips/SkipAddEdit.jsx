@@ -7,6 +7,7 @@ import CustomSelect from "../../components/CustomSelect/CustomSelect";
 import { useNavigate, useParams } from "react-router-dom";
 import { Dialog, DialogActions, DialogTitle, useMediaQuery } from "@mui/material";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
+import handleHttpRequest from "../../api/api";
 
 function SkipAddEdit() {
     const navigate = useNavigate();
@@ -19,7 +20,6 @@ function SkipAddEdit() {
     const [rented, setRented] = useState(false);
     const [deleted, setDeleted] = useState(false);
     const [createdOn, setCreatedOn] = useState(new Date());
-    const [lastUpdated, setLastUpdated] = useState(new Date());
     const [deletedOn, setDeletedOn] = useState(new Date());
 
     const [isEdit, setIsEdit] = useState(false);
@@ -33,14 +33,13 @@ function SkipAddEdit() {
 
     const fieldsWidth = useMediaQuery('(max-width: 550px)');
 
-    const baseUrl = process.env.REACT_APP_URL;
-
     useEffect(() => {
         if (id) {
             handleFetchSkip();
 
             setIsEdit(true);
         }
+        // eslint-disable-next-line
     }, [id]);
 
     const handleFetchSkip = async () => {
@@ -56,7 +55,6 @@ function SkipAddEdit() {
             setRented(data.rented);
             setDeleted(data.deleted);
             setCreatedOn(new Date(new Date(data.createdOn)));
-            setLastUpdated(new Date(new Date(data.lastUpdated)));
             setDeletedOn(new Date(new Date(data.deletedOn)));
         } else {
             setSnackbarMessage('Failed to load skip.');

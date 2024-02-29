@@ -23,8 +23,6 @@ function Skips() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
 
-    const baseUrl = process.env.REACT_APP_URL;
-
     useEffect(() => {
         handleFetchSkips();
         // eslint-disable-next-line

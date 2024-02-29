@@ -27,8 +27,6 @@ function Bookings() {
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
-    const baseUrl = process.env.REACT_APP_URL;
-
     useEffect(() => {
         handleFetchBookings();
         // eslint-disable-next-line
