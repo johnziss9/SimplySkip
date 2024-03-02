@@ -103,7 +103,7 @@ function Skips() {
             deleted: true,
             createdOn: skip.createdOn,
             lastUpdated: new Date(new Date()),
-            deleteOn: new Date(new Date())
+            deletedOn: new Date(new Date())
         };
 
         const { success } = await handleHttpRequest(url, method, body);

@@ -47,8 +47,8 @@ function Bookings() {
         }
     };
 
-    const handleGetCustomer = async (activeBookings) => {
-        const promises = activeBookings.map(async (booking) => {
+    const handleGetCustomer = async (bookings) => {
+        const promises = bookings.map(async (booking) => {
             const url = `/customer/${booking.customerId}`;
             const method = 'GET';
     
@@ -164,7 +164,7 @@ function Bookings() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {            
-            const url = `skip/${booking.skipId}`;
+            const url = `/skip/${booking.skipId}`;
             const method = 'GET';
 
             const { success, data } = await handleHttpRequest(url, method);
@@ -172,17 +172,17 @@ function Bookings() {
             if (success) {
                 setSkip(data);
                 
-                const url = `/skip/${skip.id}`;
+                const url = `/skip/${data.id}`;
                 const method = 'PUT';
                 const body = {
-                    name: skip.name,
-                    size: skip.size,
-                    notes: skip.notes,
+                    name: data.name,
+                    size: data.size,
+                    notes: data.notes,
                     rented: false,
-                    deleted: skip.deleted,
-                    createdOn: skip.createdOn,
+                    deleted: data.deleted,
+                    createdOn: data.createdOn,
                     lastUpdated: new Date(new Date()),
-                    deleteOn: skip.deleteOn
+                    deleteOn: data.deleteOn
                 };
 
                 const { success } = await handleHttpRequest(url, method, body);

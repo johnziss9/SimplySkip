@@ -213,7 +213,7 @@ function Customers() {
             </Dialog>
             <Dialog open={openActiveBookingsDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseActiveBookingsDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Deletion failed. Active bookings exist.
+                    Cannot Delete Customer. Active bookings exist.
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseActiveBookingsDialog} />
