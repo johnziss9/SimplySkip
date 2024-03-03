@@ -58,6 +58,15 @@ function BookingAddEdit() {
             setIsEdit(true);
         }
 
+        // This is used for setting the customer when adding a new booking from the customer's booking page.
+        // Getting the customer id from the localStorage and the calling the handleFetchCustomer to set it as well as clearing the localStoreage.
+        const customerId = localStorage.getItem('CustomerId');
+
+        if (customerId != null) {
+            handleFetchCustomer(customerId);
+            localStorage.clear();
+        }
+
         handleFetchAvailableSkips();
         // eslint-disable-next-line
     }, [id]);
