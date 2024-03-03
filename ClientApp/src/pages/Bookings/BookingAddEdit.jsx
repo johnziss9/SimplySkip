@@ -58,14 +58,6 @@ function BookingAddEdit() {
             setIsEdit(true);
         }
 
-        // TODO Check if customerId exists in localStorage
-        const customerId = localStorage.getItem('CustomerId');
-
-        if (customerId != null) {
-            handleFetchCustomer(customerId);
-            localStorage.clear();
-        }
-
         handleFetchAvailableSkips();
         // eslint-disable-next-line
     }, [id]);
@@ -199,8 +191,6 @@ function BookingAddEdit() {
                 // If user edits booking and marks skip as returned, skip becomes available
                 if ((!previousIsReturned && isReturned) || isCancelled)
                     handleSkipStatus(previousSkipId, false);
-
-                // TODO Check if isReturned value has changed from false to true
             } else {
                 if (!skip || !address) {
                     setSnackbarMessage('Please fill in required fields.')
@@ -297,7 +287,7 @@ function BookingAddEdit() {
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
-    const today = dayjs();
+    const setMinDate = dayjs().add(1, 'day');
 
     return (
         <>
@@ -317,7 +307,7 @@ function BookingAddEdit() {
                     </div>
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} width={fieldsWidth ? '300px' : '440px'} />
                     <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} error={skipError} width={fieldsWidth ? '300px' : '440px'} />
-                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date()} minDate={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate > new Date() ? today : null} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
+                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date()} minDate={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate > new Date() ? setMinDate : null} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
                     <FormGroup>
                         <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) || isCustomerAddressSameAsBookingAddress() ? true : false} />
                         <CustomSwitch checked={isCustomerAddressSameAsBookingAddress()} disabled={!customer || (isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date())} onChange={handleSameAddress} label="Use Same Address as Customer" />
