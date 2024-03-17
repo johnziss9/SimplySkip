@@ -191,7 +191,7 @@ function Skips() {
                             onClickDelete={() => handleShowDeleteDialog(skip)}
                             disabledDeleteButton={skip.rented ? true : false}
                         />
-                    )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>There are no skips. Click Add New to create one.</h5>}
+                    )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν skips. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε ένα.</h5>}
                 </div>
             </div>
             {!skip.rented ?

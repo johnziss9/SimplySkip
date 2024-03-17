@@ -231,7 +231,7 @@ function CustomerBookings() {
                             disabledEditButton={(booking.returned && booking.paid) || booking.cancelled}
                             disabledCancelButton={booking.returned || booking.paid || booking.cancelled || new Date(booking.hireDate) <= new Date()}
                         />
-                    )) : <h5 style={{ marginTop: '20px' }}>There are no bookings. Click Add New to create one.</h5>}
+                    )) : <h5 style={{ marginTop: '20px' }}>Δεν υπάρχουν κρατήσεις. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε μία.</h5>}
                 </div>
             </div>
             <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>

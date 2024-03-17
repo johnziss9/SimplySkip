@@ -48,9 +48,9 @@ function CustomNavbar(props) {
                         {props.currentPage}
                     </Typography>
                     {props.currentPage === 'Πελἀτες' || props.currentPage === 'Κρατἠσεις' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ?
-                    <Fab sx={{ background: '#edf6f9', width: addNewButtonWidth ? '50px' : '150px', height:'40px', marginLeft: '20px', borderRadius: '5px' }} onClick={handleAddNew}>
+                    <Fab sx={{ background: '#edf6f9', width: addNewButtonWidth ? '50px' : '150px', height:'40px', marginLeft: '20px', borderRadius: '5px', fontSize: '12px' }} onClick={handleAddNew}>
                         <AddIcon sx={{ color: '#006d77' }} />
-                        {addNewButtonWidth ? '' : 'ΠΡΟΣΘΗΚΗ'}
+                        {addNewButtonWidth ? '' : 'ΠΡΟΣΘΗΚΗ ΝΕΟΥ'}
                     </Fab>
                     : null}
                 </div>

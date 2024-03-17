@@ -153,7 +153,7 @@ function Customers() {
                             onClickEdit={() => handleEditClick(customer.id)}
                             onClickDelete={() => handleCheckDeleteCustomer(customer)}
                         />
-                    )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>There are no customers. Click Add New to create one.</h5>}
+                    )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν πελάτες. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε έναν.</h5>}
                 </div>
             </div>
             <Dialog open={openViewCustomer} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewCustomer(event, reason) } }}>
