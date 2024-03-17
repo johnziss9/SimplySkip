@@ -154,12 +154,20 @@ function Skips() {
 
         const days = Math.floor(timeDifference / (1000 * 60 * 60 * 24))
 
-        if (days > 0)
-            return 'Rented for ' + Math.abs(days) + ' Days';
+        if (days > 0) {
+            if (days === 1)
+                return 'Εκτὀς για ' + Math.abs(days) + ' μέρα';
+            else
+                return 'Εκτὀς για ' + Math.abs(days) + ' μέρες';
+        }
         else if (days === 0)
-            return 'Rented Today'
-        else
-            return 'Starting in ' + Math.abs(days);
+            return 'Εκτὀς Σἠμερα'
+        else {
+            if (days === -1)
+                return 'Ξεκινά σε ' + Math.abs(days) + ' μέρα';
+            else
+                return 'Ξεκινά σε ' + Math.abs(days) + ' μέρες';
+        }
     }
 
     return (
@@ -167,9 +175,9 @@ function Skips() {
             <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
                 <RadioGroup sx={{ marginTop: '20px', display: filteredSkips.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
-                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="All" sx={{ display: 'inline' }} />
-                    <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Booked" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Available" sx={{ display: getAvailableSkips().length > 0 ? 'inline' : 'none' }} />
+                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ὀλα" sx={{ display: 'inline' }} />
+                    <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Κρατημἐνα" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
+                    <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Διαθέσιμα" sx={{ display: getAvailableSkips().length > 0 ? 'inline' : 'none' }} />
                 </RadioGroup>
                 <div className="skips-section">
                     {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
@@ -189,17 +197,17 @@ function Skips() {
             {!skip.rented ?
                 <Dialog open={openViewSkip} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewSkip(event, reason) } }}>
                     <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
-                        Skip Details
+                        Πληροφορίες του Skip
                     </DialogTitle>
                     <DialogContent>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Name:</FormLabel> {`Skip ${skip.name}`}
+                            <FormLabel>Αριθμὀς:</FormLabel> {`Skip ${skip.name}`}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Size:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
+                            <FormLabel>Μἐγεθος:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Notes:</FormLabel> {skip.notes ? skip.notes : 'N/A'}
+                            <FormLabel>Σημειώσεις:</FormLabel> {skip.notes ? skip.notes : 'Μ/Δ'}
                         </Typography>
                     </DialogContent>
                     <DialogActions>
@@ -208,61 +216,64 @@ function Skips() {
                 </Dialog> :
                 <Dialog open={openViewSkip} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewSkip(event, reason) } }}>
                     <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
-                        Skip Details
+                        Πληροφορίες του Skip
                     </DialogTitle>
                     <DialogContent>
                         <Typography variant="h6" sx={{ margin: '5px' }} >
                             Skip
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Name:</FormLabel> {`Skip ${skip.name}`}
+                            <FormLabel>Αριθμὀς:</FormLabel> {`Skip ${skip.name}`}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Size:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
+                            <FormLabel>Μἐγεθος:</FormLabel> {skip.size === 1 ? 'Small' : 'Large'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Notes:</FormLabel> {skip.notes ? skip.notes : 'N/A'}
+                            <FormLabel>Σημειώσεις:</FormLabel> {skip.notes ? skip.notes : 'Μ/Δ'}
                         </Typography>
                         <hr />
                         <Typography variant="h6" sx={{ margin: '5px' }} >
-                            Booking
+                            Κρἀτηση
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Address:</FormLabel> {booking.address}
+                            <FormLabel>Διεὐθυνση:</FormLabel> {booking.address}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Hire Date:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
+                            <FormLabel>Ημερομηνία Κρἀτησης:</FormLabel> {new Date(booking.hireDate).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>{booking.returned ? 'Return Date:' : 'Hired For:'}</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) : new Date(booking.returnDate).toLocaleDateString()}
+                            <FormLabel>Επιστροφή:</FormLabel> {!booking.returned ? handleCalculateDays(booking.hireDate) : new Date(booking.returnDate).toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Notes:</FormLabel> {booking.notes ? booking.notes : 'N/A'}
+                            <FormLabel>Σημειώσεις:</FormLabel> {booking.notes ? booking.notes : 'Μ/Δ'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Returned:</FormLabel> {booking.returned ? 'Yes' : 'No'}
+                            <FormLabel>Επιστράφηκε:</FormLabel> {booking.returned ? 'Yes' : 'No'}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Paid:</FormLabel> {booking.paid ? 'Yes' : 'No'}
+                            <FormLabel>Πληρώθηκε:</FormLabel> {booking.paid ? 'Yes' : 'No'}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                            <FormLabel>Ακυρώθηκε:</FormLabel> {booking.cancelled ? 'Ναι' : 'Ὀχι'}
                         </Typography>
                         <hr />
                         <Typography variant="h6" sx={{ margin: '5px' }} >
-                            Customer
+                            Πελἀτης
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Last Name:</FormLabel> {customer.lastName}
+                            <FormLabel>Επὠνυμο:</FormLabel> {customer.lastName}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>First Name:</FormLabel> {customer.firstName}
+                            <FormLabel>Ὀνομα:</FormLabel> {customer.firstName}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Phone:</FormLabel> {customer.phone}
+                            <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Address:</FormLabel> {customer.address}
+                            <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'N/A'}
+                            <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
                         </Typography>
                     </DialogContent>
                     <DialogActions>
@@ -272,16 +283,16 @@ function Skips() {
             }
             <Dialog open={openDeleteDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Delete Skip?
+                    Διαγραφή του Skip;
                 </DialogTitle>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseDeleteDialog} />
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={() => handleDeleteClick(skip.id)} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΟΧΙ"} width={"100px"} height={"45px"} onClick={handleCloseDeleteDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΝΑΙ"} width={"100px"} height={"45px"} onClick={() => handleDeleteClick(skip.id)} />
                 </DialogActions>
             </Dialog>
             <Dialog open={openDeleteSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Skip Deleted.
+                    Το Skip Ἐχει Διαγραφεί.
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseDeleteSuccess} />

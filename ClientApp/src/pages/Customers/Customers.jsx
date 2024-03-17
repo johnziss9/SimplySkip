@@ -130,10 +130,10 @@ function Customers() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Customers'} addNewClick={'/Customer'} />
+            <CustomNavbar currentPage={'Πελἀτες'} addNewClick={'/Customer'} />
             <div className='customers-container'>
                 <CustomTextField
-                    label={'Search...'}
+                    label={'Αναζήτηση...'}
                     variant={'standard'}
                     type={'search'}
                     width={searchbarWidth ? '300px' : '500px'}
@@ -158,23 +158,23 @@ function Customers() {
             </div>
             <Dialog open={openViewCustomer} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewCustomer(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
-                    Customer Details
+                    Πληροφορίες Πελάτη
                 </DialogTitle>
                 <DialogContent>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Last Name:</FormLabel> {customer.lastName}
+                        <FormLabel>Επὠνυμο:</FormLabel> {customer.lastName}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>First Name:</FormLabel> {customer.firstName}
+                        <FormLabel>Ὀνομα:</FormLabel> {customer.firstName}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Phone:</FormLabel> {customer.phone}
+                        <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Address:</FormLabel> {customer.address}
+                        <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'N/A'}
+                        <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
                     </Typography>
                     <Button
                         variant="outlined"
@@ -187,7 +187,7 @@ function Customers() {
                             },
                         }}
                         onClick={() => handleViewBookings(customer.id)}>
-                        View Bookings
+                        ΠΡΟΒΟΛΗ ΚΡΑΤΗΣΕΩΝ
                     </Button>
                 </DialogContent>
                 <DialogActions>
@@ -196,7 +196,7 @@ function Customers() {
             </Dialog>
             <Dialog open={openDeleteDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Delete Customer?
+                    Διαγραφή Πελάτη;
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseDeleteDialog} />
@@ -205,7 +205,7 @@ function Customers() {
             </Dialog>
             <Dialog open={openDeleteSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseDeleteSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Customer Deleted.
+                    Ο Πελἀτης Ἐχει Διαγραφεί.
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseDeleteSuccess} />
@@ -213,7 +213,7 @@ function Customers() {
             </Dialog>
             <Dialog open={openActiveBookingsDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseActiveBookingsDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Cannot Delete Customer. Active bookings exist.
+                    Ο πελἀτης δεν μπορεἰ να διαγραφεί επειδή υπάρχουν ενεργές κρατήσεις.
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseActiveBookingsDialog} />

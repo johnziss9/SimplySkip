@@ -54,7 +54,7 @@ function CustomAutocomplete(props) {
 
     const formatSkipLabel = (skip) => {
         if (skip) {
-            return `Skip ${skip.name} - ${skip.size === 1 ? 'Small' : 'Large'}`;
+            return `Skip ${skip.name} - ${skip.size === 1 ? 'Μικρὀ' : 'Μεγἀλο'}`;
         }
         return '';
     };
@@ -79,7 +79,7 @@ function CustomAutocomplete(props) {
                         margin="normal"
                         {...params}
                         required
-                        label={props.fill === 'Customers' ? "Customer" : "Skip"}
+                        label={props.fill === 'Customers' ? "Πελἀτης" : "Skip"}
                         sx={{
                             '& .MuiOutlinedInput-root': {
                                 '& fieldset': {

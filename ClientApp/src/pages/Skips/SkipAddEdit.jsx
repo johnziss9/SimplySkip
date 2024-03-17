@@ -107,7 +107,7 @@ function SkipAddEdit() {
                 handleShowSuccess();
             } else {
                 if (!name || !size) {
-                    setSnackbarMessage('Please fill in required fields.')
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setNameError(true);
                     setSizeError(true);
                 } else {
@@ -136,21 +136,21 @@ function SkipAddEdit() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Skip Information'} />
+            <CustomNavbar currentPage={'Πληροφορἰες του Skip'} />
             <div className='skip-add-edit-container'>
                 <div className="skip-add-edit-form">
-                    <CustomTextField label={'Skip Name'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setName(e.target.value)} value={name} disabled={isEdit ? true : false} error={nameError} />
+                    <CustomTextField label={'Αριθμός Skip'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setName(e.target.value)} value={name} disabled={isEdit ? true : false} error={nameError} />
                     <CustomSelect value={size} onChange={e => setSize(e.target.value)} disabled={isEdit ? true : false} error={sizeError} width={fieldsWidth ? '300px' : '440px'} />
-                    <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
+                    <CustomTextField label={'Σημειώσεις'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="skip-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"ΑΚΥΡΩΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"ΑΠΟΘΗΚΕΥΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>
             <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    {isEdit ? 'Make Changes to Skip?' : 'Add Skip?'}
+                    {isEdit ? 'Αποθήκευση αλλαγών στο skip;' : 'Αποθήκευση του Skip;'}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
@@ -159,7 +159,7 @@ function SkipAddEdit() {
             </Dialog>
             <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
-                    {isEdit ? "Skip Edited." : "Skip Added."}
+                    {isEdit ? "Το Skip επεξεργάστηκε." : "Το Skip αποθηκεύτηκε."}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />

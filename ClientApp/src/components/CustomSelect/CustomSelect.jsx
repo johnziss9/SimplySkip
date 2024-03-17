@@ -19,10 +19,10 @@ function CustomSelect(props) {
                         color: props.error ? '#d32f2f' : 'inherit',  // Change the color of the asterisk
                     },
 
-                }}>Size</InputLabel>
+                }}>Μέγεθος</InputLabel>
             <Select
                 value={props.value}
-                label="Size"
+                label="Μέγεθος"
                 disabled={props.disabled}
                 onChange={props.onChange}
                 labelStyle={{ color: '#006d77' }}
@@ -44,8 +44,8 @@ function CustomSelect(props) {
                     }
                 }}
             >
-                <MenuItem value={1}>Small</MenuItem>
-                <MenuItem value={2}>Large</MenuItem>
+                <MenuItem value={1}>Μικρὀ</MenuItem>
+                <MenuItem value={2}>Μεγἀλο</MenuItem>
             </Select>
         </FormControl>
     );

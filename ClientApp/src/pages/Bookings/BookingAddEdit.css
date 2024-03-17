@@ -28,10 +28,10 @@
 
 .booking-add-edit-switches {
     display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    margin: 16px 0 8px 0;
-    width: 440px;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 150px;
+    margin: 16px 0 5px 0;
 }
 
 @media (max-width: 500px) {
@@ -42,16 +42,6 @@
     .booking-add-edit-available-skips-container {
         width: 250px;
         flex-direction: column;
-    }
-
-    .booking-add-edit-switches {
-        display: flex;
-        flex-direction: column;
-        align-items: flex-start;
-        width: 120px;
-        margin: 0;
-        margin-top: 10px;
-        height: 140px;
     }
 
     .booking-add-edit-form-buttons {

@@ -157,7 +157,7 @@ function BookingAddEdit() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {            
-            setSnackbarMessage(`Skip ${skip.name} has been updated.`); 
+            setSnackbarMessage(`Το Skip ${skip.name} έχει ενημερωθεί.`); 
             setSnackbarSuccess(true);
             setShowSnackbar(true);
         } else {
@@ -202,7 +202,7 @@ function BookingAddEdit() {
                     handleSkipStatus(previousSkipId, false);
             } else {
                 if (!skip || !address) {
-                    setSnackbarMessage('Please fill in required fields.')
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setSkipError(true);
                     setAddressError(true);
                 } else {
@@ -238,7 +238,7 @@ function BookingAddEdit() {
                 handleSkipStatus(skip.id, true);
             } else {
                 if (!customer || !skip || !address) {
-                    setSnackbarMessage('Please fill in required fields.')
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setSkipError(true);
                     setCustomerError(true);
                     setAddressError(true);
@@ -300,42 +300,42 @@ function BookingAddEdit() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Booking Information'} />
+            <CustomNavbar currentPage={'Πληροφορἰες Κρἀτησης'} />
             <div className='booking-add-edit-container'>
                 <div className="booking-add-edit-form">
                     <div className="booking-add-edit-available-skips-container">
-                        <Typography variant="h6" sx={{ width: '160px' }}>
-                            Available Skips:
+                        <Typography variant="h6" sx={{ width: '110px', '@media (max-width: 500px)': { width: '180px', textAlign: 'center' } }}>
+                            Διαθέσιμα Skips:
                         </Typography>
-                        <Typography variant="h5" sx={{ width: '100px', textAlign: 'center' }}>
-                            {smallSkips} Small
+                        <Typography variant="h5" sx={{ width: '150px', textAlign: 'center' }}>
+                            {smallSkips} {smallSkips === 1 ? 'Μικρὀ' : 'Μικρἀ'}
                         </Typography>
-                        <Typography variant="h5" sx={{ width: '100px', textAlign: 'center' }}>
-                            {largeSkips} Large
+                        <Typography variant="h5" sx={{ width: '150px', textAlign: 'center' }}>
+                            {largeSkips} {largeSkips === 1 ? 'Μεγἀλο' : 'Μεγἀλα'}
                         </Typography>
                     </div>
                     <CustomAutocomplete fill={'Customers'} value={customer} onChange={(event, newValue) => setCustomer(newValue)} disabled={isEdit ? true : false} error={customerError} width={fieldsWidth ? '300px' : '440px'} />
                     <CustomAutocomplete fill={'Skips'} value={skip} onChange={(event, newValue) => setSkip(newValue)} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()) ? true : false} error={skipError} width={fieldsWidth ? '300px' : '440px'} />
-                    <CustomDatePicker label={'Hire Date'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date()} minDate={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate > new Date() ? setMinDate : null} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
-                    <FormGroup>
-                        <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) || isCustomerAddressSameAsBookingAddress() ? true : false} />
-                        <CustomSwitch checked={isCustomerAddressSameAsBookingAddress()} disabled={!customer || (isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date())} onChange={handleSameAddress} label="Use Same Address as Customer" />
+                    <CustomDatePicker label={'Ημερομηνία Κρἀτησης'} value={hireDate} disabled={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date()} minDate={isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate > new Date() ? setMinDate : null} onChange={setHireDate} width={fieldsWidth ? '300px' : '440px'} />
+                    <FormGroup sx={{ width: fieldsWidth ? '300px' : '440px' }}>
+                        <CustomTextField label={'Διεὐθυνση'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} value={address || ''} onChange={e => setAddress(e.target.value)} error={addressError} disabled={useSameAddress || (isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date())) || isCustomerAddressSameAsBookingAddress() ? true : false} />
+                        <CustomSwitch checked={isCustomerAddressSameAsBookingAddress()} disabled={!customer || (isEdit && (!isCancelled && !isPaid && !isReturned) && hireDate < new Date())} onChange={handleSameAddress} label="Χρήση της ίδιας διεύθυνσης απὀ πελάτη." />
                     </FormGroup>
-                    <CustomTextField label={'Notes'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
+                    <CustomTextField label={'Σημειώσεις'} variant={'outlined'} margin={'normal'} required={false} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} value={notes || ''} onChange={e => setNotes(e.target.value)} />
                     <div className="booking-add-edit-switches">
-                        <CustomSwitch disabled={(isReturned && !returnedSwitchIsOn) || !isEdit} checked={returnedSwitchIsOn || isReturned} onChange={(e) => handleReturnSwitchChange(e)} label="Returned" />
-                        <CustomSwitch disabled={(isPaid && !paidSwitchIsOn)} checked={paidSwitchIsOn || isPaid} onChange={(e) => handlePaidSwitchChange(e)} label="Paid" />
-                        <CustomSwitch disabled={!isEdit || hireDate <= new Date()} checked={isCancelled || isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Cancelled" />
+                        <CustomSwitch disabled={(isReturned && !returnedSwitchIsOn) || !isEdit} checked={returnedSwitchIsOn || isReturned} onChange={(e) => handleReturnSwitchChange(e)} label="Επιστράφηκε" />
+                        <CustomSwitch disabled={(isPaid && !paidSwitchIsOn)} checked={paidSwitchIsOn || isPaid} onChange={(e) => handlePaidSwitchChange(e)} label="Πληρώθηκε" />
+                        <CustomSwitch disabled={!isEdit || hireDate <= new Date()} checked={isCancelled || isCancelled} onChange={(e) => setIsCancelled(e.target.checked)} label="Ακυρώθηκε" />
                     </div>
                     <div className="booking-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"ΑΚΥΡΩΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"ΑΠΟΘΗΚΕΥΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>
             <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    {isEdit ? 'Make Changes to Booking?' : 'Add Booking?'}
+                    {isEdit ? 'Αποθήκευση αλλαγών στην κράτηση;' : 'Αποθήκευση κρἀτησης;'}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
@@ -344,7 +344,7 @@ function BookingAddEdit() {
             </Dialog>
             <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
-                    {isEdit ? "Booking Edited." : "Booking Added."}
+                    {isEdit ? "Η κράτηση επεξεργάστηκε." : "Η κράτηση αποθηκεύτηκε."}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />

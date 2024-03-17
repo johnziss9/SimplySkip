@@ -71,7 +71,7 @@ function CustomerAddEdit() {
 
     const handleSubmitCustomer = async () => {
         if (!isValidEmail && email !== null && email.trim() !== "") {
-            setSnackbarMessage("Please enter a valid email address");
+            setSnackbarMessage("Η μορφἠ του email είναι λανθασμένη.");
             setEmailError(true);
             setShowSnackbar(true);
             return; // Stop further execution if email is not valid
@@ -101,7 +101,7 @@ function CustomerAddEdit() {
                     handleFutureBookingAddress();
             } else {
                 if (!firstName || !lastName || !address || !phone) {
-                    setSnackbarMessage('Please fill in required fields.')
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setFirstNameError(true);
                     setLastNameError(true);
                     setAddressError(true);
@@ -134,7 +134,7 @@ function CustomerAddEdit() {
                 handleShowSuccess();
             } else {
                 if (!firstName || !lastName || !address || !phone) {
-                    setSnackbarMessage('Please fill in required fields.')
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setFirstNameError(true);
                     setLastNameError(true);
                     setAddressError(true);
@@ -212,32 +212,32 @@ function CustomerAddEdit() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Customer Information'} />
+            <CustomNavbar currentPage={'Πληροφορίες Πελάτη'} />
             <div className='customer-add-edit-container'>
                 <div className="customer-add-edit-form">
-                    <CustomTextField label={'First Name'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setFirstName(e.target.value)} value={firstName} error={firstNameError} />
-                    <CustomTextField label={'Last Name'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setLastName(e.target.value)} value={lastName} error={lastNameError} />
-                    <CustomTextField label={'Phone Number'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={fieldsWidth ? '300px' : '440px'} error={phoneError} />
+                    <CustomTextField label={'Ὀνομα'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setFirstName(e.target.value)} value={firstName} error={firstNameError} />
+                    <CustomTextField label={'Επὠνυμο'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setLastName(e.target.value)} value={lastName} error={lastNameError} />
+                    <CustomTextField label={'Τηλἐφωνο'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={fieldsWidth ? '300px' : '440px'} error={phoneError} />
+                    <CustomTextField label={'Διεὐθυνση'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
                     <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={(e) => handleEmailInput(e)} value={email} error={emailError} />
-                    <CustomTextField label={'Address'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
                     <div className="customer-add-edit-form-buttons">
-                        <CustomButton backgroundColor={"#83c5be"} buttonName={"Cancel"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
-                        <CustomButton backgroundColor={"#006d77"} buttonName={"Submit"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
+                        <CustomButton backgroundColor={"#83c5be"} buttonName={"ΑΚΥΡΩΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
+                        <CustomButton backgroundColor={"#006d77"} buttonName={"ΑΠΟΘΗΚΕΥΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '0 0 20px 0' : '20px 0 0 10px'} onClick={handleShowAddEditDialog} />
                     </div>
                 </div>
             </div>
             <Dialog open={openAddEditDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseAddEditDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    {isEdit ? 'Make Changes to Customer?' : 'Add Customer?'}
+                    {isEdit ? 'Αποθήκευση αλλαγών στον πελἀτη;' : 'Αποθήκευση Πελἀτη;'}
                 </DialogTitle>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"No"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Yes"} width={"100px"} height={"45px"} onClick={handleSubmitCustomer} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΟΧΙ"} width={"100px"} height={"45px"} onClick={handleCloseAddEditDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΝΑΙ"} width={"100px"} height={"45px"} onClick={handleSubmitCustomer} />
                 </DialogActions>
             </Dialog>
             <Dialog open={openSuccess} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseSuccess(event, reason) } }}>
                 <DialogTitle sx={{ width: '300px' }}>
-                    {isEdit ? "Customer Edited." : "Customer Added."}
+                    {isEdit ? "Ο Πελἀτης επεξεργάστηκε." : "Ο Πελἀτης αποθηκεύτηκε."}
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
@@ -245,14 +245,14 @@ function CustomerAddEdit() {
             </Dialog>
             <Dialog open={openBookingsAddressDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseBookingsAddressDialog(event, reason) } }}>
                 <DialogTitle sx={{ width: '400px' }}>
-                    Customer Address Changed
+                    Η Διεὐθυνση του Πελάτη Αλλαξε
                 </DialogTitle>
                 <DialogContent>
-                    Future bookings found with the same address as the customer. Make sure they are changed.
+                    Βρέθηκαν μελλοντικές κρατήσεις με την ίδια διεύθυνση όπως ο πελάτης. Βεβαιωθείτε ότι αλλάζουν.
                 </DialogContent>
                 <DialogActions>
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Later"} width={"100px"} height={"45px"} onClick={handleCloseBookingsAddressDialog} />
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"Go To Bookings"} width={"150px"} height={"45px"} onClick={handleViewBookings} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΑΡΓΟΤΕΡΑ"} width={"100px"} height={"45px"} onClick={handleCloseBookingsAddressDialog} />
+                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΚΡΑΤΗΣΕΙΣ"} width={"150px"} height={"45px"} onClick={handleViewBookings} />
                 </DialogActions>
             </Dialog>
             <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />

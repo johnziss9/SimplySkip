@@ -47,19 +47,19 @@ function CustomNavbar(props) {
                     <Typography variant="h5">
                         {props.currentPage}
                     </Typography>
-                    {props.currentPage === 'Customers' || props.currentPage === 'Bookings' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Bookings for')) ?
+                    {props.currentPage === 'Πελἀτες' || props.currentPage === 'Κρατἠσεις' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ?
                     <Fab sx={{ background: '#edf6f9', width: addNewButtonWidth ? '50px' : '150px', height:'40px', marginLeft: '20px', borderRadius: '5px' }} onClick={handleAddNew}>
                         <AddIcon sx={{ color: '#006d77' }} />
-                        {addNewButtonWidth ? '' : 'ADD NEW'}
+                        {addNewButtonWidth ? '' : 'ΠΡΟΣΘΗΚΗ'}
                     </Fab>
                     : null}
                 </div>
-                <Button color="inherit" onClick={handleLogout}>Logout</Button>
+                <Button color="inherit" onClick={handleLogout}>ΑΠΟΣΥΝΔΕΣΗ</Button>
             </Toolbar>
             {open && (
                 <div className="menu-container">
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">Customers</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">Bookings</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">ΠΕΛΑΤΕΣ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">ΚΡΑΤΗΣΕΙΣ</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
                 </div>
             )}
