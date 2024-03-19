@@ -5,6 +5,7 @@ import CustomTextField from '../../components/CustomTextField/CustomTextField';
 import CustomButton from '../../components/CustomButton/CustomButton';
 import Logo from '../../images/logo.png';
 import CustomSnackbar from '../../components/CustomSnackbar/CustomSnackbar';
+import handleHttpRequest from '../../api/api';
 
 function Home() {
 
@@ -14,39 +15,34 @@ function Home() {
     const [password, setPassword] = useState('');
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
-
-    const baseUrl = process.env.REACT_APP_URL;
-
+    
     const handleLogin = async () => {
-        const response = await fetch(`${baseUrl}/auth/login`, {
-            method: 'post',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username,
-                password
-            })
-        });
+        const url = '/auth/login/';
+        const method = 'POST';
+        const body = {
+            username,
+            password
+        };
 
-        if (response.ok) {
-            const data = await response.json();
+        const { success, data } = await handleHttpRequest(url, method, body);
+
+        if (success) {
             const { token } = data;
 
             sessionStorage.setItem('token', token);
             navigate('/Bookings');
         } else {
-            const data = await response.json();
-            const { title } = data;
-
-            setSnackbarMessage(title);
+            if (!username || !password)
+                setSnackbarMessage('Το Username και το Password δεν μπορούν να είναι κενά.');
+            else
+                setSnackbarMessage('Λἀθως Username ἠ Password.');
             setShowSnackbar(true);
         }
     }
 
     const handleCloseSnackbar = () => {
-        setSnackbarMessage(false);
-        setShowSnackbar('');
+        setSnackbarMessage('');
+        setShowSnackbar(false);
     };
 
     return (
