@@ -21,7 +21,7 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd SimplySkip
+            cd SimplySkip/SimplySkip
             git pull origin production
             docker compose down
             docker compose build
