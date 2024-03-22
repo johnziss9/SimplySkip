@@ -20,10 +20,10 @@ jobs:
           dotnet-version: '7.0.203'
 
       - name: Restore dependencies
-        run: dotnet restore
+        run: dotnet restore ./SimplySkip.Tests
 
       - name: Run unit tests
-        run: dotnet test
+        run: dotnet test ./SimplySkip.Tests
 
       - name: Publish test results
         if: always()
