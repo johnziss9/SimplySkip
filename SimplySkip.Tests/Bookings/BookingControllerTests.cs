@@ -95,7 +95,7 @@ namespace SimplySkip.Tests.Bookings
                 var controller = new BookingController(new BookingService(dbContext));
 
                 // Act
-                var actionResult = await controller.GetCustomer(expectedCustomerId);
+                var actionResult = await controller.GetByCustomerId(expectedCustomerId);
 
                 // Assert
                 var result = actionResult.Result as OkObjectResult;
