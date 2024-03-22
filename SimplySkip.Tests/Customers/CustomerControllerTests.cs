@@ -2,15 +2,6 @@ namespace SimplySkip.Tests.Customer
 {
     public class CustomerControllerTests
     {
-        private DbContextOptions<SSDbContext> _options;
-
-        public CustomerControllerTests()
-        {
-            _options = new DbContextOptionsBuilder<SSDbContext>()
-                .UseInMemoryDatabase(databaseName: "TestSSDatabase")
-                .Options;
-        }
-
         private async Task SeedTestData(SSDbContext dbContext)
         {
             dbContext.Customers.AddRange(new List<Models.Customer>
@@ -27,7 +18,12 @@ namespace SimplySkip.Tests.Customer
         [Fact]
         public async Task GetAllCustomers_Success()
         {
-            using (var dbContext = new SSDbContext(_options))
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
             {
                 await SeedTestData(dbContext);
 
@@ -50,7 +46,12 @@ namespace SimplySkip.Tests.Customer
         [Fact]
         public async Task CreateNewCustomer_Success()
         {
-            using (var dbContext = new SSDbContext(_options))
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
             {
                 var newCustomer = new Models.Customer { Id = 4, FirstName = "AJ", LastName = "Soprano", Address = "New Jersey", Phone = "5345345", Email = "ajsoprano@gmail.com" };
 
@@ -78,7 +79,12 @@ namespace SimplySkip.Tests.Customer
         [Fact]
         public async Task GetCustomerById_Success()
         {
-            using (var dbContext = new SSDbContext(_options))
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
             {
                 // Arrange
                 await SeedTestData(dbContext);
@@ -109,7 +115,12 @@ namespace SimplySkip.Tests.Customer
         [Fact]
         public async Task UpdateCustomer_Success()
         {
-            using (var dbContext = new SSDbContext(_options))
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
             {
                 // Arrange 
                 await SeedTestData(dbContext);
