@@ -14,7 +14,7 @@ namespace SimplySkip.Services
             _ssDbContext = ssDbContext;
         }
 
-        public async Task<Response<Skip>> AddSkip(Skip skip)
+        public async Task<Response<Skip>> CreateSkip(Skip skip)
         {
             _ssDbContext.Skips.Add(skip);
             await _ssDbContext.SaveChangesAsync();

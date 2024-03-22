@@ -9,7 +9,7 @@ namespace SimplySkip.Interfaces
 
         Task<Response<List<Booking>>> GetAllBookings();
 
-        Task<Response<List<Booking>>> GetCustomerBookings(int id);
+        Task<Response<List<Booking>>> GetBookingsByCustomerId(int id);
 
         Task<Response<Booking>> GetBookingById(int id);
 

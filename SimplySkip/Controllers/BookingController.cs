@@ -33,7 +33,7 @@ namespace SimplySkip.Controllers
         [HttpGet("customer/{id}")]
         public async Task<ActionResult<List<Booking>>> GetByCustomerId(int id)
         {
-            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetCustomerBookings(id));
+            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetBookingsByCustomerId(id));
         }
 
         [HttpGet("{id}")]

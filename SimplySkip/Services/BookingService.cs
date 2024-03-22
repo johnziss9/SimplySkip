@@ -43,7 +43,7 @@ namespace SimplySkip.Services
             return Response<List<Booking>>.Success(bookings);
         }
 
-        public async Task<Response<List<Booking>>> GetCustomerBookings(int id)
+        public async Task<Response<List<Booking>>> GetBookingsByCustomerId(int id)
         {
             var bookings = await _ssDbContext.Bookings.Where(b => b.CustomerId == id).ToListAsync();
 

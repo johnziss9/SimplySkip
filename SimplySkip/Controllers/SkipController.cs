@@ -21,7 +21,7 @@ namespace SimplySkip.Controllers
         [HttpPost]
         public async Task<ActionResult<Skip>> Create(Skip skip)
         {
-            return ResponseHelper.HandleErrorAndReturn(await _skipService.AddSkip(skip));
+            return ResponseHelper.HandleErrorAndReturn(await _skipService.CreateSkip(skip));
         }
 
         [HttpGet]

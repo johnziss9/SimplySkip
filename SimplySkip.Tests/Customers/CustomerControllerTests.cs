@@ -1,4 +1,4 @@
-namespace SimplySkip.Tests.Customer
+namespace SimplySkip.Tests.Customers
 {
     public class CustomerControllerTests
     {
@@ -13,7 +13,6 @@ namespace SimplySkip.Tests.Customer
 
             await dbContext.SaveChangesAsync();
         }
-
 
         [Fact]
         public async Task GetAllCustomers_Success()
