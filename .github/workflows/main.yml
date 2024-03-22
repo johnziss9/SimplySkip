@@ -37,7 +37,7 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: test-results
+          path: SimplySkip.Tests/TestResults
 
       - name: Fail if unit tests fail
         if: failure()
