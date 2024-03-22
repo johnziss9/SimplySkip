@@ -25,20 +25,6 @@ jobs:
       - name: Run unit tests
         run: dotnet test ./SimplySkip.Tests
 
-      - name: Create Test Results Directory
-        run: |
-          cd SimplySkip.Tests
-          if [ ! -d "TestResults" ]; then
-            mkdir TestResults
-          fi      
-
-      - name: Publish test results
-        if: always()
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-results
-          path: SimplySkip.Tests/TestResults
-
       - name: Fail if unit tests fail
         if: failure()
         run: exit 1
