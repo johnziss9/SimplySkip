@@ -34,7 +34,7 @@ function Skips() {
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             setSkips(data);
         } else {
             setSnackbarMessage('Failed to load skips.');
@@ -50,17 +50,17 @@ function Skips() {
             const { success, data } = await handleHttpRequest(url, method);
             const booking = data;
 
-            if (success) {            
+            if (success) {
                 setBooking(booking);
 
                 const customerId = booking.customerId;
 
                 const url = `/customer/${customerId}`;
                 const method = 'GET';
-        
+
                 const { success, data } = await handleHttpRequest(url, method);
-        
-                if (success) {            
+
+                if (success) {
                     setCustomer(data);
                 } else {
                     setSnackbarMessage('Failed to load customer.');
@@ -108,7 +108,7 @@ function Skips() {
 
         const { success } = await handleHttpRequest(url, method, body);
 
-        if (success) {            
+        if (success) {
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {
