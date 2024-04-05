@@ -12,7 +12,7 @@ using SimplySkip;
 namespace SimplySkip.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    [Migration("20240206072422_SSInitialMigration")]
+    [Migration("20240405085404_SSInitialMigration")]
     partial class SSInitialMigration
     {
         /// <inheritdoc />
@@ -24,6 +24,31 @@ namespace SimplySkip.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("SimplySkip.Models.AuditLog", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Action")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("Timestamp")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Username")
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AuditLogs");
+                });
 
             modelBuilder.Entity("SimplySkip.Models.Booking", b =>
                 {

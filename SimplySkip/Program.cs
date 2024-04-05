@@ -51,7 +51,6 @@ builder.Services.AddCors(options =>
     });
 });
 
-
 builder.Services.AddIdentity<IdentityUser, IdentityRole>().AddEntityFrameworkStores<AuthDbContext>().AddDefaultTokenProviders();
 
 string jwtKey = builder.Configuration["Jwt:Key"] ?? throw new InvalidOperationException("Jwt:Key configuration value is missing or empty.");
@@ -76,11 +75,11 @@ builder.Services.AddAuthentication(options =>
 
 builder.Services.AddAuthorizationCore();
 
-
 builder.Services.AddScoped<ICustomerService, CustomerService>();
 builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<ISkipService, SkipService>();
 builder.Services.AddScoped<IAuthService, AuthService>();
+builder.Services.AddScoped<IAuditLogService, AuditLogService>();
 
 builder.Services.AddScoped<IPasswordHasher<IdentityUser>, PasswordHasher<IdentityUser>>();
 

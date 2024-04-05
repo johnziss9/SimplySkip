@@ -16,5 +16,7 @@ namespace SimplySkip
         public DbSet<Booking> Bookings { get; set; }
 
         public DbSet<Skip> Skips { get; set; }
+
+        public DbSet<AuditLog> AuditLogs { get; set; }
     }
 }
