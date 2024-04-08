@@ -6,9 +6,12 @@ namespace SimplySkip.Helpers
     {
         public string Token { get; set; }
 
-        public LoginResponse(IdentityResult result, string token) : base(result)
+        public string UserId { get; set; }
+
+        public LoginResponse(IdentityResult result, string token, string userId) : base(result)
         {
             Token = token;
+            UserId = userId;
         }
     }
 }

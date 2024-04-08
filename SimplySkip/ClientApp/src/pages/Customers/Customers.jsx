@@ -61,6 +61,7 @@ function Customers() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {            
+            handleAddAuditLogEntry(`Ο πελἀτης (${customer.lastName}, ${customer.firstName}) ἐχει διαγραφεί.`);
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {
@@ -98,6 +99,23 @@ function Customers() {
                 handleShowDeleteDialog(customer);
         } else {
             setSnackbarMessage('Failed to load bookings.');
+            setShowSnackbar(true);
+        }
+    };
+
+    const handleAddAuditLogEntry = async (action) => {
+        const url = '/auditLog/';
+        const method = 'POST';
+        const body = {
+            userId: sessionStorage.getItem('userId'),
+            username: sessionStorage.getItem('username'),
+            action: action
+        };
+
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (!success) {
+            setSnackbarMessage('Failed to add audit log.');
             setShowSnackbar(true);
         }
     };
@@ -175,6 +193,12 @@ function Customers() {
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Χρἠστης Αποθἠκευσης:</FormLabel> {}
+                    </Typography>
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                        <FormLabel>Χρἠστης Τελευταίας Επεξἐργασης:</FormLabel> {}
                     </Typography>
                     <Button
                         variant="outlined"

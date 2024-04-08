@@ -109,6 +109,7 @@ function Skips() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {
+            handleAddAuditLogEntry(`Το skip ${skip.name} ἐχει διαγραφεί.`);
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {
@@ -116,6 +117,23 @@ function Skips() {
             setShowSnackbar(true);
         }
     }
+
+    const handleAddAuditLogEntry = async (action) => {
+        const url = '/auditLog/';
+        const method = 'POST';
+        const body = {
+            userId: sessionStorage.getItem('userId'),
+            username: sessionStorage.getItem('username'),
+            action: action
+        };
+
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (!success) {
+            setSnackbarMessage('Failed to add audit log.');
+            setShowSnackbar(true);
+        }
+    };
 
     const handleCloseSnackbar = () => {
         setShowSnackbar(false);

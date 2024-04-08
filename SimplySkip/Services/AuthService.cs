@@ -103,7 +103,7 @@ namespace SimplySkip.Services
             {
                 var token = GenerateToken(user);
 
-                return Response<LoginResponse>.Success(new LoginResponse(IdentityResult.Success, token));
+                return Response<LoginResponse>.Success(new LoginResponse(IdentityResult.Success, token, user.Id));
             }
 
             return Response<LoginResponse>.Fail(400, "Invalid username or password.");

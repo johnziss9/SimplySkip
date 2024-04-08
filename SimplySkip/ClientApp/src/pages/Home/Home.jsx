@@ -27,8 +27,10 @@ function Home() {
         const { success, data } = await handleHttpRequest(url, method, body);
 
         if (success) {
-            const { token } = data;
+            const { token, userId } = data;
 
+            sessionStorage.setItem('userId', userId);
+            sessionStorage.setItem('username', username);
             sessionStorage.setItem('token', token);
             navigate('/Bookings');
         } else {

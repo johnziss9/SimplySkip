@@ -41,7 +41,7 @@ namespace SimplySkip.Services
             return Response<AuditLog>.Success(auditLog);
         }
 
-        public async Task<Response<AuditLog>> GetLatestAuditLogByUserId(int userId)
+        public async Task<Response<AuditLog>> GetLatestAuditLogByUserId(string userId)
         {
             var auditLog = await _ssDbContext.AuditLogs
                                                 .Where(al => al.UserId == userId)

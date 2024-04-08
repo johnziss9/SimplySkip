@@ -38,7 +38,7 @@ function Bookings() {
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             setBookings(data);
             handleGetCustomer(data);
         } else {
@@ -51,20 +51,20 @@ function Bookings() {
         const promises = bookings.map(async (booking) => {
             const url = `/customer/${booking.customerId}`;
             const method = 'GET';
-    
+
             const { success, data } = await handleHttpRequest(url, method);
-    
+
             if (success) {
                 return { [booking.customerId]: data };
             } else {
-                setSnackbarMessage('Failed to load customer for current booking.'); 
+                setSnackbarMessage('Failed to load customer for current booking.');
                 setShowSnackbar(true);
             }
         });
-    
+
         try {
             const results = await Promise.all(promises);
-    
+
             const details = {};
             results.forEach((result) => {
                 if (result) {
@@ -72,21 +72,21 @@ function Bookings() {
                     details[customerId] = result[customerId];
                 }
             });
-    
+
             setCustomerDetails(details);
         } catch (error) {
             setSnackbarMessage('An error occurred. Please try again later.');
             setShowSnackbar(true);
         }
     };
-    
+
     const handleFetchCustomer = async (id) => {
         const url = `/customer/${id}`;
         const method = 'GET';
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             setCustomer(data);
         } else {
             setSnackbarMessage('Failed to load customer.');
@@ -100,10 +100,10 @@ function Bookings() {
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             setSkip(data);
         } else {
-            setSnackbarMessage('Failed to load skip.'); 
+            setSnackbarMessage('Failed to load skip.');
             setShowSnackbar(true);
         }
     };
@@ -163,15 +163,19 @@ function Bookings() {
 
         const { success } = await handleHttpRequest(url, method, body);
 
-        if (success) {            
+        if (success) {
+            handleFetchCustomer().then((customerData) => {
+                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customerData.lastName}, ${customerData.firstName} ἐχει ακυρωθεἰ.`);
+            });
+
             const url = `/skip/${booking.skipId}`;
             const method = 'GET';
 
             const { success, data } = await handleHttpRequest(url, method);
 
             if (success) {
-                setSkip(data);
-                
+                setSkip(data)
+
                 const url = `/skip/${data.id}`;
                 const method = 'PUT';
                 const body = {
@@ -187,25 +191,42 @@ function Bookings() {
 
                 const { success } = await handleHttpRequest(url, method, body);
 
-                if (success) {            
-                    setSnackbarMessage(`Η κράτηση ακυρώθηκε. Το Skip ${skip.name} είναι τώρα διαθέσιμο.`); 
+                if (success) {
+                    setSnackbarMessage(`Η κράτηση ακυρώθηκε. Το Skip ${data.name} είναι τώρα διαθέσιμο.`);
                     setSnackbarSuccess(true);
                     setShowSnackbar(true);
                 } else {
-                    setSnackbarMessage('Failed to update skip availability.'); 
+                    setSnackbarMessage('Failed to update skip availability.');
                     setShowSnackbar(true);
                 }
             } else {
-                setSnackbarMessage('Failed to find skip associated to this booking.'); 
+                setSnackbarMessage('Failed to find skip associated to this booking.');
                 setShowSnackbar(true);
             }
 
             handleShowCancelSuccess();
         } else {
-            setSnackbarMessage('Failed to set booking to cancelled.'); 
+            setSnackbarMessage('Failed to set booking to cancelled.');
             setShowSnackbar(true);
         }
     }
+
+    const handleAddAuditLogEntry = async (action) => {
+        const url = '/auditLog/';
+        const method = 'POST';
+        const body = {
+            userId: sessionStorage.getItem('userId'),
+            username: sessionStorage.getItem('username'),
+            action: action
+        };
+
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (!success) {
+            setSnackbarMessage('Failed to add audit log.');
+            setShowSnackbar(true);
+        }
+    };
 
     const handleCloseSnackbar = () => {
         setShowSnackbar(false);

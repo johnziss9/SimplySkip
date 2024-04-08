@@ -88,6 +88,7 @@ function CustomerBookings() {
             const { success, data } = await handleHttpRequest(url, method);
     
             if (success) {            
+                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customer.lastName}, ${customer.firstName} ἐχει ακυρωθεἰ.`);
                 const url = `/skip/${data.id}`;
                 const method = 'PUT';
                 const body = {
@@ -122,6 +123,23 @@ function CustomerBookings() {
             setShowSnackbar(true);
         }
     }
+
+    const handleAddAuditLogEntry = async (action) => {
+        const url = '/auditLog/';
+        const method = 'POST';
+        const body = {
+            userId: sessionStorage.getItem('userId'),
+            username: sessionStorage.getItem('username'),
+            action: action
+        };
+
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (!success) {
+            setSnackbarMessage('Failed to add audit log.');
+            setShowSnackbar(true);
+        }
+    };
 
     const handleCloseSnackbar = () => {
         setShowSnackbar(false);

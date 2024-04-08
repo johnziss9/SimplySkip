@@ -12,7 +12,7 @@ using SimplySkip;
 namespace SimplySkip.Migrations
 {
     [DbContext(typeof(SSDbContext))]
-    [Migration("20240405085404_SSInitialMigration")]
+    [Migration("20240405160011_SSInitialMigration")]
     partial class SSInitialMigration
     {
         /// <inheritdoc />
@@ -39,8 +39,8 @@ namespace SimplySkip.Migrations
                     b.Property<DateTime>("Timestamp")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
+                    b.Property<string>("UserId")
+                        .HasColumnType("text");
 
                     b.Property<string>("Username")
                         .HasColumnType("text");

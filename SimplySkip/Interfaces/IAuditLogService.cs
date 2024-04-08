@@ -11,6 +11,6 @@ namespace SimplySkip.Interfaces
 
          Task<Response<AuditLog>> GetAuditLogById(int id);
 
-         Task<Response<AuditLog>> GetLatestAuditLogByUserId(int userId);
+         Task<Response<AuditLog>> GetLatestAuditLogByUserId(string userId);
     }
 }

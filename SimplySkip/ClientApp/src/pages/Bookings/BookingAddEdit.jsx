@@ -156,8 +156,8 @@ function BookingAddEdit() {
 
         const { success } = await handleHttpRequest(url, method, body);
 
-        if (success) {            
-            setSnackbarMessage(`Το Skip ${skip.name} έχει ενημερωθεί.`); 
+        if (success) {
+            setSnackbarMessage(`Το Skip ${skip.name} εἰναι τὠρα ${status ? 'κρατημἐνο.' : 'διαθἐσιμο.'}`); 
             setSnackbarSuccess(true);
             setShowSnackbar(true);
         } else {
@@ -187,7 +187,8 @@ function BookingAddEdit() {
 
             const { success } = await handleHttpRequest(url, method, body);
 
-            if (success) {            
+            if (success) {
+                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customer.lastName}, ${customer.firstName} ἐχει επεξεργαστεἰ.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
 
@@ -232,7 +233,8 @@ function BookingAddEdit() {
 
             const { success } = await handleHttpRequest(url, method, body);
 
-            if (success) {            
+            if (success) {
+                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customer.lastName}, ${customer.firstName} ἐχει αποθηκευτεἰ.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
                 handleSkipStatus(skip.id, true);
@@ -251,6 +253,23 @@ function BookingAddEdit() {
             }
         }
     }
+
+    const handleAddAuditLogEntry = async (action) => {
+        const url = '/auditLog/';
+        const method = 'POST';
+        const body = {
+            userId: sessionStorage.getItem('userId'),
+            username: sessionStorage.getItem('username'),
+            action: action
+        };
+
+        const { success } = await handleHttpRequest(url, method, body);
+
+        if (!success) {
+            setSnackbarMessage('Failed to add audit log.');
+            setShowSnackbar(true);
+        }
+    };
 
     const handleReturnSwitchChange = (e) => {
         setIsReturned(e.target.checked);
