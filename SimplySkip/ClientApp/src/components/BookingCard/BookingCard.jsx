@@ -14,6 +14,23 @@ function BookingCard(props) {
         setExpanded(!expanded);
     };
 
+    // Function to remove diacritics from Greek text
+    const removeDiacritics = (text) => {
+        return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    };
+
+    // Component to render text in uppercase without diacritics
+    const UppercaseWithoutDiacritics = (props) => {
+        const { lastName } = props;
+        const lastNameUppercase = removeDiacritics(lastName.toUpperCase());
+
+        return (
+            <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }}>
+                {lastNameUppercase}
+            </Typography>
+        );
+    };
+
     return (
         <Card sx={{
             minWidth: 275,
@@ -23,9 +40,7 @@ function BookingCard(props) {
             margin: '15px'
         }}>
             <CardContent sx={{ paddingBottom: '17px !important' }}>
-                <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px', textTransform: 'uppercase' }} >
-                    {props.lastName}
-                </Typography>
+                <UppercaseWithoutDiacritics lastName={props.lastName} />
                 <Typography variant="body2" sx={{ fontSize: '19px', margin: '5px' }} >
                     {props.firstName}
                 </Typography>

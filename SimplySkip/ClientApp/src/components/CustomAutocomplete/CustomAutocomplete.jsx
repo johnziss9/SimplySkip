@@ -45,8 +45,12 @@ function CustomAutocomplete(props) {
     }
 
     const formatCustomerLabel = (customer) => {
+        const removeDiacritics = (text) => {
+            return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+        };
+
         if (customer) {
-            const formattedLastName = customer.lastName.toUpperCase();
+            const formattedLastName = removeDiacritics(customer.lastName.toUpperCase());
             return `${formattedLastName}, ${customer.firstName}`;
         }
         return '';
