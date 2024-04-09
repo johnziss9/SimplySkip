@@ -61,7 +61,7 @@ function Customers() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {            
-            handleAddAuditLogEntry(`Ο πελἀτης (${customer.lastName}, ${customer.firstName}) ἐχει διαγραφεί.`);
+            handleAddAuditLogEntry(`Διαγραφἠ πελἀτη ${customer.lastName}, ${customer.firstName}.`);
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {

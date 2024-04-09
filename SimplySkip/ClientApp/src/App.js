@@ -13,6 +13,7 @@ import SkipAddEdit from './pages/Skips/SkipAddEdit';
 import LogoutTimerDialog from './components/LogoutTimerDialog/LogoutTimerDialog';
 import { useNavigate } from 'react-router-dom';
 import NotFound from './pages/NotFound/NotFound';
+import History from './pages/History/History';
 
 const App = () => {
   const navigate = useNavigate();
@@ -62,6 +63,7 @@ const App = () => {
           <Route path="/Booking/:id?/:source?" element={<BookingAddEdit />} />
           <Route path="/Skips" element={<Skips />} />
           <Route path="/Skip/:id?" element={<SkipAddEdit />} />
+          <Route path="/History" element={<History />} />
         </Route>
         <Route path="*" element={<NotFound />} />
       </Routes>

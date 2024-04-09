@@ -1,0 +1,10 @@
+.history-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 64px;
+}
+
+.history-table-container {
+    max-width: 1000px;
+    margin: 20px 0;
+}

@@ -88,7 +88,7 @@ function CustomerBookings() {
             const { success, data } = await handleHttpRequest(url, method);
     
             if (success) {            
-                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customer.lastName}, ${customer.firstName} ἐχει ακυρωθεἰ.`);
+                handleAddAuditLogEntry(`Ακὐρωση κρἀτησης για τον πελἀτη ${customer.lastName}, ${customer.firstName}.`);
                 const url = `/skip/${data.id}`;
                 const method = 'PUT';
                 const body = {

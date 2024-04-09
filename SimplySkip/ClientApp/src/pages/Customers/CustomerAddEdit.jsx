@@ -94,7 +94,7 @@ function CustomerAddEdit() {
             const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
-                handleAddAuditLogEntry(`Ο πελἀτης (${lastName}, ${firstName}) ἐχει επεξεργαστεἰ.`);
+                handleAddAuditLogEntry(`Επεξεργασἰα πελἀτη ${lastName}, ${firstName}.`);
                 handleCloseAddEditDialog();
                 handleShowSuccess();
 
@@ -131,7 +131,7 @@ function CustomerAddEdit() {
             const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
-                handleAddAuditLogEntry(`Ο πελἀτης (${lastName}, ${firstName}) ἐχει αποθηκευτεἰ.`);
+                handleAddAuditLogEntry(`Αποθὐκευση πελἀτη ${lastName}, ${firstName}.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {

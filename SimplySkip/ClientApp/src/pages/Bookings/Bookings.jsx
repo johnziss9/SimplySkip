@@ -165,7 +165,7 @@ function Bookings() {
 
         if (success) {
             handleFetchCustomer().then((customerData) => {
-                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customerData.lastName}, ${customerData.firstName} ἐχει ακυρωθεἰ.`);
+                handleAddAuditLogEntry(`Ακὐρωση κρἀτησης για τον πελἀτη ${customerData.lastName}, ${customerData.firstName}.`);
             });
 
             const url = `/skip/${booking.skipId}`;

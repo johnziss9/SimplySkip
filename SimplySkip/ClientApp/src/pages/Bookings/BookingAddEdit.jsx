@@ -188,7 +188,7 @@ function BookingAddEdit() {
             const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
-                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customer.lastName}, ${customer.firstName} ἐχει επεξεργαστεἰ.`);
+                handleAddAuditLogEntry(`Επεξεργασἰα κρἀτησης για τον πελἀτη ${customer.lastName}, ${customer.firstName}.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
 
@@ -234,7 +234,7 @@ function BookingAddEdit() {
             const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
-                handleAddAuditLogEntry(`Η κρἀτηση για τον πελἀτη ${customer.lastName}, ${customer.firstName} ἐχει αποθηκευτεἰ.`);
+                handleAddAuditLogEntry(`Αποθἠκευση κρἀτησης για τον πελἀτη ${customer.lastName}, ${customer.firstName}.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
                 handleSkipStatus(skip.id, true);

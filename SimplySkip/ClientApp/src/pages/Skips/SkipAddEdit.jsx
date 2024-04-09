@@ -80,7 +80,7 @@ function SkipAddEdit() {
             const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
-                handleAddAuditLogEntry(`Το Skip ${name} ἐχει επεξεργαστεἰ.`);
+                handleAddAuditLogEntry(`Επεξεργασἰα του Skip ${name}.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {
@@ -104,7 +104,7 @@ function SkipAddEdit() {
             const { success } = await handleHttpRequest(url, method, body);
 
             if (success) {
-                handleAddAuditLogEntry(`Το Skip ${name} ἐχει αποθηκευτεἰ.`);
+                handleAddAuditLogEntry(`Αποθὐκευση του Skip ${name}.`);
                 handleCloseAddEditDialog()
                 handleShowSuccess();
             } else {

@@ -109,7 +109,7 @@ function Skips() {
         const { success } = await handleHttpRequest(url, method, body);
 
         if (success) {
-            handleAddAuditLogEntry(`Το skip ${skip.name} ἐχει διαγραφεί.`);
+            handleAddAuditLogEntry(`Διαγραφἠ του skip ${skip.name}.`);
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
         } else {

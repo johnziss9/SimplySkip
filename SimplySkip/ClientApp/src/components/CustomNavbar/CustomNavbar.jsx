@@ -61,6 +61,7 @@ function CustomNavbar(props) {
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">ΠΕΛΑΤΕΣ</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">ΚΡΑΤΗΣΕΙΣ</Link></Button>
                     <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/History">ΙΣΤΟΡΙΚΟ</Link></Button>
                 </div>
             )}
         </AppBar>
