@@ -37,7 +37,7 @@ namespace SimplySkip.Controllers
         }
 
         [HttpGet("user/{id}")]
-        public async Task<ActionResult<AuditLog>> GetByUserId(string id)
+        public async Task<ActionResult<AuditLog>> GetLatestByUserId(string id)
         {
             return ResponseHelper.HandleErrorAndReturn(await _auditLogService.GetLatestAuditLogByUserId(id));
         }
