@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import './History.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper } from '@mui/material';
+import CustomTextField from "../../components/CustomTextField/CustomTextField";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, TableSortLabel, useMediaQuery } from '@mui/material';
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
 
@@ -9,6 +10,11 @@ function History() {
     const [auditLogs, setAuditLogs] = useState([]);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
+    const [sortDirection, setSortDirection] = React.useState('asc');
+    const [sortBy, setSortBy] = React.useState('timestamp');
+    const [searchQuery, setSearchQuery] = useState('');
+
+    const searchbarWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
         handleFetchAuditLogs();
@@ -34,21 +40,65 @@ function History() {
         setSnackbarMessage('');
     };
 
+    const handleSort = (property) => {
+        const isAsc = sortBy === property && sortDirection === 'asc';
+        setSortDirection(isAsc ? 'desc' : 'asc');
+        setSortBy(property);
+        const sortedLogs = auditLogs.sort((a, b) => {
+            if (isAsc) {
+                return a[property] > b[property] ? 1 : -1;
+            } else {
+                return a[property] < b[property] ? 1 : -1;
+            }
+        });
+        setAuditLogs(sortedLogs);
+    };
+
+    const filteredAuditLogs = auditLogs.filter((auditLog) =>
+        auditLog.username.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        auditLog.action.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     return (
         <>
             <CustomNavbar currentPage={'Ιστορικό'} />
             <div className='history-container'>
+                <CustomTextField
+                    label={'Αναζήτηση...'}
+                    variant={'standard'}
+                    type={'search'}
+                    width={searchbarWidth ? '300px' : '500px'}
+                    margin={'normal'}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    display={auditLogs.length > 0 ? '' : 'none'}
+                />
                 <TableContainer component={Paper} className="history-table-container">
                     <Table>
                         <TableHead>
                             <TableRow>
-                                <TableCell>Χρήστης</TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortBy === 'username'}
+                                        direction={sortDirection}
+                                        onClick={() => handleSort('username')}
+                                    >
+                                        Χρήστης
+                                    </TableSortLabel>
+                                </TableCell>
                                 <TableCell>Δράση</TableCell>
-                                <TableCell>Ημέρα/Ώρα</TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortBy === 'timestamp'}
+                                        direction={sortDirection}
+                                        onClick={() => handleSort('timestamp')}
+                                    >
+                                        Ημέρα/Ώρα
+                                    </TableSortLabel>
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {auditLogs.map((al) => (
+                            {filteredAuditLogs.map((al) => (
                                 <TableRow key={al.id}>
                                     <TableCell>{al.username}</TableCell>
                                     <TableCell>{al.action}</TableCell>
