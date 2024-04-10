@@ -22,7 +22,13 @@ function BookingCard(props) {
     // Component to render text in uppercase without diacritics
     const UppercaseWithoutDiacritics = (props) => {
         const { lastName } = props;
-        const lastNameUppercase = removeDiacritics(lastName.toUpperCase());
+
+        // Added to deal with async call.
+        // Last name is getting passed as a prop form the Bookings component.
+        // The BookingCard seems to be loaded before the propr are passed and the line below fixes that.
+        const displayedLastName = lastName || 'Loading...';
+
+        const lastNameUppercase = removeDiacritics(displayedLastName.toUpperCase());
 
         return (
             <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }}>
