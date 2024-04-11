@@ -101,6 +101,7 @@ function CustomerAddEdit() {
                 if (previousAddress !== address)
                     handleFutureBookingAddress();
             } else {
+                handleCloseAddEditDialog();
                 if (!firstName || !lastName || !address || !phone) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setFirstNameError(true);
@@ -132,9 +133,10 @@ function CustomerAddEdit() {
 
             if (success) {
                 handleAddAuditLogEntry(`Αποθὐκευση πελἀτη ${lastName}, ${firstName}.`);
-                handleCloseAddEditDialog()
+                handleCloseAddEditDialog();
                 handleShowSuccess();
             } else {
+                handleCloseAddEditDialog();
                 if (!firstName || !lastName || !address || !phone) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setFirstNameError(true);

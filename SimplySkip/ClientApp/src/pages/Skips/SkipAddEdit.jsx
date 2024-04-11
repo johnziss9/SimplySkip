@@ -81,7 +81,7 @@ function SkipAddEdit() {
 
             if (success) {
                 handleAddAuditLogEntry(`Επεξεργασἰα του Skip ${name}.`);
-                handleCloseAddEditDialog()
+                handleCloseAddEditDialog();
                 handleShowSuccess();
             } else {
                 setSnackbarMessage('Failed to add booking.');
@@ -105,9 +105,10 @@ function SkipAddEdit() {
 
             if (success) {
                 handleAddAuditLogEntry(`Αποθὐκευση του Skip ${name}.`);
-                handleCloseAddEditDialog()
+                handleCloseAddEditDialog();
                 handleShowSuccess();
             } else {
+                handleCloseAddEditDialog()
                 if (!name || !size) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setNameError(true);

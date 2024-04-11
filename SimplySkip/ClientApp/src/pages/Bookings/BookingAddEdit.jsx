@@ -189,7 +189,7 @@ function BookingAddEdit() {
 
             if (success) {
                 handleAddAuditLogEntry(`Επεξεργασἰα κρἀτησης για τον πελἀτη ${customer.lastName}, ${customer.firstName}.`);
-                handleCloseAddEditDialog()
+                handleCloseAddEditDialog();
                 handleShowSuccess();
 
                 // If user edits booking and changes the skip, previous skip becomes available and new one is marked as rented.
@@ -202,6 +202,7 @@ function BookingAddEdit() {
                 if ((!previousIsReturned && isReturned) || isCancelled)
                     handleSkipStatus(previousSkipId, false);
             } else {
+                handleCloseAddEditDialog();
                 if (!skip || !address) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setSkipError(true);
@@ -211,7 +212,6 @@ function BookingAddEdit() {
                 }
 
                 setShowSnackbar(true);
-                handleCloseAddEditDialog();
             }
         } else {
             const url = '/booking/';
@@ -239,6 +239,7 @@ function BookingAddEdit() {
                 handleShowSuccess();
                 handleSkipStatus(skip.id, true);
             } else {
+                handleCloseAddEditDialog()
                 if (!customer || !skip || !address) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setSkipError(true);
@@ -249,7 +250,6 @@ function BookingAddEdit() {
                 }
 
                 setShowSnackbar(true);
-                handleCloseAddEditDialog();
             }
         }
     }
