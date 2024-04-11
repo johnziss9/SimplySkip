@@ -1,6 +1,6 @@
 import React from 'react';
 import Skips from '../pages/Skips/Skips';
-import { render, screen, waitFor, fireEvent, getByText } from '@testing-library/react';
+import { render, screen, waitFor, fireEvent } from '@testing-library/react';
 import { act } from 'react-dom/test-utils';
 import { BrowserRouter } from 'react-router-dom';
 import '@testing-library/jest-dom';
@@ -98,10 +98,11 @@ describe('Skips component', () => {
         if (!conditionalElement) {
             // Skips are rendered, check their length using Card role (adjust if needed)
             const renderedSkips = queryAllByRole('card');
-            expect(renderedSkips.length).toBe(2); // Expect only two rented skips to be shown
+            expect(renderedSkips.length).toBe(2);
+            console.log(renderedSkips.length + '------------------');
         } else {
             // No skips rendered, test passes (assuming this is the expected behavior)
-            expect(true).toBe(true); // Or a more specific assertion for no skips
+            expect(true).toBe(true);
         }
     });
 
