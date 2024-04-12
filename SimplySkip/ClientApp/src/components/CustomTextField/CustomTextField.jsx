@@ -16,6 +16,7 @@ function CustomTextField(props) {
             rows={props.rows}
             maxRows={props.maxRows}
             error={props.error}
+            onKeyDown={props.onKeyDown}
             sx={{
                 // Styles for the outlined variant
                 "& .MuiOutlinedInput-root": {

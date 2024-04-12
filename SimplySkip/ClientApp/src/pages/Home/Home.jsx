@@ -15,7 +15,7 @@ function Home() {
     const [password, setPassword] = useState('');
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
-    
+
     const handleLogin = async () => {
         const url = '/auth/login/';
         const method = 'POST';
@@ -42,6 +42,13 @@ function Home() {
         }
     }
 
+    const handleKeyDown = (e) => {
+        const key = e.key || e;
+        if (key === 'Enter') {
+            handleLogin();
+        }
+    };
+
     const handleCloseSnackbar = () => {
         setSnackbarMessage('');
         setShowSnackbar(false);
@@ -54,8 +61,8 @@ function Home() {
                     <div className='home-logo-container'>
                         <img src={Logo} alt='logo' className='home-logo-image' />
                     </div>
-                    <CustomTextField label={"Username"} variant={"outlined"} margin={"dense"} onChange={e => setUsername(e.target.value)} value={username} />
-                    <CustomTextField label={"Password"} variant={"outlined"} margin={"dense"} type={"password"} onChange={e => setPassword(e.target.value)} value={password} />
+                    <CustomTextField label={"Username"} variant={"outlined"} margin={"dense"} onChange={e => setUsername(e.target.value)} value={username} onKeyDown={handleKeyDown} />
+                    <CustomTextField label={"Password"} variant={"outlined"} margin={"dense"} type={"password"} onChange={e => setPassword(e.target.value)} value={password} onKeyDown={handleKeyDown} />
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Login"} width={"200px"} height={"50px"} margin={"20px 0 0 0"} onClick={handleLogin} />
                 </div>
             </div>
