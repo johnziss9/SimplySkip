@@ -294,6 +294,7 @@ function Bookings() {
                                         : !booking.cancelled && booking.returned && booking.paid // past
                                             ? "10px solid grey"
                                             : "10px solid white"}
+                            customerDeleted={customerDetails[booking.customerId]?.deleted}
                             lastName={customerDetails[booking.customerId]?.lastName}
                             firstName={customerDetails[booking.customerId]?.firstName}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
@@ -315,11 +316,16 @@ function Bookings() {
                 <DialogContent>
                     <Typography variant="h6" sx={{ margin: '5px' }} >
                         Πελἀτης
+                        {customer.deleted && (
+                            <span style={{ fontStyle: 'italic', fontSize: '17px' }}>
+                                {' '} (Ἐχει Διαγραφεί)
+                            </span>
+                        )}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px', ...(customer.deleted ? { textDecoration: 'line-through' } : {}) }} >
                         <FormLabel>Επὠνυμο:</FormLabel> {customer.lastName}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px', ...(customer.deleted ? { textDecoration: 'line-through' } : {}) }} >
                         <FormLabel>Ὀνομα:</FormLabel> {customer.firstName}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >

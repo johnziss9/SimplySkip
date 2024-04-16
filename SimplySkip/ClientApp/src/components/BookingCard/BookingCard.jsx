@@ -31,7 +31,7 @@ function BookingCard(props) {
         const lastNameUppercase = removeDiacritics(displayedLastName.toUpperCase());
 
         return (
-            <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }}>
+            <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px', ...(props.customerDeleted ? { textDecoration: 'line-through' } : {}) }}>
                 {lastNameUppercase}
             </Typography>
         );
@@ -46,8 +46,8 @@ function BookingCard(props) {
             margin: '15px'
         }}>
             <CardContent sx={{ paddingBottom: '17px !important' }}>
-                <UppercaseWithoutDiacritics lastName={props.lastName} />
-                <Typography variant="body2" sx={{ fontSize: '19px', margin: '5px' }} >
+                <UppercaseWithoutDiacritics lastName={props.lastName} customerDeleted={props.customerDeleted} />
+                <Typography variant="body2" sx={{ fontSize: '19px', margin: '5px', ...(props.customerDeleted ? { textDecoration: 'line-through' } : {}) }} >
                     {props.firstName}
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
