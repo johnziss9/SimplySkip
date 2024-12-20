@@ -22,6 +22,7 @@ function Skips() {
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
 
     useEffect(() => {
         handleFetchSkips();
@@ -188,15 +189,33 @@ function Skips() {
         }
     }
 
+    const handleFilterClick = () => {
+        setShowFilter(!showFilter);
+    };
+
     return (
         <>
             <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
-                <RadioGroup sx={{ marginTop: '20px', display: filteredSkips.length > 0 ? '' : 'none' }} value={selectedValue} onChange={handleRadioChange} row>
-                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ὀλα" sx={{ display: 'inline' }} />
-                    <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Κρατημἐνα" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Διαθέσιμα" sx={{ display: getAvailableSkips().length > 0 ? 'inline' : 'none' }} />
-                </RadioGroup>
+                {filteredSkips.length > 0 && (
+                    <CustomButton
+                        backgroundColor="#006d77"
+                        buttonName="ΦΙΛΤΡΟ"
+                        width="100px"
+                        height="45px"
+                        margin="20px 0 0 0"
+                        onClick={handleFilterClick}
+                    />
+                )}
+                {showFilter && (
+                    <div style={{ marginTop: '10px' }}>
+                        <RadioGroup value={selectedValue} onChange={handleRadioChange} row>                            
+                            <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ὀλα" sx={{ display: 'inline' }} />
+                            <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Κρατημἐνα" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
+                            <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Διαθέσιμα" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
+                        </RadioGroup>
+                    </div>
+                )}
                 <div className="skips-section">
                     {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
                         <SkipCard

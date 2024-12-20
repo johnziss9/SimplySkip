@@ -24,6 +24,7 @@ function Bookings() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
@@ -270,17 +271,35 @@ function Bookings() {
         }
     }
 
+    const handleFilterClick = () => {
+        setShowFilter(!showFilter);
+    };
+
     return (
         <>
             <CustomNavbar currentPage={'Κρατἠσεις'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
-                <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? 'flex' : 'none', width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
-                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" sx={{ display: 'inline' }} />
-                    <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Τρέχουσες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ανεξόφλητες" sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ολοκληρωμένες" sx={{ display: getPastBookings().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ακυρωμένες" sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }} />
-                </RadioGroup>
+                {filteredBookings.length > 0 && (
+                    <CustomButton
+                        backgroundColor="#006d77"
+                        buttonName="ΦΙΛΤΡΟ"
+                        width="100px"
+                        height="45px"
+                        margin="20px 0 0 0"
+                        onClick={handleFilterClick}
+                    />
+                )}
+                {showFilter && (
+                    <div style={{ marginTop: '10px' }}>
+                        <RadioGroup sx={{ width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
+                            <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" sx={{ display: 'inline' }} />
+                            <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Τρέχουσες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
+                            <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ανεξόφλητες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
+                            <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ολοκληρωμένες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
+                            <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ακυρωμένες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
+                        </RadioGroup>
+                    </div>
+                )}
                 <div className="bookings-section">
                     {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <BookingCard
