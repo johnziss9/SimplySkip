@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  simply-skip-app-staging:
+    build:
+      context: ./SimplySkip
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      - postgres-staging
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Staging
+      - ConnectionStrings__SSPostgresConnection=Host=${DB_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    env_file:
+      - .env.staging
+
+  postgres-staging:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data-staging:/var/lib/postgresql/data
+    env_file:
+      - .env.staging
+
+  pgadmin-staging:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5051:80"
+    depends_on:
+      - postgres-staging
+    volumes:
+      - pgadmin-data-staging:/var/lib/pgadmin
+    env_file:
+      - .env.staging
+
+volumes:
+  db-data-staging:
+  pgadmin-data-staging:
