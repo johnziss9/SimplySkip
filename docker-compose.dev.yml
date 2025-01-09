@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  simply-skip-app-dev:
+    build:
+      context: ./SimplySkip
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      - postgres-dev
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__SSPostgresConnection=Host=${DB_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    env_file:
+      - .env.dev
+
+  postgres-dev:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data-dev:/var/lib/postgresql/data
+    env_file:
+      - .env.dev
+
+  pgadmin-dev:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5051:80"
+    depends_on:
+      - postgres-dev
+    volumes:
+      - pgadmin-data-dev:/var/lib/pgadmin
+    env_file:
+      - .env.dev
+
+volumes:
+  db-data-dev:
+  pgadmin-data-dev:

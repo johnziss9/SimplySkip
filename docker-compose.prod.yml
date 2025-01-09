@@ -1,0 +1,47 @@
+version: '3.9'
+
+services:
+  simply-skip-app-prod:
+    build:
+      context: ./SimplySkip
+      dockerfile: Dockerfile
+    ports:
+      - "5001:80"
+    depends_on:
+      - postgres-prod
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ConnectionStrings__SSPostgresConnection=Host=${DB_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+    env_file:
+      - .env.prod
+
+  postgres-prod:
+    image: postgres
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USER}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - "5433:5432"
+    volumes:
+      - db-data-prod:/var/lib/postgresql/data
+    env_file:
+      - .env.prod
+
+  pgadmin-prod:
+    image: dpage/pgadmin4
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "5051:80"
+    depends_on:
+      - postgres-prod
+    volumes:
+      - pgadmin-data-prod:/var/lib/pgadmin
+    env_file:
+      - .env.prod
+
+volumes:
+  db-data-prod:
+  pgadmin-data-prod:
