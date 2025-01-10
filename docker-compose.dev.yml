@@ -6,7 +6,7 @@ services:
       context: ./SimplySkip
       dockerfile: Dockerfile
     ports:
-      - "5001:80"
+      - "5002:80"
     depends_on:
       - postgres-dev
     environment:
@@ -22,7 +22,7 @@ services:
       POSTGRES_USER: ${DB_USER}
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5433:5432"
+      - "5434:5432"
     volumes:
       - db-data-dev:/var/lib/postgresql/data
     env_file:
@@ -34,7 +34,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "5051:80"
+      - "5052:80"
     depends_on:
       - postgres-dev
     volumes:
