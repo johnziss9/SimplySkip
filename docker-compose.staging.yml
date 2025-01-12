@@ -4,7 +4,7 @@ services:
       context: ./SimplySkip
       dockerfile: Dockerfile
     ports:
-      - "5002:80"
+      - "5001:80"
     depends_on:
       - postgres-staging
     environment:
@@ -20,7 +20,7 @@ services:
       POSTGRES_USER: johnz
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
-      - "5434:5432"
+      - "5433:5432"
     volumes:
       - db-data-staging:/var/lib/postgresql/data
     env_file:
@@ -32,7 +32,7 @@ services:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
     ports:
-      - "5052:80"
+      - "5051:80"
     depends_on:
       - postgres-staging
     volumes:
