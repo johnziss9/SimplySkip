@@ -1,2 +1,4 @@
 .vs/
 .env.*
+.DS_Store
+.env

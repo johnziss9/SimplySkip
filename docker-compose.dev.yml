@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   simply-skip-app-dev:
     build:
@@ -10,23 +8,23 @@ services:
     depends_on:
       - postgres-dev
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - ConnectionStrings__SSPostgresConnection=Host=${DB_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+      ASPNETCORE_ENVIRONMENT: Development
+      ConnectionStrings__SSPostgresConnection: "Host=postgres-dev;Database=ssdb_dev;Username=johnz;Password=${DB_PASSWORD}"
     env_file:
-      - .env.dev
+      - .env
 
   postgres-dev:
     image: postgres
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ssdb_dev
+      POSTGRES_USER: johnz
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5434:5432"
     volumes:
       - db-data-dev:/var/lib/postgresql/data
     env_file:
-      - .env.dev
+      - .env
 
   pgadmin-dev:
     image: dpage/pgadmin4
@@ -40,7 +38,7 @@ services:
     volumes:
       - pgadmin-data-dev:/var/lib/pgadmin
     env_file:
-      - .env.dev
+      - .env
 
 volumes:
   db-data-dev:

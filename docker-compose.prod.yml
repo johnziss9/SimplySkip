@@ -1,5 +1,3 @@
-version: '3.9'
-
 services:
   simply-skip-app-prod:
     build:
@@ -10,23 +8,23 @@ services:
     depends_on:
       - postgres-prod
     environment:
-      - ASPNETCORE_ENVIRONMENT=Production
-      - ConnectionStrings__SSPostgresConnection=Host=${DB_HOST};Database=${DB_NAME};Username=${DB_USER};Password=${DB_PASSWORD}
+      ASPNETCORE_ENVIRONMENT: Production
+      ConnectionStrings__SSPostgresConnection: "Host=postgres-prod;Database=ssdb_prod;Username=johnz;Password=${DB_PASSWORD}"
     env_file:
-      - .env.prod
+      - .env
 
   postgres-prod:
     image: postgres
     environment:
-      POSTGRES_DB: ${DB_NAME}
-      POSTGRES_USER: ${DB_USER}
+      POSTGRES_DB: ssdb_prod
+      POSTGRES_USER: johnz
       POSTGRES_PASSWORD: ${DB_PASSWORD}
     ports:
       - "5432:5432"
     volumes:
       - db-data-prod:/var/lib/postgresql/data
     env_file:
-      - .env.prod
+      - .env
 
   pgadmin-prod:
     image: dpage/pgadmin4
@@ -40,7 +38,7 @@ services:
     volumes:
       - pgadmin-data-prod:/var/lib/pgadmin
     env_file:
-      - .env.prod
+      - .env
 
   nginx:
     build:
