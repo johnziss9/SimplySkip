@@ -1,0 +1,23 @@
+name: PR Tests
+
+on:
+  pull_request:
+    branches: [ dev ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.203'
+
+      - name: Restore dependencies
+        run: dotnet restore ./SimplySkip.Tests
+
+      - name: Run unit tests
+        run: dotnet test ./SimplySkip.Tests
+        continue-on-error: false

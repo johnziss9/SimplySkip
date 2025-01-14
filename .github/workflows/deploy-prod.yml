@@ -1,0 +1,51 @@
+name: Deploy to Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirm:
+        description: 'Type "yes" to promote staging to production'
+        required: true
+
+jobs:
+  deploy_production:
+    if: github.event.inputs.confirm == 'yes'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.203'
+
+      - name: Run unit tests
+        run: |
+          dotnet restore ./SimplySkip.Tests
+          dotnet test ./SimplySkip.Tests
+
+      - name: Merge Staging to Main
+        run: |
+          git config user.name github-actions
+          git config user.email github-actions@github.com
+          git checkout staging
+          git pull origin staging
+          git checkout main
+          git merge --no-ff staging
+          git push origin main
+
+      - name: Deploy to Linode Production
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.LINODE_HOST }}
+          username: ${{ secrets.LINODE_USERNAME }}
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd SimplySkip-Prod
+            git pull origin main
+            docker compose -f docker-compose.prod.yml down
+            docker compose -f docker-compose.prod.yml up --build -d
