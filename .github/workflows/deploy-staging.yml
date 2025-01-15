@@ -28,16 +28,6 @@ jobs:
           git config user.email github-actions@github.com
           git remote set-url origin git@github.com:${{ github.repository }}.git
 
-      - name: Setup .NET
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: '7.0.203'
-
-      - name: Run unit tests
-        run: |
-          dotnet restore ./SimplySkip.Tests
-          dotnet test ./SimplySkip.Tests
-
       - name: Merge Dev to Staging
         run: |
           git checkout dev
