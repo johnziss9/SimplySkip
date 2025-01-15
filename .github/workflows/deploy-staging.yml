@@ -1,15 +1,11 @@
 name: Deploy to Staging
 
 on:
-  workflow_dispatch:
-    inputs:
-      confirm:
-        description: 'Type "yes" to promote dev to staging'
-        required: true
+  push:
+    branches: [ staging ]
 
 jobs:
-  deploy_staging:
-    if: github.event.inputs.confirm == 'yes'
+  test_and_deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -17,26 +13,33 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v3
+        with:
+          dotnet-version: '7.0.203'
+
+      - name: Restore dependencies
+        run: dotnet restore ./SimplySkip.Tests
+
+      - name: Run unit tests
+        run: dotnet test ./SimplySkip.Tests
+        continue-on-error: false
+
       - name: Setup SSH
+        if: success()
         uses: webfactory/ssh-agent@v0.7.0
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
       - name: Setup Git Config
+        if: success()
         run: |
           git config user.name github-actions
           git config user.email github-actions@github.com
           git remote set-url origin git@github.com:${{ github.repository }}.git
 
-      - name: Merge Dev to Staging
-        run: |
-          git checkout dev
-          git pull origin dev
-          git checkout staging
-          git merge --no-ff dev
-          git push origin staging
-
       - name: Deploy to Linode Staging
+        if: success()
         uses: appleboy/ssh-action@master
         with:
           host: ${{ secrets.LINODE_HOST }}
