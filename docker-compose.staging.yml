@@ -10,6 +10,10 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Staging
       ConnectionStrings__SSPostgresConnection: "Host=postgres-staging;Database=ssdb_staging;Username=johnz;Password=${DB_PASSWORD}"
+      Jwt__Key: ${JWT_KEY}
+      Jwt__Issuer: ${JWT_ISSUER}
+      Jwt__Audience: ${JWT_AUDIENCE}
+      Jwt__DurationInMinutes: ${JWT_DURATION}
     env_file:
       - .env
 
