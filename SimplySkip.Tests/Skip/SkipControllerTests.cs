@@ -1,3 +1,5 @@
+using SimplySkip.Helpers;
+
 namespace SimplySkip.Tests.Skip
 {
     public class SkipControllerTests
@@ -44,6 +46,119 @@ namespace SimplySkip.Tests.Skip
                 Assert.Equal(newSkip.Notes, returnedSkip.Notes);
                 Assert.Equal(newSkip.Rented, returnedSkip.Rented);
                 Assert.Equal(newSkip.Deleted, returnedSkip.Deleted);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_Success_NoFilter()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new SkipController(new SkipService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(3, returnedData.TotalCount); // Total count should be 3 from seed data
+                Assert.Equal(1, returnedData.CurrentPage);
+                Assert.Equal(15, returnedData.PageSize);
+                Assert.False(returnedData.HasNext); // Should be false as all items fit in first page
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_WithFilter_Booked()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new SkipController(new SkipService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1, filter: "Booked");
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                Assert.NotNull(returnedData);
+                Assert.Single(returnedData.Items); // Should only find one rented skip
+                Assert.True(returnedData.Items[0].Rented);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_WithFilter_Available()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new SkipController(new SkipService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1, filter: "Available");
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(2, returnedData.Items.Count); // Should find two available skips
+                Assert.All(returnedData.Items, skip => Assert.False(skip.Rented));
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_InvalidPage_ReturnsFirstPage()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new SkipController(new SkipService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: -1);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(1, returnedData.CurrentPage);
             }
         }
 
@@ -168,7 +283,7 @@ namespace SimplySkip.Tests.Skip
 
                 var returnedSkip = result.Value as Models.Skip;
                 Assert.NotNull(returnedSkip);
-                
+
                 var updatedSkip = dbContext.Skips.Find(updatedSkipId);
                 if (updatedSkip != null)
                 {
@@ -178,7 +293,7 @@ namespace SimplySkip.Tests.Skip
                     Assert.Equal(updatedSkip?.Notes, returnedSkip.Notes);
                     Assert.Equal(updatedSkip?.Rented, returnedSkip.Rented);
                     Assert.Equal(updatedSkip?.Deleted, returnedSkip.Deleted);
-                    }
+                }
             }
         }
     }

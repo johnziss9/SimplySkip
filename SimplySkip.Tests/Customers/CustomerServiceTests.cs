@@ -122,7 +122,7 @@ namespace SimplySkip.Tests.Customers
 
                 // Assert
                 Assert.NotNull(result.Data);
-                
+
                 var updatedCustomer = dbContext.Customers.Find(updatedCustomerId);
                 if (updatedCustomer != null)
                 {
@@ -133,6 +133,140 @@ namespace SimplySkip.Tests.Customers
                     Assert.Equal(updatedCustomer.Email, result.Data.Email);
                     Assert.Equal(updatedCustomer.Phone, result.Data.Phone);
                 }
+            }
+        }
+
+        [Fact]
+        public async Task GetCustomersWithPagination_Success_NoSearch()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.GetCustomersWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(3, result.Data.TotalCount);
+                Assert.Equal(1, result.Data.CurrentPage);
+                Assert.Equal(15, result.Data.PageSize);
+                Assert.Equal(3, result.Data.Items.Count);
+                Assert.False(result.Data.HasNext);
+            }
+        }
+
+        [Fact]
+        public async Task GetCustomersWithPagination_Success_WithSearch()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.GetCustomersWithPagination(1, 15, "Carmella");
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(1, result.Data.TotalCount);
+                Assert.Single(result.Data.Items);
+                Assert.Equal("Carmella", result.Data.Items[0].FirstName);
+            }
+        }
+
+        [Fact]
+        public async Task GetCustomersWithPagination_Success_EmptySearch()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.GetCustomersWithPagination(1, 15, "NonexistentCustomer");
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(0, result.Data.TotalCount);
+                Assert.Empty(result.Data.Items);
+            }
+        }
+
+        [Fact]
+        public async Task GetCustomersWithPagination_Success_OrderByCreatedOn()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var now = DateTime.UtcNow;
+                dbContext.Customers.AddRange(new List<Models.Customer>
+        {
+            new Models.Customer
+            {
+                Id = 1,
+                FirstName = "First",
+                LastName = "Test",
+                Address = "Address 1",
+                Phone = "1234567890",
+                CreatedOn = now.AddDays(-2)
+            },
+            new Models.Customer
+            {
+                Id = 2,
+                FirstName = "Second",
+                LastName = "Test",
+                Address = "Address 2",
+                Phone = "2234567890",
+                CreatedOn = now.AddDays(-1)
+            },
+            new Models.Customer
+            {
+                Id = 3,
+                FirstName = "Third",
+                LastName = "Test",
+                Address = "Address 3",
+                Phone = "3234567890",
+                CreatedOn = now
+            }
+        });
+                await dbContext.SaveChangesAsync();
+
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.GetCustomersWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(3, result.Data.Items.Count);
+                Assert.Equal("Third", result.Data.Items[0].FirstName);
+                Assert.Equal("Second", result.Data.Items[1].FirstName);
+                Assert.Equal("First", result.Data.Items[2].FirstName);
             }
         }
     }
