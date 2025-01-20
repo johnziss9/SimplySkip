@@ -30,6 +30,15 @@ namespace SimplySkip.Controllers
             return ResponseHelper.HandleErrorAndReturn(await _skipService.GetAllSkips());
         }
 
+        [HttpGet("pagination")]
+        public async Task<ActionResult<PaginatedList<Skip>>> GetPaginated([FromQuery] int page = 1, [FromQuery] string? filter = null)
+        {
+            if (page < 1) page = 1;
+            const int pageSize = 15;
+
+            return ResponseHelper.HandleErrorAndReturn(await _skipService.GetSkipsWithPagination(page, pageSize, filter));
+        }
+
         [HttpGet("available")]
         public async Task<ActionResult<List<Skip>>> GetAvailable()
         {

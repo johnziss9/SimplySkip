@@ -1,10 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import './Customers.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomerCard from "../../components/CustomerCard/CustomerCard";
 import { useNavigate } from "react-router-dom";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery } from "@mui/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
@@ -21,25 +21,69 @@ function Customers() {
     const [openActiveBookingsDialog, setOpenActiveBookingsDialog] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [searchInput, setSearchInput] = useState('');
 
     const searchbarWidth = useMediaQuery('(max-width: 550px)');
-
+    
     useEffect(() => {
-        handleFetchCustomers();
+        // Initial load
+        handleFetchCustomers(1, searchQuery);
+
+        // Add scroll listener
+        window.addEventListener('scroll', handleScroll);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
         // eslint-disable-next-line
     }, []);
 
-    const handleFetchCustomers = async () => {
-        const url = '/customer/';
-        const method = 'GET';
+    useEffect(() => {
+        if (page > 1) { // Only fetch if it's not the initial load
+            handleFetchCustomers(page, searchQuery);
+        }
+        // eslint-disable-next-line
+    }, [page]);
 
-        const { success, data } = await handleHttpRequest(url, method);
+    // Content check effect
+        useEffect(() => {
+            if (customers.length > 0) {
+                checkContentAndLoadMore();
+            }
+            // eslint-disable-next-line
+        }, [customers]);
 
-        if (success) {            
-            setCustomers(data);
-        } else {
-            setSnackbarMessage('Failed to load customers.');
+    const handleFetchCustomers = async (currentPage = 1, search = '') => {
+        try {
+            setIsLoading(true);
+            const url = `/customer/pagination?page=${currentPage}${search ? `&search=${search}` : ''}`;
+            const method = 'GET';
+
+            const { success, data } = await handleHttpRequest(url, method);
+
+            if (success) {
+                if (data.items.length === 0) {
+                    setHasMore(false);
+                    return;
+                }
+
+                setCustomers(prevCustomers =>
+                    currentPage === 1 ? data.items : [...prevCustomers, ...data.items]
+                );
+                setHasMore(data.hasNext);
+            } else {
+                setSnackbarMessage('Failed to load customers.');
+                setShowSnackbar(true);
+            }
+        } catch (error) {
+            setSnackbarMessage('An error occurred while loading customers.');
             setShowSnackbar(true);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -60,7 +104,7 @@ function Customers() {
 
         const { success } = await handleHttpRequest(url, method, body);
 
-        if (success) {            
+        if (success) {
             handleAddAuditLogEntry(`Διαγραφἠ πελἀτη ${customer.lastName}, ${customer.firstName}.`);
             handleCloseDeleteDialog();
             handleShowDeleteSuccess();
@@ -90,7 +134,7 @@ function Customers() {
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             const activeBookings = data.filter(booking => (!booking.returned || !booking.paid) && !booking.cancelled);
 
             if (activeBookings.length > 0)
@@ -140,38 +184,96 @@ function Customers() {
     const handleShowActiveBookingsDialog = () => setOpenActiveBookingsDialog(true);
     const handleCloseActiveBookingsDialog = () => setOpenActiveBookingsDialog(false);
 
-    const filteredCustomers = customers.filter((customer) =>
-        customer.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        customer.phone.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+    const handleSearch = () => {
+        setSearchQuery(searchInput);
+        setPage(1);
+        setCustomers([]);
+        setHasMore(true);
+        handleFetchCustomers(1, searchInput);
+    };
+
+    const handleScroll = () => {
+        if (!isLoading && hasMore && (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 200) {
+            setPage(prevPage => prevPage + 1);
+        }
+    };
+
+    const checkContentAndLoadMore = useCallback(() => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+    
+        if (!isLoading && hasMore && documentHeight <= windowHeight) {
+            setPage(prevPage => prevPage + 1);
+        }
+    }, [isLoading, hasMore]);
 
     return (
         <>
             <CustomNavbar currentPage={'Πελἀτες'} addNewClick={'/Customer'} />
             <div className='customers-container'>
-                <CustomTextField
-                    label={'Αναζήτηση...'}
-                    variant={'standard'}
-                    type={'search'}
-                    width={searchbarWidth ? '300px' : '500px'}
-                    margin={'normal'}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                    display={customers.length > 0 ? '' :  'none'}
-                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                    <CustomTextField
+                        label={'Αναζήτηση...'}
+                        variant={'standard'}
+                        type={'search'}
+                        width={searchbarWidth ? '300px' : '500px'}
+                        margin={'normal'}
+                        value={searchInput}
+                        onChange={(e) => {
+                            setSearchInput(e.target.value);
+                            if (e.target.value === '') {
+                                setSearchQuery('');
+                                setPage(1);
+                                setCustomers([]);
+                                handleFetchCustomers(1, '');
+                            }
+                        }}                        
+                        display={customers.length > 0 || searchQuery ? '' : 'none'}
+                        onKeyDown={(e) => {
+                            if (e.key === 'Enter') {
+                                e.preventDefault();
+                                handleSearch();
+                            }
+                        }}
+                    />
+                    <CustomButton
+                        backgroundColor={"#006d77"}
+                        buttonName={"Search"}
+                        width={"100px"}
+                        height={"45px"}
+                        onClick={handleSearch}
+                        display={customers.length > 0 || searchQuery ? '' : 'none'}
+                    />
+                </div>
                 <div className="customers-section">
-                    {Array.isArray(filteredCustomers) && filteredCustomers.length > 0 ? filteredCustomers.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((customer) => (
-                        <CustomerCard
-                            key={customer.id}
-                            statusBorder={'10px solid #83c5be'}
-                            lastName={customer.lastName}
-                            firstName={customer.firstName}
-                            phone={customer.phone}
-                            onClickView={() => handleOpenViewCustomer(customer)}
-                            onClickEdit={() => handleEditClick(customer.id)}
-                            onClickDelete={() => handleCheckDeleteCustomer(customer)}
-                        />
-                    )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν πελάτες. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε έναν.</h5>}
+                    {Array.isArray(customers) && customers.length > 0 ? (
+                        <>
+                            {customers.map((customer) => (
+                                <CustomerCard
+                                    key={customer.id}
+                                    statusBorder={'10px solid #83c5be'}
+                                    lastName={customer.lastName}
+                                    firstName={customer.firstName}
+                                    phone={customer.phone}
+                                    onClickView={() => handleOpenViewCustomer(customer)}
+                                    onClickEdit={() => handleEditClick(customer.id)}
+                                    onClickDelete={() => handleCheckDeleteCustomer(customer)}
+                                />
+                            ))}
+                        </>
+                    ) : (
+                        <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>
+                {searchQuery 
+                    ? 'Δεν βρέθηκε πελάτης με αυτά τα κριτήρια αναζήτησης.'
+                    : 'Δεν υπάρχουν πελάτες. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε έναν.'
+                }
+            </h5>
+                    )}
+                    {isLoading && hasMore && (
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%' }}>
+                            <CircularProgress size={40} sx={{ color: '#006d77' }} />
+                        </div>
+                    )}
                 </div>
             </div>
             <Dialog open={openViewCustomer} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewCustomer(event, reason) } }}>
@@ -195,10 +297,10 @@ function Customers() {
                         <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Χρἠστης Αποθἠκευσης:</FormLabel> {}
+                        <FormLabel>Χρἠστης Αποθἠκευσης:</FormLabel> { }
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Χρἠστης Τελευταίας Επεξἐργασης:</FormLabel> {}
+                        <FormLabel>Χρἠστης Τελευταίας Επεξἐργασης:</FormLabel> { }
                     </Typography>
                     <Button
                         variant="outlined"

@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import './Skips.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import SkipCard from "../../components/SkipCard/SkipCard";
-import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, CircularProgress } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import { useNavigate } from "react-router-dom";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
@@ -23,23 +23,69 @@ function Skips() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [filter, setFilter] = useState('');
 
+    // Initial load and scroll setup effect (no dependencies)
     useEffect(() => {
-        handleFetchSkips();
+        // Initial load
+        handleFetchSkips(1, filter);
+
+        // Add scroll listener
+        window.addEventListener('scroll', handleScroll);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
         // eslint-disable-next-line
     }, []);
 
-    const handleFetchSkips = async () => {
-        const url = '/skip/';
-        const method = 'GET';
+    // Page change effect
+    useEffect(() => {
+        if (page > 1) { // Only fetch if it's not the initial load
+            handleFetchSkips(page, filter);
+        }
+        // eslint-disable-next-line
+    }, [page]);
 
-        const { success, data } = await handleHttpRequest(url, method);
+    // Content check effect
+    useEffect(() => {
+        if (skips.length > 0) {
+            checkContentAndLoadMore();
+        }
+        // eslint-disable-next-line
+    }, [skips]);
 
-        if (success) {
-            setSkips(data);
-        } else {
-            setSnackbarMessage('Failed to load skips.');
+    const handleFetchSkips = async (currentPage = 1, filterValue = filter) => {
+        try {
+            setIsLoading(true);
+            const url = `/skip/pagination?page=${currentPage}${filterValue ? `&filter=${filterValue}` : ''}`;
+            const method = 'GET';
+
+            const { success, data } = await handleHttpRequest(url, method);
+
+            if (success) {
+                if (data.items.length === 0) {
+                    setHasMore(false);
+                    return;
+                }
+
+                setSkips(prevSkips =>
+                    currentPage === 1 ? data.items : [...prevSkips, ...data.items]
+                );
+                setHasMore(data.hasNext);
+            } else {
+                setSnackbarMessage('Failed to load skips.');
+                setShowSnackbar(true);
+            }
+        } catch (error) {
+            setSnackbarMessage('An error occurred while loading skips.');
             setShowSnackbar(true);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -79,14 +125,10 @@ function Skips() {
 
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
-    };
-
-    const getBookedSkips = () => {
-        return skips.filter((skip) => skip.rented);
-    };
-
-    const getAvailableSkips = () => {
-        return skips.filter((skip) => !skip.rented);
+        setFilter(event.target.value === 'All' ? '' : event.target.value);
+        setPage(1);  // Reset to first page
+        setSkips([]); // Clear existing skips
+        handleFetchSkips(1, event.target.value === 'All' ? '' : event.target.value);
     };
 
     const handleEditClick = (id) => {
@@ -164,8 +206,6 @@ function Skips() {
         handleFetchSkips();
     }
 
-    const filteredSkips = selectedValue === 'Booked' ? getBookedSkips() : selectedValue === 'Available' ? getAvailableSkips() : skips;
-
     function handleCalculateDays(hireDate) {
         const dateOfHire = new Date(hireDate);
         const today = new Date();
@@ -193,11 +233,29 @@ function Skips() {
         setShowFilter(!showFilter);
     };
 
+    const handleScroll = useCallback(() => {
+        const scrollPosition = Math.ceil(window.innerHeight + window.scrollY);
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (!isLoading && hasMore && scrollPosition >= (documentHeight - 200)) {
+            setPage(prevPage => prevPage + 1);
+        }
+    }, [isLoading, hasMore]);
+
+    const checkContentAndLoadMore = useCallback(() => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (!isLoading && hasMore && documentHeight <= windowHeight) {
+            setPage(prevPage => prevPage + 1);
+        }
+    }, [isLoading, hasMore]);
+
     return (
         <>
             <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
-                {filteredSkips.length > 0 && (
+                {skips.length > 0 && (
                     <CustomButton
                         backgroundColor="#006d77"
                         buttonName="ΦΙΛΤΡΟ"
@@ -209,15 +267,34 @@ function Skips() {
                 )}
                 {showFilter && (
                     <div style={{ marginTop: '10px' }}>
-                        <RadioGroup value={selectedValue} onChange={handleRadioChange} row>                            
-                            <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ὀλα" sx={{ display: 'inline' }} />
-                            <FormControlLabel value="Booked" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Κρατημἐνα" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
-                            <FormControlLabel value="Available" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Διαθέσιμα" sx={{ display: getBookedSkips().length > 0 ? 'inline' : 'none' }} />
+                        <RadioGroup
+                            value={selectedValue}
+                            onChange={handleRadioChange}
+                            row
+                        >
+                            <FormControlLabel
+                                value="All"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Ὀλα"
+                                sx={{ display: 'inline' }}
+                            />
+                            <FormControlLabel
+                                value="Booked"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Κρατημἐνα"
+                                sx={{ display: 'inline' }}
+                            />
+                            <FormControlLabel
+                                value="Available"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Διαθέσιμα"
+                                sx={{ display: 'inline' }}
+                            />
                         </RadioGroup>
                     </div>
                 )}
                 <div className="skips-section">
-                    {Array.isArray(filteredSkips) && filteredSkips.length > 0 ? filteredSkips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
+                    {Array.isArray(skips) && skips.length > 0 ? skips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
                         <SkipCard
                             key={skip.id}
                             statusBorder={skip.rented ? "10px solid red" : "10px solid green"}
@@ -229,6 +306,12 @@ function Skips() {
                             disabledDeleteButton={skip.rented ? true : false}
                         />
                     )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν skips. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε ένα.</h5>}
+                    {isLoading && hasMore && (
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%'}}>
+                            <CircularProgress size={40} sx={{ color: '#006d77' }}
+                            />
+                        </div>
+                    )}
                 </div>
             </div>
             {!skip.rented ?

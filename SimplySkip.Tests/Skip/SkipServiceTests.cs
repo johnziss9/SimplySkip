@@ -66,6 +66,100 @@ namespace SimplySkip.Tests.Skip
         }
 
         [Fact]
+        public async Task GetSkipsWithPagination_Success_NoFilter()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new SkipService(dbContext);
+
+                // Act
+                var result = await service.GetSkipsWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(3, result.Data.TotalCount);
+                Assert.Equal(1, result.Data.CurrentPage);
+                Assert.Equal(15, result.Data.PageSize);
+                Assert.Equal(3, result.Data.Items.Count);
+                Assert.False(result.Data.HasNext);
+            }
+        }
+
+        [Fact]
+        public async Task GetSkipsWithPagination_Success_WithFilter()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new SkipService(dbContext);
+
+                // Test each filter type
+                var filters = new[] { "Booked", "Available" };
+                var expectedCounts = new Dictionary<string, int>
+        {
+            { "Booked", 1 },    // One rented skip
+            { "Available", 2 }   // Two available skips
+        };
+
+                foreach (var filter in filters)
+                {
+                    // Act
+                    var result = await service.GetSkipsWithPagination(1, 15, filter);
+
+                    // Assert
+                    Assert.True(result.IsSuccess);
+                    Assert.NotNull(result.Data);
+                    Assert.Equal(expectedCounts[filter], result.Data.Items.Count);
+
+                    // Verify the filter is working correctly
+                    foreach (var skip in result.Data.Items)
+                    {
+                        if (filter == "Booked")
+                            Assert.True(skip.Rented);
+                        else
+                            Assert.False(skip.Rented);
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetSkipsWithPagination_EmptyDatabase()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var service = new SkipService(dbContext);
+
+                // Act
+                var result = await service.GetSkipsWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Empty(result.Data.Items);
+                Assert.Equal(0, result.Data.TotalCount);
+                Assert.False(result.Data.HasNext);
+            }
+        }
+
+        [Fact]
         public async Task GetAvailableSkips_Success()
         {
             // Arrange
@@ -143,7 +237,7 @@ namespace SimplySkip.Tests.Skip
 
                 // Assert
                 Assert.NotNull(result.Data);
-                
+
                 var updatedSkip = dbContext.Skips.Find(updatedSkipId);
                 if (updatedSkip != null)
                 {
@@ -153,7 +247,7 @@ namespace SimplySkip.Tests.Skip
                     Assert.Equal(updatedSkip?.Notes, result.Data.Notes);
                     Assert.Equal(updatedSkip?.Rented, result.Data.Rented);
                     Assert.Equal(updatedSkip?.Deleted, result.Data.Deleted);
-                    }
+                }
             }
         }
     }

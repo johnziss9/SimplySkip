@@ -1,3 +1,5 @@
+using SimplySkip.Helpers;
+
 namespace SimplySkip.Tests.Customers
 {
     public class CustomerControllerTests
@@ -140,7 +142,7 @@ namespace SimplySkip.Tests.Customers
 
                 var returnedCustomer = result.Value as Models.Customer;
                 Assert.NotNull(returnedCustomer);
-                
+
                 var updatedCustomer = dbContext.Customers.Find(updatedCustomerId);
                 if (updatedCustomer != null)
                 {
@@ -151,6 +153,92 @@ namespace SimplySkip.Tests.Customers
                     Assert.Equal(updatedCustomer.Email, returnedCustomer.Email);
                     Assert.Equal(updatedCustomer.Phone, returnedCustomer.Phone);
                 }
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_Success_NoSearch()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new CustomerController(new CustomerService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Customer>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(3, returnedData.TotalCount);
+                Assert.Equal(1, returnedData.CurrentPage);
+                Assert.Equal(15, returnedData.PageSize);
+                Assert.False(returnedData.HasNext);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_Success_WithSearch()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new CustomerController(new CustomerService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1, search: "Tony");
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Customer>;
+                Assert.NotNull(returnedData);
+                Assert.Single(returnedData.Items);
+                Assert.Equal(1, returnedData.TotalCount);
+                Assert.Equal("Tony", returnedData.Items[0].FirstName);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_InvalidPage_ReturnsFirstPage()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new CustomerController(new CustomerService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: -1);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as PaginatedList<Models.Customer>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(1, returnedData.CurrentPage);
             }
         }
     }

@@ -9,6 +9,8 @@ namespace SimplySkip.Interfaces
 
         Task<Response<List<Skip>>> GetAllSkips();
 
+        Task<Response<PaginatedList<Skip>>> GetSkipsWithPagination(int page, int pageSize, string? filter = null);
+
         Task<Response<List<Skip>>> GetAvailableSkips();
 
         Task<Response<Skip>> GetSkipById(int id);

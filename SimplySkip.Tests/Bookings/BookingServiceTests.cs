@@ -69,6 +69,118 @@ namespace SimplySkip.Tests.Bookings
         }
 
         [Fact]
+        public async Task GetBookingsWithPagination_Success_NoFilter()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new BookingService(dbContext);
+
+                // Act
+                var result = await service.GetBookingsWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(3, result.Data.TotalCount);
+                Assert.Equal(1, result.Data.CurrentPage);
+                Assert.Equal(15, result.Data.PageSize);
+                Assert.Equal(3, result.Data.Items.Count);
+                Assert.False(result.Data.HasNext);
+            }
+        }
+
+        [Fact]
+        public async Task GetBookingsWithPagination_Success_WithFilter()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new BookingService(dbContext);
+
+                // Test each filter type
+                var filters = new[] { "Active", "Unpaid", "Past", "Cancelled" };
+                var expectedCounts = new Dictionary<string, int>
+        {
+            { "Active", 1 },    // One active booking
+            { "Past", 1 },      // One completed booking
+            { "Cancelled", 1 }, // One cancelled booking
+            { "Unpaid", 0 }     // No unpaid bookings that match criteria
+        };
+
+                foreach (var filter in filters)
+                {
+                    // Act
+                    var result = await service.GetBookingsWithPagination(1, 15, filter);
+
+                    // Assert
+                    Assert.True(result.IsSuccess);
+                    Assert.NotNull(result.Data);
+                    Assert.Equal(expectedCounts[filter], result.Data.Items.Count);
+
+                    // Verify the filter is working correctly
+                    foreach (var booking in result.Data.Items)
+                    {
+                        switch (filter)
+                        {
+                            case "Active":
+                                Assert.False(booking.Returned);
+                                Assert.False(booking.Cancelled);
+                                break;
+                            case "Unpaid":
+                                Assert.True(booking.Returned);
+                                Assert.False(booking.Paid);
+                                Assert.False(booking.Cancelled);
+                                break;
+                            case "Past":
+                                Assert.True(booking.Returned);
+                                Assert.True(booking.Paid);
+                                Assert.False(booking.Cancelled);
+                                break;
+                            case "Cancelled":
+                                Assert.True(booking.Cancelled);
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+        [Fact]
+        public async Task GetBookingsWithPagination_EmptyDatabase()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var service = new BookingService(dbContext);
+
+                // Act
+                var result = await service.GetBookingsWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Empty(result.Data.Items);
+                Assert.Equal(0, result.Data.TotalCount);
+                Assert.False(result.Data.HasNext);
+            }
+        }
+
+        [Fact]
         public async Task GetBookingsByCustomerId_Success()
         {
             // Arrange
@@ -198,7 +310,7 @@ namespace SimplySkip.Tests.Bookings
 
                 // Assert
                 Assert.NotNull(result.Data);
-                
+
                 var updatedBooking = dbContext.Bookings.Find(updatedBookingId);
                 if (updatedBooking != null)
                 {
@@ -211,7 +323,7 @@ namespace SimplySkip.Tests.Bookings
                     Assert.Equal(updatedBooking?.Returned, result.Data.Returned);
                     Assert.Equal(updatedBooking?.Paid, result.Data.Paid);
                     Assert.Equal(updatedBooking?.Cancelled, result.Data.Cancelled);
-                    }
+                }
             }
         }
     }

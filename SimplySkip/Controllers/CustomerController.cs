@@ -24,6 +24,15 @@ namespace SimplySkip.Controllers
             return ResponseHelper.HandleErrorAndReturn(await _customerService.GetAllCustomers());
         }
 
+        [HttpGet("pagination")]
+        public async Task<ActionResult<PaginatedList<Customer>>> GetPaginated([FromQuery] int page = 1, [FromQuery] string? search = null)
+        {
+            if (page < 1) page = 1;
+            const int pageSize = 15;
+
+            return ResponseHelper.HandleErrorAndReturn(await _customerService.GetCustomersWithPagination(page, pageSize, search));
+        }
+
         [HttpPost]
         public async Task<ActionResult<Customer>> Create(Customer customer)
         {
