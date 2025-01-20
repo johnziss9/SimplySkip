@@ -238,8 +238,8 @@ function Customers() {
                     />
                     <CustomButton
                         backgroundColor={"#006d77"}
-                        buttonName={"Search"}
-                        width={"100px"}
+                        buttonName={"ΑΝΑΖΗΤΗΣΗ"}
+                        width={"110px"}
                         height={"45px"}
                         onClick={handleSearch}
                         display={customers.length > 0 || searchQuery ? '' : 'none'}
