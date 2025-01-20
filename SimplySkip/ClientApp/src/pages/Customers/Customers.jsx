@@ -211,7 +211,7 @@ function Customers() {
         <>
             <CustomNavbar currentPage={'Πελἀτες'} addNewClick={'/Customer'} />
             <div className='customers-container'>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                <div className="customer-search-container">
                     <CustomTextField
                         label={'Αναζήτηση...'}
                         variant={'standard'}

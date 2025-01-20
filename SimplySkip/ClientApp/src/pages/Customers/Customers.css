@@ -12,3 +12,15 @@
     justify-content: center;
     flex-wrap: wrap;
 }
+
+.customer-search-container {
+    display: flex;
+    align-items: center;
+    gap: 10px
+}
+
+@media (max-width: 500px) {
+    .customer-search-container {
+        flex-direction: column;
+    }
+}
