@@ -330,7 +330,7 @@ function Skips() {
             </div>
             {!skip.rented ?
                 <Dialog open={openViewSkip} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewSkip(event, reason) } }}>
-                    <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
+                    <DialogTitle sx={{ width: '100%', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
                         Πληροφορίες του Skip
                     </DialogTitle>
                     <DialogContent>
@@ -349,7 +349,7 @@ function Skips() {
                     </DialogActions>
                 </Dialog> :
                 <Dialog open={openViewSkip} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewSkip(event, reason) } }}>
-                    <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
+                    <DialogTitle sx={{ width: '100%', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
                         Πληροφορίες του Skip
                     </DialogTitle>
                     <DialogContent>

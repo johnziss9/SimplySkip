@@ -3,6 +3,7 @@ import './Bookings.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import BookingCard from "../../components/BookingCard/BookingCard";
+import UpdatesButton from "../../components/UpdatesButton/UpdatesButton";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
@@ -28,6 +29,7 @@ function Bookings() {
     const [page, setPage] = useState(1);
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
+    const [showInitialAnnouncement, setShowInitialAnnouncement] = useState(false);
     const [filter, setFilter] = useState('');
     const [totalBookings, setTotalBookings] = useState(0);
     const [filterCounts, setFilterCounts] = useState({
@@ -41,6 +43,12 @@ function Bookings() {
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
+        const hasSeenAnnouncement = sessionStorage.getItem('hasSeenAnnouncement');
+        if (!hasSeenAnnouncement) {
+            setShowInitialAnnouncement(true);
+            sessionStorage.setItem('hasSeenAnnouncement', 'true');
+        }
+
         // Initial load
         handleFetchBookings(1, filter);
 
@@ -343,6 +351,7 @@ function Bookings() {
 
     return (
         <>
+            <UpdatesButton showDialog={showInitialAnnouncement} setShowDialog={setShowInitialAnnouncement} isButton={false} />
             <CustomNavbar currentPage={'Κρατἠσεις'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
                 {bookings.length > 0 && (
@@ -430,7 +439,7 @@ function Bookings() {
                 </div>
             </div>
             <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>
-                <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
+                <DialogTitle sx={{ width: '100%', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
                     Πληροφορἰες Κρἀτησης
                 </DialogTitle>
                 <DialogContent>
