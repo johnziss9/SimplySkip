@@ -27,6 +27,58 @@ namespace SimplySkip.Services
             return Response<List<Customer>>.Success(customers);
         }
 
+        public async Task<Response<PaginatedList<Customer>>> GetCustomersWithPagination(int page, int pageSize, string? searchQuery = null)
+        {
+            try
+            {
+                var query = _ssDbContext.Customers.Where(c => c.Deleted == false);
+
+                // Apply search filter if searchQuery is provided
+                if (!string.IsNullOrWhiteSpace(searchQuery))
+                {
+                    searchQuery = searchQuery.ToLower();
+                    query = query.Where(c =>
+                        (c.FirstName ?? "").ToLower().Contains(searchQuery) ||
+                        (c.LastName ?? "").ToLower().Contains(searchQuery) ||
+                        (c.Phone ?? "").ToLower().Contains(searchQuery)
+                    );
+                }
+
+                // Get total count for pagination
+                var totalCount = await query.CountAsync();
+
+                // Calculate pagination values
+                var skip = (page - 1) * pageSize;
+
+                // Get paginated data
+                var customers = await query
+                    .OrderByDescending(c => c.CreatedOn)
+                    .Skip(skip)
+                    .Take(pageSize)
+                    .ToListAsync();
+
+                // Format addresses
+                foreach (var customer in customers)
+                {
+                    if (customer.Address != null)
+                        customer.Address = customer.Address.Replace(", ", "\n");
+                }
+
+                var paginatedList = new PaginatedList<Customer>(
+                    customers,
+                    totalCount,
+                    pageSize,
+                    page
+                );
+
+                return Response<PaginatedList<Customer>>.Success(paginatedList);
+            }
+            catch (Exception ex)
+            {
+                return Response<PaginatedList<Customer>>.Fail(ex);
+            }
+        }
+
         public async Task<Response<Customer>> CreateCustomer(Customer customer)
         {
             var validationContext = new ValidationContext(customer, serviceProvider: null, items: null);

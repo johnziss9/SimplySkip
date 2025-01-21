@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import './Bookings.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
-import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import BookingCard from "../../components/BookingCard/BookingCard";
+import UpdatesButton from "../../components/UpdatesButton/UpdatesButton";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
@@ -25,26 +26,88 @@ function Bookings() {
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
+    const [page, setPage] = useState(1);
+    const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
+    const [showInitialAnnouncement, setShowInitialAnnouncement] = useState(false);
+    const [filter, setFilter] = useState('');
+    const [totalBookings, setTotalBookings] = useState(0);
+    const [filterCounts, setFilterCounts] = useState({
+        All: 0,
+        Active: 0,
+        Unpaid: 0,
+        Past: 0,
+        Cancelled: 0
+    });
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
-        handleFetchBookings();
+        const hasSeenAnnouncement = sessionStorage.getItem('hasSeenAnnouncement');
+        if (!hasSeenAnnouncement) {
+            setShowInitialAnnouncement(true);
+            sessionStorage.setItem('hasSeenAnnouncement', 'true');
+        }
+
+        // Initial load
+        handleFetchBookings(1, filter);
+
+        // Add scroll listener
+        window.addEventListener('scroll', handleScroll);
+
+        // Cleanup
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+        };
         // eslint-disable-next-line
     }, []);
 
-    const handleFetchBookings = async () => {
-        const url = '/booking/';
-        const method = 'GET';
+    useEffect(() => {
+        if (page > 1) { // Only fetch if it's not the initial load
+            handleFetchBookings(page, filter);
+        }
+        // eslint-disable-next-line
+    }, [page]);
 
-        const { success, data } = await handleHttpRequest(url, method);
+    // Content check effect
+    useEffect(() => {
+        if (bookings.length > 0) {
+            checkContentAndLoadMore();
+        }
+        // eslint-disable-next-line
+    }, [bookings]);
 
-        if (success) {
-            setBookings(data);
-            handleGetCustomer(data);
-        } else {
-            setSnackbarMessage('Failed to load bookings.');
+    const handleFetchBookings = async (currentPage = 1, filterValue = filter) => {
+        try {
+            setIsLoading(true);
+            const url = `/booking/pagination?page=${currentPage}${filterValue ? `&filter=${filterValue}` : ''}`;
+            const method = 'GET';
+
+            const { success, data } = await handleHttpRequest(url, method);
+
+            if (success) {
+                if (data.items.length === 0) {
+                    setHasMore(false);
+                    return;
+                }
+
+                setBookings(prevBookings =>
+                    currentPage === 1 ? data.items : [...prevBookings, ...data.items]
+                );
+
+                setFilterCounts(data.counts);
+                setTotalBookings(data.totalCount);
+                setHasMore(data.hasNext);
+                handleGetCustomer(data.items);
+            } else {
+                setSnackbarMessage('Failed to load bookings.');
+                setShowSnackbar(true);
+            }
+        } catch (error) {
+            setSnackbarMessage('An error occurred while loading bookings.');
             setShowSnackbar(true);
+        } finally {
+            setIsLoading(false);
         }
     };
 
@@ -74,7 +137,10 @@ function Bookings() {
                 }
             });
 
-            setCustomerDetails(details);
+            setCustomerDetails(prevDetails => ({
+                ...prevDetails,
+                ...details
+            }));
         } catch (error) {
             setSnackbarMessage('An error occurred. Please try again later.');
             setShowSnackbar(true);
@@ -119,26 +185,11 @@ function Bookings() {
 
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
+        setFilter(event.target.value);
+        setPage(1);  // Reset to first page
+        setBookings([]); // Clear existing bookings
+        handleFetchBookings(1, event.target.value);  // Fetch with new filter
     };
-
-    const getActiveBookings = () => {
-        return bookings.filter((booking) => !booking.returned && !booking.cancelled);
-    };
-
-    const getUnpaidBookings = () => {
-        return bookings.filter((booking) => booking.returned && !booking.paid && !booking.cancelled);
-    };
-
-    const getPastBookings = () => {
-        return bookings.filter((booking) => booking.returned && booking.paid && !booking.cancelled);
-    };
-
-    const getCancelledBookings = () => {
-        return bookings.filter((booking) => booking.cancelled);
-    };
-
-    const filteredBookings = selectedValue === 'Active' ? getActiveBookings() : selectedValue === 'Unpaid'
-        ? getUnpaidBookings() : selectedValue === 'Past' ? getPastBookings() : selectedValue === 'Cancelled' ? getCancelledBookings() : bookings;
 
     const handleEditClick = (id) => {
         navigate(`/Booking/${id}/all-bookings`);
@@ -275,11 +326,35 @@ function Bookings() {
         setShowFilter(!showFilter);
     };
 
+    const handleScroll = () => {
+        if (
+            !isLoading &&
+            hasMore &&
+            (window.innerHeight + window.scrollY) >= document.documentElement.scrollHeight - 200
+        ) {
+            setPage(prevPage => prevPage + 1);
+        }
+    };
+
+    const checkContentAndLoadMore = useCallback(() => {
+        const windowHeight = window.innerHeight;
+        const documentHeight = document.documentElement.scrollHeight;
+
+        if (
+            !isLoading &&
+            hasMore &&
+            documentHeight <= windowHeight
+        ) {
+            setPage(prevPage => prevPage + 1);
+        }
+    }, [isLoading, hasMore]);
+
     return (
         <>
+            <UpdatesButton showDialog={showInitialAnnouncement} setShowDialog={setShowInitialAnnouncement} isButton={false} />
             <CustomNavbar currentPage={'Κρατἠσεις'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
-                {filteredBookings.length > 0 && (
+                {bookings.length > 0 && (
                     <CustomButton
                         backgroundColor="#006d77"
                         buttonName="ΦΙΛΤΡΟ"
@@ -291,17 +366,47 @@ function Bookings() {
                 )}
                 {showFilter && (
                     <div style={{ marginTop: '10px' }}>
-                        <RadioGroup sx={{ width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
-                            <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" sx={{ display: 'inline' }} />
-                            <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Τρέχουσες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
-                            <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ανεξόφλητες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
-                            <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ολοκληρωμένες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
-                            <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ακυρωμένες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
+                        <RadioGroup
+                            sx={{ width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }}
+                            value={selectedValue}
+                            onChange={handleRadioChange}
+                            row
+                        >
+                            <FormControlLabel
+                                value="All"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label={`Όλες (${filterCounts.all})`}
+                            />
+                            <FormControlLabel
+                                value="Active"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label={`Τρέχουσες (${filterCounts.active})`}
+                            />
+                            <FormControlLabel
+                                value="Unpaid"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label={`Ανεξόφλητες (${filterCounts.unpaid})`}
+                            />
+                            <FormControlLabel
+                                value="Past"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label={`Ολοκληρωμένες (${filterCounts.past})`}
+                            />
+                            <FormControlLabel
+                                value="Cancelled"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label={`Ακυρωμένες (${filterCounts.cancelled})`}
+                            />
                         </RadioGroup>
                     </div>
                 )}
                 <div className="bookings-section">
-                    {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
+                    {!showFilter && (
+                        <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                            {`Σύνολο Κρατήσεων: ${totalBookings}`}
+                        </Typography>
+                    )}
+                    {Array.isArray(bookings) && bookings.length > 0 ? bookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <BookingCard
                             key={booking.id}
                             statusBorder={booking.cancelled // cancelled
@@ -326,10 +431,15 @@ function Bookings() {
                             disabledCancelButton={booking.returned || booking.paid || booking.cancelled || new Date(booking.hireDate) <= new Date()}
                         />
                     )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν κρατήσεις. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε μία.</h5>}
+                    {isLoading && hasMore && (
+                        <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%' }}>
+                            <CircularProgress size={40} sx={{ color: '#006d77' }} />
+                        </div>
+                    )}
                 </div>
             </div>
             <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>
-                <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
+                <DialogTitle sx={{ width: '100%', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
                     Πληροφορἰες Κρἀτησης
                 </DialogTitle>
                 <DialogContent>

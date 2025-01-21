@@ -1,3 +1,5 @@
+using SimplySkip.Helpers;
+
 namespace SimplySkip.Tests.Bookings
 {
     public class BookingControllerTests
@@ -75,6 +77,95 @@ namespace SimplySkip.Tests.Bookings
                 var returnedBookings = result.Value as List<Models.Booking>;
                 Assert.NotNull(returnedBookings);
                 Assert.Equal(3, returnedBookings.Count);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_Success_NoFilter()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new BookingController(new BookingService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as BookingPaginatedList<Models.Booking>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(3, returnedData.TotalCount);
+                Assert.Equal(1, returnedData.CurrentPage);
+                Assert.Equal(15, returnedData.PageSize);
+                Assert.False(returnedData.HasNext);
+                Assert.NotNull(returnedData.Counts);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_WithFilter_Active()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new BookingController(new BookingService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: 1, filter: "Active");
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as BookingPaginatedList<Models.Booking>;
+                Assert.NotNull(returnedData);
+                Assert.Single(returnedData.Items);
+                Assert.False(returnedData.Items[0].Returned);
+                Assert.False(returnedData.Items[0].Cancelled);
+                Assert.NotNull(returnedData.Counts);
+            }
+        }
+
+        [Fact]
+        public async Task GetPaginated_InvalidPage_ReturnsFirstPage()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var controller = new BookingController(new BookingService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetPaginated(page: -1);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var returnedData = result.Value as BookingPaginatedList<Models.Booking>;
+                Assert.NotNull(returnedData);
+                Assert.Equal(1, returnedData.CurrentPage);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 
@@ -228,7 +319,7 @@ namespace SimplySkip.Tests.Bookings
 
                 var returnedBooking = result.Value as Models.Booking;
                 Assert.NotNull(returnedBooking);
-                
+
                 var updatedBooking = dbContext.Bookings.Find(updatedBookingId);
                 if (updatedBooking != null)
                 {
@@ -241,7 +332,7 @@ namespace SimplySkip.Tests.Bookings
                     Assert.Equal(updatedBooking?.Returned, returnedBooking.Returned);
                     Assert.Equal(updatedBooking?.Paid, returnedBooking.Paid);
                     Assert.Equal(updatedBooking?.Cancelled, returnedBooking.Cancelled);
-                    }
+                }
             }
         }
     }

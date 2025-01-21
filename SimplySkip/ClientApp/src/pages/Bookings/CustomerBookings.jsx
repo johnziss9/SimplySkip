@@ -253,7 +253,7 @@ function CustomerBookings() {
                 </div>
             </div>
             <Dialog open={openViewBooking} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseViewBooking(event, reason) } }}>
-                <DialogTitle sx={{ width: '400px', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
+                <DialogTitle sx={{ width: '100%', borderBottom: '1px solid #006d77', marginBottom: '10px' }}>
                     Πληροφορἰες Κρἀτησης
                 </DialogTitle>
                 <DialogContent>

@@ -30,6 +30,15 @@ namespace SimplySkip.Controllers
             return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetAllBookings());
         }
 
+        [HttpGet("pagination")]
+        public async Task<ActionResult<BookingPaginatedList<Booking>>> GetPaginated([FromQuery] int page = 1, [FromQuery] string? filter = null)
+        {
+            if (page < 1) page = 1;
+            const int pageSize = 15;
+
+            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetBookingsWithPagination(page, pageSize, filter));
+        }
+
         [HttpGet("customer/{id}")]
         public async Task<ActionResult<List<Booking>>> GetByCustomerId(int id)
         {
