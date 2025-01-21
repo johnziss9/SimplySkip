@@ -78,7 +78,7 @@ namespace SimplySkip.Services
                     .Take(pageSize)
                     .ToListAsync();
 
-                var SkipPaginatedList = new SkipPaginatedList<Skip>(
+                var skipPaginatedList = new SkipPaginatedList<Skip>(
                     skips,
                     totalCount,
                     pageSize,
@@ -86,7 +86,7 @@ namespace SimplySkip.Services
                     counts
                 );
 
-                return Response<SkipPaginatedList<Skip>>.Success(SkipPaginatedList);
+                return Response<SkipPaginatedList<Skip>>.Success(skipPaginatedList);
             }
             catch (Exception ex)
             {

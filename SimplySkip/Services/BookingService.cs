@@ -98,7 +98,7 @@ namespace SimplySkip.Services
                         booking.Address = booking.Address.Replace(", ", "\n");
                 }
 
-                var BookingPaginatedList = new BookingPaginatedList<Booking>(
+                var bookingPaginatedList = new BookingPaginatedList<Booking>(
                     bookings,
                     totalCount,
                     pageSize,
@@ -106,7 +106,7 @@ namespace SimplySkip.Services
                     counts
                 );
 
-                return Response<BookingPaginatedList<Booking>>.Success(BookingPaginatedList);
+                return Response<BookingPaginatedList<Booking>>.Success(bookingPaginatedList);
             }
             catch (Exception ex)
             {
