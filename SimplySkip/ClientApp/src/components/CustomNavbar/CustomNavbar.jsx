@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import './CustomNavbar.css';
 import { Link, useNavigate } from 'react-router-dom';
-import { AppBar, Button, IconButton, Toolbar, Typography, Fab, useMediaQuery } from "@mui/material";
+import { AppBar, Button, IconButton, Toolbar, Typography, Fab } from "@mui/material";
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
@@ -52,14 +52,14 @@ function CustomNavbar(props) {
                     </Fab>
                     : null}
                 </div>
-                <LogoutIcon sx={{ fontSize: '30px' }} />
+                <LogoutIcon sx={{ fontSize: '30px' }} onClick={handleLogout} />
             </Toolbar>
             {open && (
                 <div className="menu-container">
-                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/Customers">ΠΕΛΑΤΕΣ</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/Bookings">ΚΡΑΤΗΣΕΙΣ</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/History">ΙΣΤΟΡΙΚΟ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">ΠΕΛΑΤΕΣ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">ΚΡΑΤΗΣΕΙΣ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/History">ΙΣΤΟΡΙΚΟ</Link></Button>
                 </div>
             )}
         </AppBar>
