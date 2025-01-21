@@ -25,9 +25,10 @@ function Customers() {
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [searchInput, setSearchInput] = useState('');
+    const [totalCustomers, setTotalCustomers] = useState(0);
 
     const searchbarWidth = useMediaQuery('(max-width: 550px)');
-    
+
     useEffect(() => {
         // Initial load
         handleFetchCustomers(1, searchQuery);
@@ -50,12 +51,12 @@ function Customers() {
     }, [page]);
 
     // Content check effect
-        useEffect(() => {
-            if (customers.length > 0) {
-                checkContentAndLoadMore();
-            }
-            // eslint-disable-next-line
-        }, [customers]);
+    useEffect(() => {
+        if (customers.length > 0) {
+            checkContentAndLoadMore();
+        }
+        // eslint-disable-next-line
+    }, [customers]);
 
     const handleFetchCustomers = async (currentPage = 1, search = '') => {
         try {
@@ -74,6 +75,8 @@ function Customers() {
                 setCustomers(prevCustomers =>
                     currentPage === 1 ? data.items : [...prevCustomers, ...data.items]
                 );
+
+                setTotalCustomers(data.totalCount);
                 setHasMore(data.hasNext);
             } else {
                 setSnackbarMessage('Failed to load customers.');
@@ -201,7 +204,7 @@ function Customers() {
     const checkContentAndLoadMore = useCallback(() => {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
-    
+
         if (!isLoading && hasMore && documentHeight <= windowHeight) {
             setPage(prevPage => prevPage + 1);
         }
@@ -227,7 +230,7 @@ function Customers() {
                                 setCustomers([]);
                                 handleFetchCustomers(1, '');
                             }
-                        }}                        
+                        }}
                         display={customers.length > 0 || searchQuery ? '' : 'none'}
                         onKeyDown={(e) => {
                             if (e.key === 'Enter') {
@@ -246,6 +249,9 @@ function Customers() {
                     />
                 </div>
                 <div className="customers-section">
+                    <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                        {`Σύνολο Πελατών: ${totalCustomers}`}
+                    </Typography>
                     {Array.isArray(customers) && customers.length > 0 ? (
                         <>
                             {customers.map((customer) => (
@@ -263,11 +269,11 @@ function Customers() {
                         </>
                     ) : (
                         <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>
-                {searchQuery 
-                    ? 'Δεν βρέθηκε πελάτης με αυτά τα κριτήρια αναζήτησης.'
-                    : 'Δεν υπάρχουν πελάτες. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε έναν.'
-                }
-            </h5>
+                            {searchQuery
+                                ? 'Δεν βρέθηκε πελάτης με αυτά τα κριτήρια αναζήτησης.'
+                                : 'Δεν υπάρχουν πελάτες. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε έναν.'
+                            }
+                        </h5>
                     )}
                     {isLoading && hasMore && (
                         <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%' }}>
