@@ -351,7 +351,7 @@ function Bookings() {
 
     return (
         <>
-            <UpdatesButton showDialog={showInitialAnnouncement} setShowDialog={setShowInitialAnnouncement} isButton={false} title="Πρόσφατες Ενημερώσεις - 21/02/2025" />
+            <UpdatesButton showDialog={showInitialAnnouncement} setShowDialog={setShowInitialAnnouncement} isButton={false} />
             <CustomNavbar currentPage={'Κρατἠσεις'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
                 {bookings.length > 0 && (
