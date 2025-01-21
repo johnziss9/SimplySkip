@@ -6,9 +6,11 @@ import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
 import LogoutIcon from '@mui/icons-material/Logout';
+import UpdatesButton from "../UpdatesButton/UpdatesButton";
 
 function CustomNavbar(props) {
     const [open, setOpen] = useState(false);
+    const [showUpdates, setShowUpdates] = useState(false);
 
     const navigate = useNavigate();
 
@@ -47,12 +49,18 @@ function CustomNavbar(props) {
                         {props.currentPage}
                     </Typography>
                     {props.currentPage === 'Πελἀτες' || props.currentPage === 'Κρατἠσεις' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ?
-                    <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
-                        <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
-                    </Fab>
+                    <>
+                        <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
+                            <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
+                        </Fab>
+                        <UpdatesButton showDialog={showUpdates} setShowDialog={setShowUpdates} />
+                    </>
                     : null}
                 </div>
-                <LogoutIcon sx={{ fontSize: '30px' }} onClick={handleLogout} />
+                <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
+                    <LogoutIcon sx={{ fontSize: '30px', color: '#006d77' }} onClick={handleLogout} />
+                </Fab>
+                
             </Toolbar>
             {open && (
                 <div className="menu-container">
