@@ -101,12 +101,13 @@ namespace SimplySkip.Tests.Bookings
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Booking>;
+                var returnedData = result.Value as BookingPaginatedList<Models.Booking>;
                 Assert.NotNull(returnedData);
                 Assert.Equal(3, returnedData.TotalCount);
                 Assert.Equal(1, returnedData.CurrentPage);
                 Assert.Equal(15, returnedData.PageSize);
                 Assert.False(returnedData.HasNext);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 
@@ -131,11 +132,12 @@ namespace SimplySkip.Tests.Bookings
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Booking>;
+                var returnedData = result.Value as BookingPaginatedList<Models.Booking>;
                 Assert.NotNull(returnedData);
                 Assert.Single(returnedData.Items);
                 Assert.False(returnedData.Items[0].Returned);
                 Assert.False(returnedData.Items[0].Cancelled);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 
@@ -160,9 +162,10 @@ namespace SimplySkip.Tests.Bookings
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Booking>;
+                var returnedData = result.Value as BookingPaginatedList<Models.Booking>;
                 Assert.NotNull(returnedData);
                 Assert.Equal(1, returnedData.CurrentPage);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 

@@ -9,7 +9,7 @@ namespace SimplySkip.Interfaces
 
         Task<Response<List<Booking>>> GetAllBookings();
 
-        Task<Response<PaginatedList<Booking>>> GetBookingsWithPagination(int page, int pageSize, string? filter = null);
+        Task<Response<BookingPaginatedList<Booking>>> GetBookingsWithPagination(int page, int pageSize, string? filter = null);
 
         Task<Response<List<Booking>>> GetBookingsByCustomerId(int id);
 

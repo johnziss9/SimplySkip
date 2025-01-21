@@ -38,10 +38,17 @@ namespace SimplySkip.Services
             return Response<List<Skip>>.Success(skips);
         }
 
-        public async Task<Response<PaginatedList<Skip>>> GetSkipsWithPagination(int page, int pageSize, string? filter = null)
+        public async Task<Response<SkipPaginatedList<Skip>>> GetSkipsWithPagination(int page, int pageSize, string? filter = null)
         {
             try
             {
+                var counts = new SkipCounts
+                {
+                    All = await _ssDbContext.Skips.CountAsync(),
+                    Rented = await _ssDbContext.Skips.CountAsync(s => s.Rented && !s.Deleted),
+                    Available = await _ssDbContext.Skips.CountAsync(s => !s.Rented && !s.Deleted)
+                };
+
                 var query = _ssDbContext.Skips.AsQueryable();
                 query = query.Where(s => !s.Deleted);
 
@@ -71,18 +78,19 @@ namespace SimplySkip.Services
                     .Take(pageSize)
                     .ToListAsync();
 
-                var paginatedList = new PaginatedList<Skip>(
+                var SkipPaginatedList = new SkipPaginatedList<Skip>(
                     skips,
                     totalCount,
                     pageSize,
-                    page
+                    page,
+                    counts
                 );
 
-                return Response<PaginatedList<Skip>>.Success(paginatedList);
+                return Response<SkipPaginatedList<Skip>>.Success(SkipPaginatedList);
             }
             catch (Exception ex)
             {
-                return Response<PaginatedList<Skip>>.Fail(ex);
+                return Response<SkipPaginatedList<Skip>>.Fail(ex);
             }
         }
 

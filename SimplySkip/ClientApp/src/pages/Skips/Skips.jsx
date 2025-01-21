@@ -28,6 +28,11 @@ function Skips() {
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState('');
     const [totalSkips, setTotalSkips] = useState(0);
+    const [filterCounts, setFilterCounts] = useState({
+            All: 0,
+            Rented: 0,
+            Available: 0
+        });
 
     // Initial load and scroll setup effect (no dependencies)
     useEffect(() => {
@@ -78,6 +83,7 @@ function Skips() {
                     currentPage === 1 ? data.items : [...prevSkips, ...data.items]
                 );
 
+                setFilterCounts(data.counts);
                 setTotalSkips(data.totalCount);
                 setHasMore(data.hasNext);
             } else {
@@ -278,28 +284,30 @@ function Skips() {
                             <FormControlLabel
                                 value="All"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ὀλα"
+                                label={`Ὀλα (${filterCounts.all})`}
                                 sx={{ display: 'inline' }}
                             />
                             <FormControlLabel
                                 value="Booked"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Κρατημἐνα"
+                                label={`Κρατημἐνα (${filterCounts.rented})`}
                                 sx={{ display: 'inline' }}
                             />
                             <FormControlLabel
                                 value="Available"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Διαθέσιμα"
+                                label={`Διαθέσιμα (${filterCounts.available})`}
                                 sx={{ display: 'inline' }}
                             />
                         </RadioGroup>
                     </div>
                 )}
                 <div className="skips-section">
-                    <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
-                        {`Σύνολο Skip: ${totalSkips}`}
-                    </Typography>
+                    {!showFilter && (
+                        <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                            {`Σύνολο Skip: ${totalSkips}`}
+                        </Typography>
+                    )}
                     {Array.isArray(skips) && skips.length > 0 ? skips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
                         <SkipCard
                             key={skip.id}
