@@ -29,6 +29,7 @@ function Bookings() {
     const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState('');
+    const [totalBookings, setTotalBookings] = useState(0);
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
@@ -78,6 +79,8 @@ function Bookings() {
                 setBookings(prevBookings =>
                     currentPage === 1 ? data.items : [...prevBookings, ...data.items]
                 );
+
+                setTotalBookings(data.totalCount);
                 setHasMore(data.hasNext);
                 handleGetCustomer(data.items);
             } else {
@@ -320,10 +323,10 @@ function Bookings() {
     const checkContentAndLoadMore = useCallback(() => {
         const windowHeight = window.innerHeight;
         const documentHeight = document.documentElement.scrollHeight;
-    
+
         if (
-            !isLoading && 
-            hasMore && 
+            !isLoading &&
+            hasMore &&
             documentHeight <= windowHeight
         ) {
             setPage(prevPage => prevPage + 1);
@@ -381,6 +384,9 @@ function Bookings() {
                     </div>
                 )}
                 <div className="bookings-section">
+                    <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                        {`Σύνολο Κρατήσεων: ${totalBookings}`}
+                    </Typography>
                     {Array.isArray(bookings) && bookings.length > 0 ? bookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <BookingCard
                             key={booking.id}
