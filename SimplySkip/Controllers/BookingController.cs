@@ -31,7 +31,7 @@ namespace SimplySkip.Controllers
         }
 
         [HttpGet("pagination")]
-        public async Task<ActionResult<PaginatedList<Booking>>> GetPaginated([FromQuery] int page = 1, [FromQuery] string? filter = null)
+        public async Task<ActionResult<BookingPaginatedList<Booking>>> GetPaginated([FromQuery] int page = 1, [FromQuery] string? filter = null)
         {
             if (page < 1) page = 1;
             const int pageSize = 15;

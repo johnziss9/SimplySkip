@@ -70,12 +70,13 @@ namespace SimplySkip.Tests.Skip
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                var returnedData = result.Value as SkipPaginatedList<Models.Skip>;
                 Assert.NotNull(returnedData);
-                Assert.Equal(3, returnedData.TotalCount); // Total count should be 3 from seed data
+                Assert.Equal(3, returnedData.TotalCount);
                 Assert.Equal(1, returnedData.CurrentPage);
                 Assert.Equal(15, returnedData.PageSize);
-                Assert.False(returnedData.HasNext); // Should be false as all items fit in first page
+                Assert.False(returnedData.HasNext);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 
@@ -100,10 +101,11 @@ namespace SimplySkip.Tests.Skip
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                var returnedData = result.Value as SkipPaginatedList<Models.Skip>;
                 Assert.NotNull(returnedData);
-                Assert.Single(returnedData.Items); // Should only find one rented skip
+                Assert.Single(returnedData.Items);
                 Assert.True(returnedData.Items[0].Rented);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 
@@ -128,10 +130,11 @@ namespace SimplySkip.Tests.Skip
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                var returnedData = result.Value as SkipPaginatedList<Models.Skip>;
                 Assert.NotNull(returnedData);
-                Assert.Equal(2, returnedData.Items.Count); // Should find two available skips
+                Assert.Equal(2, returnedData.Items.Count);
                 Assert.All(returnedData.Items, skip => Assert.False(skip.Rented));
+                Assert.NotNull(returnedData.Counts);
             }
         }
 
@@ -156,9 +159,10 @@ namespace SimplySkip.Tests.Skip
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var returnedData = result.Value as PaginatedList<Models.Skip>;
+                var returnedData = result.Value as SkipPaginatedList<Models.Skip>;
                 Assert.NotNull(returnedData);
                 Assert.Equal(1, returnedData.CurrentPage);
+                Assert.NotNull(returnedData.Counts);
             }
         }
 

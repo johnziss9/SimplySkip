@@ -92,6 +92,13 @@ namespace SimplySkip.Tests.Bookings
                 Assert.Equal(15, result.Data.PageSize);
                 Assert.Equal(3, result.Data.Items.Count);
                 Assert.False(result.Data.HasNext);
+
+                Assert.NotNull(result.Data.Counts);
+                Assert.Equal(3, result.Data.Counts.All);
+                Assert.Equal(1, result.Data.Counts.Active);
+                Assert.Equal(1, result.Data.Counts.Past);
+                Assert.Equal(1, result.Data.Counts.Cancelled);
+                Assert.Equal(0, result.Data.Counts.Unpaid);
             }
         }
 
@@ -177,6 +184,49 @@ namespace SimplySkip.Tests.Bookings
                 Assert.Empty(result.Data.Items);
                 Assert.Equal(0, result.Data.TotalCount);
                 Assert.False(result.Data.HasNext);
+
+                Assert.NotNull(result.Data.Counts);
+                Assert.Equal(0, result.Data.Counts.All);
+                Assert.Equal(0, result.Data.Counts.Active);
+                Assert.Equal(0, result.Data.Counts.Past);
+                Assert.Equal(0, result.Data.Counts.Cancelled);
+                Assert.Equal(0, result.Data.Counts.Unpaid);
+            }
+        }
+
+        [Fact]
+        public async Task GetBookingsWithPagination_CountsRemainConsistentWithFilters()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new BookingService(dbContext);
+
+                // Get initial counts
+                var initialResult = await service.GetBookingsWithPagination(1, 15, null);
+                var initialCounts = initialResult?.Data?.Counts;
+
+                // Test each filter
+                var filters = new[] { "Active", "Unpaid", "Past", "Cancelled" };
+                foreach (var filter in filters)
+                {
+                    // Act
+                    var result = await service.GetBookingsWithPagination(1, 15, filter);
+
+                    // Assert
+                    Assert.NotNull(result?.Data?.Counts);
+                    // Verify counts remain the same regardless of filter
+                    Assert.Equal(initialCounts?.All, result.Data.Counts.All);
+                    Assert.Equal(initialCounts?.Active, result.Data.Counts.Active);
+                    Assert.Equal(initialCounts?.Past, result.Data.Counts.Past);
+                    Assert.Equal(initialCounts?.Cancelled, result.Data.Counts.Cancelled);
+                    Assert.Equal(initialCounts?.Unpaid, result.Data.Counts.Unpaid);
+                }
             }
         }
 

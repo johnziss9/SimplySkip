@@ -44,10 +44,19 @@ namespace SimplySkip.Services
             return Response<List<Booking>>.Success(bookings);
         }
 
-        public async Task<Response<PaginatedList<Booking>>> GetBookingsWithPagination(int page, int pageSize, string? filter = null)
+        public async Task<Response<BookingPaginatedList<Booking>>> GetBookingsWithPagination(int page, int pageSize, string? filter = null)
         {
             try
             {
+                var counts = new BookingCounts
+                {
+                    All = await _ssDbContext.Bookings.CountAsync(),
+                    Active = await _ssDbContext.Bookings.CountAsync(b => !b.Returned && !b.Cancelled),
+                    Unpaid = await _ssDbContext.Bookings.CountAsync(b => b.Returned && !b.Paid && !b.Cancelled),
+                    Past = await _ssDbContext.Bookings.CountAsync(b => b.Returned && b.Paid && !b.Cancelled),
+                    Cancelled = await _ssDbContext.Bookings.CountAsync(b => b.Cancelled)
+                };
+
                 var query = _ssDbContext.Bookings.AsQueryable();
 
                 // Apply filters
@@ -89,18 +98,19 @@ namespace SimplySkip.Services
                         booking.Address = booking.Address.Replace(", ", "\n");
                 }
 
-                var paginatedList = new PaginatedList<Booking>(
+                var bookingPaginatedList = new BookingPaginatedList<Booking>(
                     bookings,
                     totalCount,
                     pageSize,
-                    page
+                    page,
+                    counts
                 );
 
-                return Response<PaginatedList<Booking>>.Success(paginatedList);
+                return Response<BookingPaginatedList<Booking>>.Success(bookingPaginatedList);
             }
             catch (Exception ex)
             {
-                return Response<PaginatedList<Booking>>.Fail(ex);
+                return Response<BookingPaginatedList<Booking>>.Fail(ex);
             }
         }
 

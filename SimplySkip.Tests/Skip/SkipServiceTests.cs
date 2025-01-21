@@ -89,6 +89,11 @@ namespace SimplySkip.Tests.Skip
                 Assert.Equal(15, result.Data.PageSize);
                 Assert.Equal(3, result.Data.Items.Count);
                 Assert.False(result.Data.HasNext);
+
+                Assert.NotNull(result.Data.Counts);
+                Assert.Equal(3, result.Data.Counts.All);
+                Assert.Equal(1, result.Data.Counts.Rented);
+                Assert.Equal(2, result.Data.Counts.Available);
             }
         }
 
@@ -156,6 +161,45 @@ namespace SimplySkip.Tests.Skip
                 Assert.Empty(result.Data.Items);
                 Assert.Equal(0, result.Data.TotalCount);
                 Assert.False(result.Data.HasNext);
+
+                Assert.NotNull(result.Data.Counts);
+                Assert.Equal(0, result.Data.Counts.All);
+                Assert.Equal(0, result.Data.Counts.Rented);
+                Assert.Equal(0, result.Data.Counts.Available);
+            }
+        }
+
+        [Fact]
+        public async Task GetSkipsWithPagination_CountsRemainConsistentWithFilters()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                var service = new SkipService(dbContext);
+
+                // Get initial counts
+                var initialResult = await service.GetSkipsWithPagination(1, 15, null);
+                var initialCounts = initialResult?.Data?.Counts;
+
+                // Test each filter
+                var filters = new[] { "Booked", "Available" };
+                foreach (var filter in filters)
+                {
+                    // Act
+                    var result = await service.GetSkipsWithPagination(1, 15, filter);
+
+                    // Assert
+                    Assert.NotNull(result?.Data?.Counts);
+                    // Verify counts remain the same regardless of filter
+                    Assert.Equal(initialCounts?.All, result.Data.Counts.All);
+                    Assert.Equal(initialCounts?.Rented, result.Data.Counts.Rented);
+                    Assert.Equal(initialCounts?.Available, result.Data.Counts.Available);
+                }
             }
         }
 

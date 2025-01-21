@@ -30,6 +30,13 @@ function Bookings() {
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState('');
     const [totalBookings, setTotalBookings] = useState(0);
+    const [filterCounts, setFilterCounts] = useState({
+        All: 0,
+        Active: 0,
+        Unpaid: 0,
+        Past: 0,
+        Cancelled: 0
+    });
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
@@ -80,6 +87,7 @@ function Bookings() {
                     currentPage === 1 ? data.items : [...prevBookings, ...data.items]
                 );
 
+                setFilterCounts(data.counts);
                 setTotalBookings(data.totalCount);
                 setHasMore(data.hasNext);
                 handleGetCustomer(data.items);
@@ -358,35 +366,37 @@ function Bookings() {
                             <FormControlLabel
                                 value="All"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Όλες"
+                                label={`Όλες (${filterCounts.all})`}
                             />
                             <FormControlLabel
                                 value="Active"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Τρέχουσες"
+                                label={`Τρέχουσες (${filterCounts.active})`}
                             />
                             <FormControlLabel
                                 value="Unpaid"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ανεξόφλητες"
+                                label={`Ανεξόφλητες (${filterCounts.unpaid})`}
                             />
                             <FormControlLabel
                                 value="Past"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ολοκληρωμένες"
+                                label={`Ολοκληρωμένες (${filterCounts.past})`}
                             />
                             <FormControlLabel
                                 value="Cancelled"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ακυρωμένες"
+                                label={`Ακυρωμένες (${filterCounts.cancelled})`}
                             />
                         </RadioGroup>
                     </div>
                 )}
                 <div className="bookings-section">
-                    <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
-                        {`Σύνολο Κρατήσεων: ${totalBookings}`}
-                    </Typography>
+                    {!showFilter && (
+                        <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                            {`Σύνολο Κρατήσεων: ${totalBookings}`}
+                        </Typography>
+                    )}
                     {Array.isArray(bookings) && bookings.length > 0 ? bookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <BookingCard
                             key={booking.id}
