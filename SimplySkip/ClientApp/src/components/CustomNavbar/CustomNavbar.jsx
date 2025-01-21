@@ -57,8 +57,8 @@ function CustomNavbar(props) {
                     </>
                     : null}
                 </div>
-                <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
-                    <LogoutIcon sx={{ fontSize: '30px', color: '#006d77' }} onClick={handleLogout} />
+                <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleLogout}>
+                    <LogoutIcon sx={{ fontSize: '30px', color: '#006d77' }} />
                 </Fab>
                 
             </Toolbar>
