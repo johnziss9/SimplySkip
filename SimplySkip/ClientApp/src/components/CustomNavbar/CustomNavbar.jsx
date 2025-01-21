@@ -5,11 +5,10 @@ import { AppBar, Button, IconButton, Toolbar, Typography, Fab, useMediaQuery } f
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseIcon from '@mui/icons-material/Close';
 import AddIcon from '@mui/icons-material/Add';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 function CustomNavbar(props) {
     const [open, setOpen] = useState(false);
-
-    const addNewButtonWidth = useMediaQuery('(max-width: 550px)');
 
     const navigate = useNavigate();
 
@@ -48,20 +47,19 @@ function CustomNavbar(props) {
                         {props.currentPage}
                     </Typography>
                     {props.currentPage === 'Πελἀτες' || props.currentPage === 'Κρατἠσεις' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ?
-                    <Fab sx={{ background: '#edf6f9', width: addNewButtonWidth ? '50px' : '150px', height:'40px', marginLeft: '20px', borderRadius: '5px', fontSize: '12px' }} onClick={handleAddNew}>
-                        <AddIcon sx={{ color: '#006d77' }} />
-                        {addNewButtonWidth ? '' : 'ΠΡΟΣΘΗΚΗ ΝΕΟΥ'}
+                    <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
+                        <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
                     </Fab>
                     : null}
                 </div>
-                <Button color="inherit" onClick={handleLogout}>ΑΠΟΣΥΝΔΕΣΗ</Button>
+                <LogoutIcon sx={{ fontSize: '30px' }} />
             </Toolbar>
             {open && (
                 <div className="menu-container">
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Customers">ΠΕΛΑΤΕΣ</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Bookings">ΚΡΑΤΗΣΕΙΣ</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
-                    <Button color="inherit" sx={{ fontSize: '18px' }}><Link className='menu-item' to="/History">ΙΣΤΟΡΙΚΟ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/Customers">ΠΕΛΑΤΕΣ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/Bookings">ΚΡΑΤΗΣΕΙΣ</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/Skips">Skips</Link></Button>
+                    <Button color="inherit" sx={{ fontSize: '18px', marginTop: '5px' }}><Link className='menu-item' to="/History">ΙΣΤΟΡΙΚΟ</Link></Button>
                 </div>
             )}
         </AppBar>
