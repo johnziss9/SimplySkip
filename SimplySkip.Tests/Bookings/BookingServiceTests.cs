@@ -376,5 +376,73 @@ namespace SimplySkip.Tests.Bookings
                 }
             }
         }
+
+        [Fact]
+        public async Task GetDistinctAddressesByCustomerId_ReturnsDistinctAddresses()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 5;
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 10, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 11, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 12, CustomerId = customerId, Address = "456 Oak Ave" },
+                    new Models.Booking { Id = 13, CustomerId = customerId, Address = "789 Pine Blvd" },
+                    new Models.Booking { Id = 14, CustomerId = 6, Address = "999 Other St" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var service = new BookingService(dbContext);
+
+                // Act
+                var result = await service.GetDistinctAddressesByCustomerId(customerId);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(3, result.Data.Count);
+                Assert.Contains("123 Main St", result.Data);
+                Assert.Contains("456 Oak Ave", result.Data);
+                Assert.Contains("789 Pine Blvd", result.Data);
+                Assert.DoesNotContain("999 Other St", result.Data);
+            }
+        }
+
+        [Fact]
+        public async Task GetDistinctAddressesByCustomerId_CustomerWithNoBookings_ReturnsEmptyList()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 999; // Non-existent customer
+                
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 15, CustomerId = 1, Address = "123 Main St" },
+                    new Models.Booking { Id = 16, CustomerId = 2, Address = "456 Oak Ave" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var service = new BookingService(dbContext);
+
+                // Act
+                var result = await service.GetDistinctAddressesByCustomerId(customerId);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Empty(result.Data); // Should be empty for customer with no bookings
+            }
+        }
     }
 }

@@ -57,6 +57,12 @@ namespace SimplySkip.Controllers
             return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetBookingBySkipId(id));
         }
 
+        [HttpGet("customer/{id}/addresses")]
+        public async Task<ActionResult<List<string>>> GetAddressesByCustomerId(int id)
+        {
+            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetDistinctAddressesByCustomerId(id));
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<Booking>> Update(int id, Booking booking)
         {
