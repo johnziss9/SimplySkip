@@ -335,5 +335,46 @@ namespace SimplySkip.Tests.Bookings
                 }
             }
         }
+
+        [Fact]
+        public async Task GetAddressesByCustomerId_ReturnsDistinctAddresses()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 5;
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 10, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 11, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 12, CustomerId = customerId, Address = "456 Oak Ave" },
+                    new Models.Booking { Id = 13, CustomerId = customerId, Address = "789 Pine Blvd" },
+                    new Models.Booking { Id = 14, CustomerId = 6, Address = "999 Other St" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var controller = new BookingController(new BookingService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetAddressesByCustomerId(customerId);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var addresses = result.Value as List<string>;
+                Assert.NotNull(addresses);
+                Assert.Equal(3, addresses.Count);
+                Assert.Contains("123 Main St", addresses);
+                Assert.Contains("456 Oak Ave", addresses);
+                Assert.Contains("789 Pine Blvd", addresses);
+                Assert.DoesNotContain("999 Other St", addresses);
+            }
+        }
     }
 }

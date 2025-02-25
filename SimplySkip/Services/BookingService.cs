@@ -167,6 +167,25 @@ namespace SimplySkip.Services
             return Response<Booking>.Success(booking);
         }
 
+        public async Task<Response<List<string>>> GetDistinctAddressesByCustomerId(int customerId)
+        {
+            try
+            {
+                var addresses = await _ssDbContext.Bookings
+                    .Where(b => b.CustomerId == customerId)
+                    .Select(b => b.Address)
+                    .Distinct()
+                    .ToListAsync();
+
+                // Cast<string>() - Treats each element as a non-nullable string so no warning shows
+                return Response<List<string>>.Success(addresses.Cast<string>().ToList());
+            }
+            catch (Exception ex)
+            {
+                return Response<List<string>>.Fail(ex);
+            }
+        }
+
         public async Task<Response<Booking>> UpdateBooking(int id, Booking updatedBooking)
         {
             var booking = await _ssDbContext.Bookings.Where(c => c.Id == id).FirstOrDefaultAsync();

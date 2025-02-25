@@ -17,6 +17,8 @@ namespace SimplySkip.Interfaces
 
         Task<Response<Booking>> GetBookingBySkipId(int id);
 
+        Task<Response<List<string>>> GetDistinctAddressesByCustomerId(int customerId);
+
         Task<Response<Booking>> UpdateBooking(int id, Booking updatedBooking);
     }
 }
