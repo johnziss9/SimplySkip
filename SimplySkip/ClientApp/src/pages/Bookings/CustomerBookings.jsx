@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import './CustomerBookings.css';
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBookingCard";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
@@ -11,6 +11,8 @@ import handleHttpRequest from "../../api/api";
 function CustomerBookings() {
 
     const navigate = useNavigate();
+    const location = useLocation();
+    const filterAddress = location.state?.filterAddress;
 
     const { id } = useParams();
 
@@ -40,7 +42,18 @@ function CustomerBookings() {
         const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
-            setBookings(data);
+            // Store all bookings in a variable first
+            const allBookings = data;
+            
+            // Reset any previous filters (radio buttons)
+            setSelectedValue('All');
+                
+            // Filter bookings by address
+            const filteredData = allBookings.filter(booking => 
+                booking.address === filterAddress
+            );
+            
+            setBookings(filteredData);
         } else {
             setSnackbarMessage('Failed to load customer bookings.');
             setShowSnackbar(true);
@@ -217,8 +230,21 @@ function CustomerBookings() {
     }
 
     return (
-        <>
-            <CustomNavbar currentPage={`Κρατἠσεις για ${customer.firstName} ${customer.lastName}`} addNewClick={'/Booking'} customerId={customer.id} addNewSource="customer-bookings" />
+        <>  
+            <CustomNavbar 
+                currentPage={`Κρατἠσεις για `} 
+                customerName={
+                    <span 
+                        onClick={() => navigate(-1)} 
+                        style={{ cursor: 'pointer', textDecoration: 'underline', color: 'white'}}
+                    >
+                        {customer.firstName} {customer.lastName}
+                    </span>
+                }
+                addNewClick={'/Booking'} 
+                customerId={customer.id} 
+                addNewSource="customer-bookings" 
+            />
             <div className='customer-bookings-container'>
                 <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? 'flex' : 'none', width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" sx={{ display: 'inline' }} />

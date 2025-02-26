@@ -337,7 +337,7 @@ namespace SimplySkip.Tests.Bookings
         }
 
         [Fact]
-        public async Task GetAddressesByCustomerId_ReturnsDistinctAddresses()
+        public async Task GetAddressesCountsByCustomerId_ReturnsAddressesWithCounts()
         {
             // Arrange
             var options = new DbContextOptionsBuilder<SSDbContext>()
@@ -360,20 +360,26 @@ namespace SimplySkip.Tests.Bookings
                 var controller = new BookingController(new BookingService(dbContext));
 
                 // Act
-                var actionResult = await controller.GetAddressesByCustomerId(customerId);
+                var actionResult = await controller.GetAddressesCountsByCustomerId(customerId);
 
                 // Assert
                 var result = actionResult.Result as OkObjectResult;
                 Assert.NotNull(result);
                 Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
 
-                var addresses = result.Value as List<string>;
-                Assert.NotNull(addresses);
-                Assert.Equal(3, addresses.Count);
-                Assert.Contains("123 Main St", addresses);
-                Assert.Contains("456 Oak Ave", addresses);
-                Assert.Contains("789 Pine Blvd", addresses);
-                Assert.DoesNotContain("999 Other St", addresses);
+                var addressCounts = result.Value as List<AddressCountDto>;
+                Assert.NotNull(addressCounts);
+                Assert.Equal(3, addressCounts.Count);
+
+                // Find and verify the "123 Main St" entry
+                var mainStAddress = addressCounts.FirstOrDefault(a => a.Address == "123 Main St");
+                Assert.NotNull(mainStAddress);
+                Assert.Equal(2, mainStAddress.Count);
+
+                // Verify other addresses exist
+                Assert.Contains(addressCounts, a => a.Address == "456 Oak Ave");
+                Assert.Contains(addressCounts, a => a.Address == "789 Pine Blvd");
+                Assert.DoesNotContain(addressCounts, a => a.Address == "999 Other St");
             }
         }
     }
