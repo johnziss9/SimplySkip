@@ -378,7 +378,7 @@ namespace SimplySkip.Tests.Bookings
         }
 
         [Fact]
-        public async Task GetDistinctAddressesByCustomerId_ReturnsDistinctAddresses()
+        public async Task GetAddressesWithCountsByCustomerId_ReturnsAddressesWithCounts()
         {
             // Arrange
             var options = new DbContextOptionsBuilder<SSDbContext>()
@@ -401,21 +401,31 @@ namespace SimplySkip.Tests.Bookings
                 var service = new BookingService(dbContext);
 
                 // Act
-                var result = await service.GetDistinctAddressesByCustomerId(customerId);
+                var result = await service.GetAddressesWithCountsByCustomerId(customerId);
 
                 // Assert
                 Assert.True(result.IsSuccess);
                 Assert.NotNull(result.Data);
                 Assert.Equal(3, result.Data.Count);
-                Assert.Contains("123 Main St", result.Data);
-                Assert.Contains("456 Oak Ave", result.Data);
-                Assert.Contains("789 Pine Blvd", result.Data);
-                Assert.DoesNotContain("999 Other St", result.Data);
+
+                var mainStAddress = result.Data.FirstOrDefault(a => a.Address == "123 Main St");
+                Assert.NotNull(mainStAddress);
+                Assert.Equal(2, mainStAddress.Count);
+
+                var oakAveAddress = result.Data.FirstOrDefault(a => a.Address == "456 Oak Ave");
+                Assert.NotNull(oakAveAddress);
+                Assert.Equal(1, oakAveAddress.Count);
+
+                var pineBlvdAddress = result.Data.FirstOrDefault(a => a.Address == "789 Pine Blvd");
+                Assert.NotNull(pineBlvdAddress);
+                Assert.Equal(1, pineBlvdAddress.Count);
+
+                Assert.DoesNotContain(result.Data, a => a.Address == "999 Other St");
             }
         }
 
         [Fact]
-        public async Task GetDistinctAddressesByCustomerId_CustomerWithNoBookings_ReturnsEmptyList()
+        public async Task GetAddressesWithCountsByCustomerId_CustomerWithNoBookings_ReturnsEmptyList()
         {
             // Arrange
             var options = new DbContextOptionsBuilder<SSDbContext>()
@@ -425,7 +435,7 @@ namespace SimplySkip.Tests.Bookings
             using (var dbContext = new SSDbContext(options))
             {
                 var customerId = 999; // Non-existent customer
-                
+
                 dbContext.Bookings.AddRange(new List<Models.Booking>
                 {
                     new Models.Booking { Id = 15, CustomerId = 1, Address = "123 Main St" },
@@ -436,7 +446,7 @@ namespace SimplySkip.Tests.Bookings
                 var service = new BookingService(dbContext);
 
                 // Act
-                var result = await service.GetDistinctAddressesByCustomerId(customerId);
+                var result = await service.GetAddressesWithCountsByCustomerId(customerId);
 
                 // Assert
                 Assert.True(result.IsSuccess);

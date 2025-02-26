@@ -167,22 +167,25 @@ namespace SimplySkip.Services
             return Response<Booking>.Success(booking);
         }
 
-        public async Task<Response<List<string>>> GetDistinctAddressesByCustomerId(int customerId)
+        public async Task<Response<List<AddressCountDto>>> GetAddressesWithCountsByCustomerId(int customerId)
         {
             try
             {
-                var addresses = await _ssDbContext.Bookings
+                var addressCounts = await _ssDbContext.Bookings
                     .Where(b => b.CustomerId == customerId)
-                    .Select(b => b.Address)
-                    .Distinct()
+                    .GroupBy(b => b.Address)
+                    .Select(g => new AddressCountDto 
+                    { 
+                        Address = g.Key ?? string.Empty, 
+                        Count = g.Count() 
+                    })
                     .ToListAsync();
 
-                // Cast<string>() - Treats each element as a non-nullable string so no warning shows
-                return Response<List<string>>.Success(addresses.Cast<string>().ToList());
+                return Response<List<AddressCountDto>>.Success(addressCounts);
             }
             catch (Exception ex)
             {
-                return Response<List<string>>.Fail(ex);
+                return Response<List<AddressCountDto>>.Fail(ex);
             }
         }
 

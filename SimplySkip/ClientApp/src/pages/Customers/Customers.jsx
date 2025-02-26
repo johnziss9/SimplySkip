@@ -122,7 +122,7 @@ function Customers() {
     }
 
     const handleViewBookings = (customerId) => {
-        navigate(`/Customer/${customerId}/Bookings`);
+        navigate(`/Addresses/${customerId}`);
     }
 
     const handleOpenViewCustomer = (customer) => {

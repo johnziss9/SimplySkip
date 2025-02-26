@@ -3,7 +3,6 @@ import './Bookings.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import BookingCard from "../../components/BookingCard/BookingCard";
-import UpdatesButton from "../../components/UpdatesButton/UpdatesButton";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
