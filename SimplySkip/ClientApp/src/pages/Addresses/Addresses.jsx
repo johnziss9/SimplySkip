@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
 import AddressCard from "../../components/AddressCard/AddressCard";
-import { Typography, CircularProgress } from "@mui/material";
+import { Typography, CircularProgress, IconButton } from "@mui/material";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function Addresses() {
 
@@ -82,14 +83,44 @@ function Addresses() {
         });
     };
 
+    const handleBackToCustomer = () => {
+        // Navigate back to the Customers page with state indicating to open the modal
+        navigate('/Customers', { 
+            state: { 
+                openCustomerModal: true,
+                customerId: id 
+            }
+        });
+    };
+
     return (
         <>
             <CustomNavbar currentPage={'Διευθύνσεις'} />
             <div className='addresses-container'>
-                <div className="addresses-section">
-                    <Typography sx={{ marginTop: '20px', marginBottom: '10px', color: '#006d77', fontSize: '20px', width: '100%', textAlign: 'center' }}>
-                        {`${customer.firstName} ${customer.lastName }`}
+                <div className="addresses-header">
+                    <IconButton 
+                        onClick={handleBackToCustomer}
+                        sx={{ 
+                            color: '#006d77', 
+                            marginRight: '10px',
+                            '&:hover': { 
+                                backgroundColor: 'rgba(0, 109, 119, 0.1)' 
+                            }
+                        }}
+                    >
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <Typography 
+                        sx={{ 
+                            color: '#006d77', 
+                            fontSize: '20px', 
+                            fontWeight: '500'
+                        }}
+                    >
+                        {`${customer.firstName || ''} ${customer.lastName || ''}`}
                     </Typography>
+                </div>
+                <div className="addresses-section">
                     {isLoading ? (
                         <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%' }}>
                             <CircularProgress size={40} sx={{ color: '#006d77' }} />

@@ -47,7 +47,6 @@ function CustomNavbar(props) {
                 <div className="custom-navbar-content">
                     <Typography variant="h5">
                         {props.currentPage}
-                        {props.customerName}
                     </Typography>
                     {
                         props.currentPage === 'Πελἀτες' || 

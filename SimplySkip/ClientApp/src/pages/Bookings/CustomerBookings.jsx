@@ -3,10 +3,11 @@ import './CustomerBookings.css';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomerBookingCard from "../../components/CustomerBookingCard/CustomerBookingCard";
-import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery } from "@mui/material";
+import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery, IconButton } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 function CustomerBookings() {
 
@@ -187,6 +188,10 @@ function CustomerBookings() {
         setSelectedValue(event.target.value);
     };
 
+    const handleBackToAddresses = () => {
+        navigate(`/Addresses/${id}`);
+    };
+
     const getActiveBookings = () => {
         return bookings.filter((booking) => !booking.returned && !booking.cancelled);
     };
@@ -232,20 +237,36 @@ function CustomerBookings() {
     return (
         <>  
             <CustomNavbar 
-                currentPage={`Κρατἠσεις για `} 
-                customerName={
-                    <span 
-                        onClick={() => navigate(-1)} 
-                        style={{ cursor: 'pointer', textDecoration: 'underline', color: 'white'}}
-                    >
-                        {customer.firstName} {customer.lastName}
-                    </span>
-                }
+                currentPage={`Κρατἠσεις για ${customer.firstName} ${customer.lastName}`}
                 addNewClick={'/Booking'} 
                 customerId={customer.id} 
                 addNewSource="customer-bookings" 
             />
             <div className='customer-bookings-container'>
+                <div className="customer-bookings-header">
+                    <IconButton 
+                        onClick={handleBackToAddresses}
+                        sx={{ 
+                            color: '#006d77', 
+                            marginRight: '10px',
+                            '&:hover': { 
+                                backgroundColor: 'rgba(0, 109, 119, 0.1)' 
+                            }
+                        }}
+                    >
+                        <ArrowBackIcon />
+                    </IconButton>
+                    <Typography 
+                        sx={{ 
+                            color: '#006d77', 
+                            fontSize: '20px', 
+                            fontWeight: '500'
+                        }}
+                    >
+                        {filterAddress}
+                    </Typography>
+                </div>
+
                 <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? 'flex' : 'none', width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
                     <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" sx={{ display: 'inline' }} />
                     <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Τρέχουσες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
