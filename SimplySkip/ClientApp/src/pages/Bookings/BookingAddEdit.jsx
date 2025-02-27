@@ -372,7 +372,9 @@ function BookingAddEdit() {
     const handleOkAndCancel = () => {
         const addNewSource = sessionStorage.getItem('AddNewSource');
 
-        navigate(source === 'customer-bookings' || addNewSource === 'customer-bookings' ? `/Customer/${customer.id}/Bookings` : '/Bookings');
+        // source - when editing a booking from the customer bookings
+        // addNewSource - when creating a booking in customer bookings?
+        navigate(source === 'customer-bookings' || addNewSource === 'customer-bookings' ? `/Addresses/${customer.id}` : '/Bookings');
         sessionStorage.removeItem('AddNewSource');
     }
 

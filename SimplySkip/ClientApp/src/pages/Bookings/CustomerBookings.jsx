@@ -51,7 +51,7 @@ function CustomerBookings() {
                 
             // Filter bookings by address
             const filteredData = allBookings.filter(booking => 
-                booking.address === filterAddress
+                booking.address.replace(/\n/g, ', ') === filterAddress.replace(/\n/g, ', ')
             );
             
             setBookings(filteredData);
