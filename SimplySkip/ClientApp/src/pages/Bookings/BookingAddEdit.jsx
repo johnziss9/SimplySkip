@@ -371,11 +371,21 @@ function BookingAddEdit() {
 
     const handleOkAndCancel = () => {
         const addNewSource = sessionStorage.getItem('AddNewSource');
-
+        const filterAddress = sessionStorage.getItem('FilterAddress');
+        
         // source - when editing a booking from the customer bookings
         // addNewSource - when creating a booking in customer bookings?
-        navigate(source === 'customer-bookings' || addNewSource === 'customer-bookings' ? `/Addresses/${customer.id}` : '/Bookings');
+        if (source === 'customer-bookings' || addNewSource === 'customer-bookings') {
+            navigate(`/Customer/${customer.id}/Bookings`, { 
+                state: { filterAddress: filterAddress } 
+            });
+        } else {
+            navigate('/Bookings');
+        }
+        
+        // Clean up session storage
         sessionStorage.removeItem('AddNewSource');
+        sessionStorage.removeItem('FilterAddress');
     }
 
     const handleCloseSnackbar = () => {

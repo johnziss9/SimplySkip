@@ -168,6 +168,7 @@ function CustomerBookings() {
     const handleCloseViewBooking = () => setOpenViewBooking(false);
 
     const handleEditClick = (bookingId) => {
+        sessionStorage.setItem('FilterAddress', filterAddress);
         navigate(`/Booking/${bookingId}/customer-bookings`);
     }
 
@@ -240,7 +241,8 @@ function CustomerBookings() {
                 currentPage={`Κρατἠσεις για ${customer.firstName} ${customer.lastName}`}
                 addNewClick={'/Booking'} 
                 customerId={customer.id} 
-                addNewSource="customer-bookings" 
+                addNewSource="customer-bookings"
+                filterAddress={filterAddress}
             />
             <div className='customer-bookings-container'>
                 <div className="customer-bookings-header">
