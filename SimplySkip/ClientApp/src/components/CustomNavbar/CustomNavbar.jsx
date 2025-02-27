@@ -28,6 +28,10 @@ function CustomNavbar(props) {
             localStorage.setItem('CustomerId', props.customerId);
 
         sessionStorage.setItem('AddNewSource', props.addNewSource);
+
+        if (props.filterAddress)
+            sessionStorage.setItem('FilterAddress', props.filterAddress);
+        
         navigate(props.addNewClick);
     }
 
