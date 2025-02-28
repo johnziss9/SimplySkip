@@ -8,7 +8,8 @@ namespace SimplySkip.Tests.Skip
                 {
                     new Models.Skip { Id = 1, Name = "2", Size = Models.SkipSize.Small, Notes = "Some Notes", Rented = true, Deleted = false },
                     new Models.Skip { Id = 2, Name = "5", Size = Models.SkipSize.Large, Rented = false, Deleted = false },
-                    new Models.Skip { Id = 3, Name = "9", Size = Models.SkipSize.Small, Rented = false, Deleted = false }
+                    new Models.Skip { Id = 3, Name = "9", Size = Models.SkipSize.Small, Rented = false, Deleted = false },
+                    new Models.Skip { Id = 4, Name = "10", Size = Models.SkipSize.Small, Rented = false, Deleted = true }
                 });
 
             await dbContext.SaveChangesAsync();
@@ -84,16 +85,19 @@ namespace SimplySkip.Tests.Skip
                 // Assert
                 Assert.True(result.IsSuccess);
                 Assert.NotNull(result.Data);
-                Assert.Equal(3, result.Data.TotalCount);
+                Assert.Equal(3, result.Data.TotalCount); // Only non-deleted skips
                 Assert.Equal(1, result.Data.CurrentPage);
                 Assert.Equal(15, result.Data.PageSize);
                 Assert.Equal(3, result.Data.Items.Count);
                 Assert.False(result.Data.HasNext);
 
                 Assert.NotNull(result.Data.Counts);
-                Assert.Equal(3, result.Data.Counts.All);
+                Assert.Equal(3, result.Data.Counts.All); // Should only count non-deleted
                 Assert.Equal(1, result.Data.Counts.Rented);
                 Assert.Equal(2, result.Data.Counts.Available);
+                
+                // Verify no deleted skips are returned
+                Assert.False(result?.Data.Items.Any(s => s.Deleted));
             }
         }
 
@@ -113,10 +117,10 @@ namespace SimplySkip.Tests.Skip
                 // Test each filter type
                 var filters = new[] { "Booked", "Available" };
                 var expectedCounts = new Dictionary<string, int>
-        {
-            { "Booked", 1 },    // One rented skip
-            { "Available", 2 }   // Two available skips
-        };
+                {
+                    { "Booked", 1 },    // One rented skip
+                    { "Available", 2 }   // Two available skips
+                };
 
                 foreach (var filter in filters)
                 {
@@ -182,11 +186,9 @@ namespace SimplySkip.Tests.Skip
                 await SeedTestData(dbContext);
                 var service = new SkipService(dbContext);
 
-                // Get initial counts
                 var initialResult = await service.GetSkipsWithPagination(1, 15, null);
                 var initialCounts = initialResult?.Data?.Counts;
 
-                // Test each filter
                 var filters = new[] { "Booked", "Available" };
                 foreach (var filter in filters)
                 {
@@ -195,10 +197,14 @@ namespace SimplySkip.Tests.Skip
 
                     // Assert
                     Assert.NotNull(result?.Data?.Counts);
-                    // Verify counts remain the same regardless of filter
                     Assert.Equal(initialCounts?.All, result.Data.Counts.All);
                     Assert.Equal(initialCounts?.Rented, result.Data.Counts.Rented);
                     Assert.Equal(initialCounts?.Available, result.Data.Counts.Available);
+                    
+                    Assert.Equal(3, result.Data.Counts.All); // Total non-deleted skips
+                    
+                    // Verify no deleted skips are returned in filtered items
+                    Assert.False(result?.Data.Items.Any(s => s.Deleted));
                 }
             }
         }
@@ -214,7 +220,7 @@ namespace SimplySkip.Tests.Skip
             using (var dbContext = new SSDbContext(options))
             {
                 await SeedTestData(dbContext);
-                var expectedSkips = dbContext.Skips.Where(s => s.Rented == false).ToList();
+                var expectedSkips = dbContext.Skips.Where(s => s.Rented == false && s.Deleted == false).ToList();
 
                 var service = new SkipService(dbContext);
 
@@ -292,6 +298,41 @@ namespace SimplySkip.Tests.Skip
                     Assert.Equal(updatedSkip?.Rented, result.Data.Rented);
                     Assert.Equal(updatedSkip?.Deleted, result.Data.Deleted);
                 }
+            }
+        }
+
+        [Fact]
+        public async Task GetSkipsWithPagination_ExcludesDeletedSkipsFromCounts()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+                
+                var totalSkipsInDb = await dbContext.Skips.CountAsync();
+                var deletedSkipsInDb = await dbContext.Skips.CountAsync(s => s.Deleted);
+                var nonDeletedSkipsInDb = await dbContext.Skips.CountAsync(s => !s.Deleted);
+                
+                Assert.Equal(4, totalSkipsInDb);
+                Assert.Equal(1, deletedSkipsInDb);
+                Assert.Equal(3, nonDeletedSkipsInDb);
+                
+                var service = new SkipService(dbContext);
+
+                // Act
+                var result = await service.GetSkipsWithPagination(1, 15, null);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.NotNull(result.Data.Counts);
+                
+                Assert.Equal(nonDeletedSkipsInDb, result.Data.Counts.All);
+                Assert.NotEqual(totalSkipsInDb, result.Data.Counts.All); // Should not match total count
             }
         }
     }
