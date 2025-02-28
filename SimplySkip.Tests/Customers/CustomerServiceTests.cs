@@ -351,5 +351,125 @@ namespace SimplySkip.Tests.Customers
                 Assert.Equal(newCustomer.Phone, savedCustomer.Phone);
             }
         }
+
+        [Fact]
+        public async Task UpdateCustomer_DuplicatePhoneNumber_Fails()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var customerId = 3;
+                var existingPhoneNumber = "23847238";
+
+                var customerUpdates = new Models.Customer
+                {
+                    Id = customerId,
+                    FirstName = "Meadow",
+                    LastName = "Soprano",
+                    Address = "New York",
+                    Phone = existingPhoneNumber, // Phone number that belongs to Tony
+                    Email = "msoprano@gmail.com"
+                };
+
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.UpdateCustomer(customerId, customerUpdates);
+
+                // Assert
+                Assert.False(result.IsSuccess);
+                Assert.Equal(400, result.ErrorCode);
+                Assert.Equal("Customer with this phone number already exists", result.ErrorMessage);
+
+                var customerInDb = await dbContext.Customers.FindAsync(customerId);
+                Assert.NotEqual(existingPhoneNumber, customerInDb?.Phone);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_SamePhoneNumber_Succeeds()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var customerId = 3;
+                var customer = await dbContext.Customers.FindAsync(customerId);
+                var originalPhone = customer?.Phone;
+                var newLastName = "Soprano-Smith";
+
+                var customerUpdates = new Models.Customer
+                {
+                    Id = customerId,
+                    FirstName = "Meadow",
+                    LastName = newLastName,
+                    Address = "New York",
+                    Phone = originalPhone,
+                    Email = "msoprano@gmail.com"
+                };
+
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.UpdateCustomer(customerId, customerUpdates);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(newLastName, result.Data.LastName);
+                Assert.Equal(originalPhone, result.Data.Phone);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_NewUniquePhoneNumber_Succeeds()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var customerId = 3;
+                var newPhoneNumber = "11112222";
+
+                var customerUpdates = new Models.Customer
+                {
+                    Id = customerId,
+                    FirstName = "Meadow",
+                    LastName = "Soprano",
+                    Address = "New York",
+                    Phone = newPhoneNumber,
+                    Email = "msoprano@gmail.com"
+                };
+
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.UpdateCustomer(customerId, customerUpdates);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(newPhoneNumber, result.Data.Phone);
+
+                var updatedCustomer = await dbContext.Customers.FindAsync(customerId);
+                Assert.Equal(newPhoneNumber, updatedCustomer?.Phone);
+            }
+        }
     }
 }
