@@ -146,6 +146,11 @@ namespace SimplySkip.Services
 
             if (updatedCustomer.Phone != null && updatedCustomer.Phone != customer.Phone)
             {
+                if (_ssDbContext.Customers.Any(c => c.Phone == updatedCustomer.Phone && c.Id != id))
+                {
+                    return Response<Customer>.Fail(400, "Customer with this phone number already exists");
+                }
+                
                 customer.Phone = updatedCustomer.Phone;
             }
 
