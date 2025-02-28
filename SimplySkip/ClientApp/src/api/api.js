@@ -1,23 +1,51 @@
 import baseUrl from './config';
 
-const handleHttpRequest = async (url, method, body) => {
+const handleHttpRequest = async (url, method, body = null) => {
     try {
-        const response = await fetch(`${baseUrl}${url}`, {
+        const options = {
             method,
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': 'Bearer ' + sessionStorage.getItem('token')
-            },
-            body: JSON.stringify(body)
-        });
+            }
+        };
+
+        if (body && (method !== 'GET' && method !== 'HEAD')) {
+            options.body = JSON.stringify(body);
+        }
+
+        const response = await fetch(`${baseUrl}${url}`, options);
 
         if (response.ok) {
-            return { success: true, data: await response.json() };
+            const data = await response.json();
+            return { success: true, data };
         } else {
-            return { success: false, error: 'Failed to fetch data' };
+            // Parse the error response
+            let errorData;
+            try {
+                errorData = await response.json();
+            } catch (e) {
+                errorData = { 
+                    title: response.statusText,
+                    status: response.status
+                };
+            }
+            
+            return { 
+                success: false, 
+                error: errorData,
+                status: response.status
+            };
         }
     } catch (error) {
-        return { success: false, error: 'Network error' };
+        console.error('API Request failed:', error);
+        return { 
+            success: false, 
+            error: { 
+                title: 'Network error',
+                status: 0
+            }
+        };
     }
 };
 

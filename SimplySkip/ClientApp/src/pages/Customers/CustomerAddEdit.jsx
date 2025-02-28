@@ -70,13 +70,20 @@ function CustomerAddEdit() {
     };
 
     const handleSubmitCustomer = async () => {
+        // Reset error states
+        setFirstNameError(false);
+        setLastNameError(false);
+        setAddressError(false);
+        setPhoneError(false);
+        setEmailError(false);
+    
         if (!isValidEmail && email !== null && email.trim() !== "") {
             setSnackbarMessage("Η μορφἠ του email είναι λανθασμένη.");
             setEmailError(true);
             setShowSnackbar(true);
             return; // Stop further execution if email is not valid
         }
-
+    
         if (isEdit) {
             const url = `/customer/${id}`;
             const method = 'PUT';
@@ -90,28 +97,34 @@ function CustomerAddEdit() {
                 lastUpdated: new Date(new Date()),
                 deletedOn: deletedOn
             };
-
-            const { success } = await handleHttpRequest(url, method, body);
-
-            if (success) {
+    
+            const response = await handleHttpRequest(url, method, body);
+    
+            if (response.success) {
                 handleAddAuditLogEntry(`Επεξεργασἰα πελἀτη ${lastName}, ${firstName}.`);
                 handleCloseAddEditDialog();
                 handleShowSuccess();
-
+    
                 if (previousAddress !== address)
                     handleFutureBookingAddress();
             } else {
                 handleCloseAddEditDialog();
-                if (!firstName || !lastName || !address || !phone) {
-                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
-                    setFirstNameError(true);
-                    setLastNameError(true);
-                    setAddressError(true);
+                
+                // Check for duplicate phone number error
+                if (response.error && response.error.status === 400 && 
+                    response.error.title === "Customer with this phone number already exists") {
+                    setSnackbarMessage('Υπάρχει ήδη πελάτης με αυτό το τηλέφωνο.');
                     setPhoneError(true);
+                } else if (!firstName || !lastName || !address || !phone) {
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
+                    setFirstNameError(!firstName);
+                    setLastNameError(!lastName);
+                    setAddressError(!address);
+                    setPhoneError(!phone);
                 } else {
-                    setSnackbarMessage('Failed to add booking.');
+                    setSnackbarMessage('Αποτυχία επεξεργασίας πελάτη.');
                 }
-
+    
                 setShowSnackbar(true);
             }
         } else {
@@ -128,29 +141,35 @@ function CustomerAddEdit() {
                 lastUpdated: new Date(new Date()),
                 deletedOn: new Date(new Date())
             };
-
-            const { success } = await handleHttpRequest(url, method, body);
-
-            if (success) {
+    
+            const response = await handleHttpRequest(url, method, body);
+    
+            if (response.success) {
                 handleAddAuditLogEntry(`Αποθὐκευση πελἀτη ${lastName}, ${firstName}.`);
                 handleCloseAddEditDialog();
                 handleShowSuccess();
             } else {
                 handleCloseAddEditDialog();
-                if (!firstName || !lastName || !address || !phone) {
-                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
-                    setFirstNameError(true);
-                    setLastNameError(true);
-                    setAddressError(true);
+                
+                // Check for duplicate phone number error
+                if (response.error && response.error.status === 400 && 
+                    response.error.title === "Customer with this phone number already exists") {
+                    setSnackbarMessage('Υπάρχει ήδη πελάτης με αυτό το τηλέφωνο.');
                     setPhoneError(true);
+                } else if (!firstName || !lastName || !address || !phone) {
+                    setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
+                    setFirstNameError(!firstName);
+                    setLastNameError(!lastName);
+                    setAddressError(!address);
+                    setPhoneError(!phone);
                 } else {
-                    setSnackbarMessage('Failed to add booking.');
+                    setSnackbarMessage('Αποτυχία προσθήκης πελάτη.');
                 }
-
+    
                 setShowSnackbar(true);
             }
         }
-    }
+    };
 
     const handleOkAndCancel = () => {
         navigate('/Customers');
