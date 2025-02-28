@@ -269,5 +269,87 @@ namespace SimplySkip.Tests.Customers
                 Assert.Equal("First", result.Data.Items[2].FirstName);
             }
         }
+
+        [Fact]
+        public async Task CreateCustomer_DuplicatePhoneNumber_Fails()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var service = new CustomerService(dbContext);
+                var existingPhoneNumber = "23847238"; // Tony Soprano's phone from seed data
+
+                var newCustomer = new Models.Customer
+                {
+                    Id = 4,
+                    FirstName = "Christopher",
+                    LastName = "Moltisanti",
+                    Address = "New Jersey",
+                    Phone = existingPhoneNumber, // Duplicate phone number
+                    Email = "cmoltisanti@gmail.com"
+                };
+
+                // Act
+                var result = await service.CreateCustomer(newCustomer);
+
+                // Assert
+                Assert.False(result.IsSuccess);
+                Assert.Equal(400, result.ErrorCode);
+                Assert.Contains("Customer with this phone number already exists", result.ErrorMessage);
+                Assert.Null(result.Data);
+
+                // Verify the customer wasn't added to database
+                var customerInDb = await dbContext.Customers.FindAsync(newCustomer.Id);
+                Assert.Null(customerInDb);
+            }
+        }
+
+        [Fact]
+        public async Task CreateCustomer_UniquePhoneNumber_Succeeds()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var service = new CustomerService(dbContext);
+
+                var newCustomer = new Models.Customer
+                {
+                    Id = 4,
+                    FirstName = "Christopher",
+                    LastName = "Moltisanti",
+                    Address = "New Jersey",
+                    Phone = "98765432", // Unique phone number
+                    Email = "cmoltisanti@gmail.com"
+                };
+
+                // Act
+                var result = await service.CreateCustomer(newCustomer);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(0, result.ErrorCode);
+                Assert.Null(result.ErrorMessage);
+                Assert.Equal(newCustomer.Id, result.Data.Id);
+                Assert.Equal(newCustomer.Phone, result.Data.Phone);
+
+                // Verify customer was actually added to the database
+                var savedCustomer = await dbContext.Customers.FindAsync(newCustomer.Id);
+                Assert.NotNull(savedCustomer);
+                Assert.Equal(newCustomer.Phone, savedCustomer.Phone);
+            }
+        }
     }
 }

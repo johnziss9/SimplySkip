@@ -81,12 +81,19 @@ namespace SimplySkip.Services
 
         public async Task<Response<Customer>> CreateCustomer(Customer customer)
         {
+            // Validate customer object for required fields and other validations
             var validationContext = new ValidationContext(customer, serviceProvider: null, items: null);
             var validationResults = new List<ValidationResult>();
+
             if (!Validator.TryValidateObject(customer, validationContext, validationResults, validateAllProperties: true))
             {
                 var errorMessages = validationResults.Select(vr => vr.ErrorMessage).ToList();
                 return Response<Customer>.Fail(errorMessages);
+            }
+
+            if (_ssDbContext.Customers.Any(c => c.Phone == customer.Phone))
+            {
+                return Response<Customer>.Fail(400, "Customer with this phone number already exists");
             }
 
             _ssDbContext.Customers.Add(customer);
