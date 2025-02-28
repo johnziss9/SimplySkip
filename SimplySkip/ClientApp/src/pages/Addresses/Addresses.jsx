@@ -16,6 +16,7 @@ function Addresses() {
 
     const [addressesWithCounts, setAddressesWithCounts] = useState([]);
     const [customer, setCustomer] = useState({});
+    const [totalBookings, setTotalBookings] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
@@ -37,6 +38,7 @@ function Addresses() {
             const { success, data } = await handleHttpRequest(url, method);
 
             if (success) {
+                calculateTotalBookings(data);
                 setAddressesWithCounts(data);
             } else {
                 setSnackbarMessage('Failed to load customer addresses.');
@@ -77,18 +79,24 @@ function Addresses() {
         }
     };
 
+    const calculateTotalBookings = (addressesData) => {
+        // Iterates through the addresses data and calculates the total bookings for all addresses.
+        const total = addressesData.reduce((sum, item) => sum + item.count, 0);
+        setTotalBookings(total);
+    };
+
     const navigateToAddressBookings = (address) => {
-        navigate(`/Customer/${id}/Bookings`, { 
+        navigate(`/Customer/${id}/Bookings`, {
             state: { filterAddress: address } // Pass the address to in order to filter bookings in CustomerBookings component.
         });
     };
 
     const handleBackToCustomer = () => {
         // Navigate back to the Customers page with state indicating to open the modal
-        navigate('/Customers', { 
-            state: { 
+        navigate('/Customers', {
+            state: {
                 openCustomerModal: true,
-                customerId: id 
+                customerId: id
             }
         });
     };
@@ -98,22 +106,22 @@ function Addresses() {
             <CustomNavbar currentPage={'Διευθύνσεις'} />
             <div className='addresses-container'>
                 <div className="addresses-header">
-                    <IconButton 
+                    <IconButton
                         onClick={handleBackToCustomer}
-                        sx={{ 
-                            color: '#006d77', 
+                        sx={{
+                            color: '#006d77',
                             marginRight: '10px',
-                            '&:hover': { 
-                                backgroundColor: 'rgba(0, 109, 119, 0.1)' 
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 109, 119, 0.1)'
                             }
                         }}
                     >
                         <ArrowBackIcon />
                     </IconButton>
-                    <Typography 
-                        sx={{ 
-                            color: '#006d77', 
-                            fontSize: '20px', 
+                    <Typography
+                        sx={{
+                            color: '#006d77',
+                            fontSize: '20px',
                             fontWeight: '500'
                         }}
                     >
@@ -121,24 +129,27 @@ function Addresses() {
                     </Typography>
                 </div>
                 <div className="addresses-section">
+                    <Typography sx={{ marginBottom: '10px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                        {`Σύνολο Κρατήσεων για όλες τις διευθύνσεις: ${totalBookings}`}
+                    </Typography>
                     {isLoading ? (
                         <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%' }}>
                             <CircularProgress size={40} sx={{ color: '#006d77' }} />
                         </div>
-                    ) :   
-                    Array.isArray(addressesWithCounts) && addressesWithCounts.length > 0 ? addressesWithCounts
-                        .sort((a, b) => a.address.localeCompare(b.address))
-                        .map((item, index) => (
-                            <AddressCard
-                                key={index}
-                                address={item.address}
-                                bookingCount={item.count}
-                                onClick={() => navigateToAddressBookings(item.address)}
-                            />
-                    )) : null}
+                    ) :
+                        Array.isArray(addressesWithCounts) && addressesWithCounts.length > 0 ? addressesWithCounts
+                            .sort((a, b) => a.address.localeCompare(b.address))
+                            .map((item, index) => (
+                                <AddressCard
+                                    key={index}
+                                    address={item.address}
+                                    bookingCount={item.count}
+                                    onClick={() => navigateToAddressBookings(item.address)}
+                                />
+                            )) : null}
                 </div>
             </div>
-            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error' } />
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error'} />
         </>
     );
 }
