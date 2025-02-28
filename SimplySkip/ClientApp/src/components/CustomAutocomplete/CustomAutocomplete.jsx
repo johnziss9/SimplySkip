@@ -80,11 +80,16 @@ function CustomAutocomplete(props) {
                 isNewAddressOption: true 
             };
 
-            if (response && response.success) {            
+            if (response && response.success) {  
+                // Sort addresses alphabetically by address
+                const sortedAddresses = [...(response.data || [])].sort((a, b) => {
+                    return a.address.localeCompare(b.address);
+                });
+
                 // Add the New Address option to the beginning of the array
                 const addressesWithNewOption = [
                     newAddressOption,
-                    ...(response.data || [])
+                    ...sortedAddresses
                 ];
                 setAddresses(addressesWithNewOption);
             } else {
