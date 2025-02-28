@@ -321,6 +321,11 @@ function CustomerBookings() {
                     </div>
                 )}
                 <div className="customer-bookings-section">
+                    {!showFilter && (
+                        <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
+                            {`Σύνολο Κρατήσεων: ${filteredBookings.length}`}
+                        </Typography>
+                    )}
                     {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <CustomerBookingCard
                             key={booking.id}
