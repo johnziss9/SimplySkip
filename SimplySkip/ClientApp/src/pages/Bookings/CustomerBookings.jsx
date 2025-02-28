@@ -28,6 +28,13 @@ function CustomerBookings() {
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+    const [filterCounts, setFilterCounts] = useState({
+        all: 0,
+        active: 0,
+        unpaid: 0,
+        past: 0,
+        cancelled: 0
+    });
 
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
@@ -56,6 +63,14 @@ function CustomerBookings() {
             );
 
             setBookings(filteredData);
+
+            setFilterCounts({
+                all: filteredData.length,
+                active: filteredData.filter(b => !b.returned && !b.cancelled).length,
+                unpaid: filteredData.filter(b => b.returned && !b.paid && !b.cancelled).length,
+                past: filteredData.filter(b => b.returned && b.paid && !b.cancelled).length,
+                cancelled: filteredData.filter(b => b.cancelled).length
+            });
         } else {
             setSnackbarMessage('Failed to load customer bookings.');
             setShowSnackbar(true);
@@ -292,29 +307,33 @@ function CustomerBookings() {
                             onChange={handleRadioChange}
                             row
                         >
-                            <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" />
+                            <FormControlLabel
+                                value="All"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label={`Όλες (${filterCounts.all})`}
+                            />
                             <FormControlLabel
                                 value="Active"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Τρέχουσες"
+                                label={`Τρέχουσες (${filterCounts.active})`}
                                 sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }}
                             />
                             <FormControlLabel
                                 value="Unpaid"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ανεξόφλητες"
+                                label={`Ανεξόφλητες (${filterCounts.unpaid})`}
                                 sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }}
                             />
                             <FormControlLabel
                                 value="Past"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ολοκληρωμένες"
+                                label={`Ολοκληρωμένες (${filterCounts.past})`}
                                 sx={{ display: getPastBookings().length > 0 ? 'inline' : 'none' }}
                             />
                             <FormControlLabel
                                 value="Cancelled"
                                 control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label="Ακυρωμένες"
+                                label={`Ακυρωμένες (${filterCounts.cancelled})`}
                                 sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }}
                             />
                         </RadioGroup>
