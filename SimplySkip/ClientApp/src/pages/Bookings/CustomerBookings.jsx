@@ -24,6 +24,7 @@ function CustomerBookings() {
     const [openViewBooking, setOpenViewBooking] = useState(false);
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
+    const [showFilter, setShowFilter] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
@@ -42,18 +43,18 @@ function CustomerBookings() {
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             // Store all bookings in a variable first
             const allBookings = data;
-            
+
             // Reset any previous filters (radio buttons)
             setSelectedValue('All');
-                
+
             // Filter bookings by address
-            const filteredData = allBookings.filter(booking => 
+            const filteredData = allBookings.filter(booking =>
                 booking.address.replace(/\n/g, ', ') === filterAddress.replace(/\n/g, ', ')
             );
-            
+
             setBookings(filteredData);
         } else {
             setSnackbarMessage('Failed to load customer bookings.');
@@ -67,7 +68,7 @@ function CustomerBookings() {
 
         const { success, data } = await handleHttpRequest(url, method);
 
-        if (success) {            
+        if (success) {
             setCustomer(data);
         } else {
             setSnackbarMessage('Failed to load customer.');
@@ -98,10 +99,10 @@ function CustomerBookings() {
         if (success) {
             const url = `/skip/${booking.skipId}`;
             const method = 'GET';
-    
+
             const { success, data } = await handleHttpRequest(url, method);
-    
-            if (success) {            
+
+            if (success) {
                 handleAddAuditLogEntry(`Ακὐρωση κρἀτησης για τον πελἀτη ${customer.lastName}, ${customer.firstName}.`);
                 const url = `/skip/${data.id}`;
                 const method = 'PUT';
@@ -118,22 +119,22 @@ function CustomerBookings() {
 
                 const { success } = await handleHttpRequest(url, method, body);
 
-                if (success) {            
-                    setSnackbarMessage(`Η κράτηση ακυρώθηκε. Το Skip ${data.name} είναι τώρα διαθέσιμο.`); 
-                    setSnackbarSuccess(true); 
+                if (success) {
+                    setSnackbarMessage(`Η κράτηση ακυρώθηκε. Το Skip ${data.name} είναι τώρα διαθέσιμο.`);
+                    setSnackbarSuccess(true);
                     setShowSnackbar(true);
                 } else {
-                    setSnackbarMessage('Failed to update skip availability.'); 
+                    setSnackbarMessage('Failed to update skip availability.');
                     setShowSnackbar(true);
                 }
             } else {
-                setSnackbarMessage('Failed to find skip associated with this booking.'); 
+                setSnackbarMessage('Failed to find skip associated with this booking.');
                 setShowSnackbar(true);
             }
 
             handleShowCancelSuccess();
         } else {
-            setSnackbarMessage('Failed to set booking to cancelled.'); 
+            setSnackbarMessage('Failed to set booking to cancelled.');
             setShowSnackbar(true);
         }
     }
@@ -153,6 +154,10 @@ function CustomerBookings() {
             setSnackbarMessage('Failed to add audit log.');
             setShowSnackbar(true);
         }
+    };
+
+    const handleFilterClick = () => {
+        setShowFilter(!showFilter);
     };
 
     const handleCloseSnackbar = () => {
@@ -236,32 +241,32 @@ function CustomerBookings() {
     }
 
     return (
-        <>  
-            <CustomNavbar 
+        <>
+            <CustomNavbar
                 currentPage={`Κρατἠσεις για ${customer.firstName} ${customer.lastName}`}
-                addNewClick={'/Booking'} 
-                customerId={customer.id} 
+                addNewClick={'/Booking'}
+                customerId={customer.id}
                 addNewSource="customer-bookings"
                 filterAddress={filterAddress}
             />
             <div className='customer-bookings-container'>
                 <div className="customer-bookings-header">
-                    <IconButton 
+                    <IconButton
                         onClick={handleBackToAddresses}
-                        sx={{ 
-                            color: '#006d77', 
+                        sx={{
+                            color: '#006d77',
                             marginRight: '10px',
-                            '&:hover': { 
-                                backgroundColor: 'rgba(0, 109, 119, 0.1)' 
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 109, 119, 0.1)'
                             }
                         }}
                     >
                         <ArrowBackIcon />
                     </IconButton>
-                    <Typography 
-                        sx={{ 
-                            color: '#006d77', 
-                            fontSize: '20px', 
+                    <Typography
+                        sx={{
+                            color: '#006d77',
+                            fontSize: '20px',
                             fontWeight: '500'
                         }}
                     >
@@ -269,13 +274,52 @@ function CustomerBookings() {
                     </Typography>
                 </div>
 
-                <RadioGroup sx={{ marginTop: '20px', display: filteredBookings.length > 0 ? 'flex' : 'none', width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }} value={selectedValue} onChange={handleRadioChange} row>
-                    <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" sx={{ display: 'inline' }} />
-                    <FormControlLabel value="Active" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Τρέχουσες" sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Unpaid" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ανεξόφλητες" sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Past" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ολοκληρωμένες" sx={{ display: getPastBookings().length > 0 ? 'inline' : 'none' }} />
-                    <FormControlLabel value="Cancelled" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Ακυρωμένες" sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }} />
-                </RadioGroup>
+                {filteredBookings.length > 0 && (
+                    <CustomButton
+                        backgroundColor="#006d77"
+                        buttonName="ΦΙΛΤΡΟ"
+                        width="100px"
+                        height="45px"
+                        margin="20px 0 0 0"
+                        onClick={handleFilterClick}
+                    />
+                )}
+                {showFilter && (
+                    <div style={{ marginTop: '10px' }}>
+                        <RadioGroup
+                            sx={{ width: radioButtonsWidth ? '300px' : '455px', justifyContent: 'center' }}
+                            value={selectedValue}
+                            onChange={handleRadioChange}
+                            row
+                        >
+                            <FormControlLabel value="All" control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />} label="Όλες" />
+                            <FormControlLabel
+                                value="Active"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Τρέχουσες"
+                                sx={{ display: getActiveBookings().length > 0 ? 'inline' : 'none' }}
+                            />
+                            <FormControlLabel
+                                value="Unpaid"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Ανεξόφλητες"
+                                sx={{ display: getUnpaidBookings().length > 0 ? 'inline' : 'none' }}
+                            />
+                            <FormControlLabel
+                                value="Past"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Ολοκληρωμένες"
+                                sx={{ display: getPastBookings().length > 0 ? 'inline' : 'none' }}
+                            />
+                            <FormControlLabel
+                                value="Cancelled"
+                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                                label="Ακυρωμένες"
+                                sx={{ display: getCancelledBookings().length > 0 ? 'inline' : 'none' }}
+                            />
+                        </RadioGroup>
+                    </div>
+                )}
                 <div className="customer-bookings-section">
                     {Array.isArray(filteredBookings) && filteredBookings.length > 0 ? filteredBookings.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((booking) => (
                         <CustomerBookingCard
@@ -288,7 +332,7 @@ function CustomerBookings() {
                                         ? "10px solid red"
                                         : !booking.cancelled && booking.returned && booking.paid // past
                                             ? "10px solid grey"
-                                            : "10px solid white"}                          
+                                            : "10px solid white"}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
                             returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
                             address={booking.address}
@@ -374,7 +418,7 @@ function CustomerBookings() {
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleCloseCancelSuccess} />
                 </DialogActions>
             </Dialog>
-            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error' } />
+            <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity={snackbarSuccess ? 'success' : 'error'} />
         </>
     );
 }
