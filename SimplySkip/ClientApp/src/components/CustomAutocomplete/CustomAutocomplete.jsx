@@ -51,7 +51,11 @@ function CustomAutocomplete(props) {
         const { success, data } = await handleHttpRequest(url, method);
 
         if (success) {            
-            setSkips(data);
+            const sortedSkips = [...data].sort((a, b) => {
+                return a.name.localeCompare(b.name);
+            });
+            
+            setSkips(sortedSkips);
         } else {
             setSnackbarMessage('Failed to load skips.');
             setShowSnackbar(true);
