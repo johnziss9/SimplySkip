@@ -44,7 +44,7 @@ namespace SimplySkip.Services
             {
                 var counts = new SkipCounts
                 {
-                    All = await _ssDbContext.Skips.CountAsync(),
+                    All = await _ssDbContext.Skips.CountAsync(s => !s.Deleted),
                     Rented = await _ssDbContext.Skips.CountAsync(s => s.Rented && !s.Deleted),
                     Available = await _ssDbContext.Skips.CountAsync(s => !s.Rented && !s.Deleted)
                 };
