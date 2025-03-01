@@ -55,18 +55,18 @@ function CustomerAddEdit() {
         setPhone(numericValue);
     };
 
+    const validateEmail = (email) => {
+        if (!email || email.trim() === "") {
+            return true;
+        }
+        
+        return /^[a-zA-Z0-9._-]+@[^\s@]+\.[^\s@]+$/.test(email);
+    };
+
     const handleEmailInput = (event) => {
         const newEmail = event.target.value;
         setEmail(newEmail);
-
-        // Check if the email is not blank before validation
-        if (newEmail.trim() !== "") {
-            const isValid = /^[a-zA-Z0-9._-]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
-            setIsValidEmail(isValid);
-        } else {
-            // Reset the email validation if the email is blank
-            setIsValidEmail(true);
-        }
+        setIsValidEmail(validateEmail(newEmail));
     };
 
     const handleSubmitCustomer = async () => {
@@ -190,6 +190,7 @@ function CustomerAddEdit() {
             setAddress(data.address.replace(/, /g, '\n'));
             setPreviousAddress(data.address);
             setEmail(data.email);
+            setIsValidEmail(validateEmail(data.email));
             setCreatedOn(new Date(new Date(data.createdOn)));
             setDeletedOn(new Date(new Date(data.deletedOn)));
         } else {
