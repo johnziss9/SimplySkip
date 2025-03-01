@@ -61,7 +61,7 @@ function CustomerAddEdit() {
 
         // Check if the email is not blank before validation
         if (newEmail.trim() !== "") {
-            const isValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
+            const isValid = /^[a-zA-Z0-9._-]+@[^\s@]+\.[^\s@]+$/.test(newEmail);
             setIsValidEmail(isValid);
         } else {
             // Reset the email validation if the email is blank
