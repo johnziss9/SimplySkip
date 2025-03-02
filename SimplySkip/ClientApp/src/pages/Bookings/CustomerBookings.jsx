@@ -360,7 +360,7 @@ function CustomerBookings() {
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
                             returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
                             address={booking.address}
-                            onClickView={() => handleOpenViewBooking(booking)}
+                            onClick={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
                             onClickCancel={() => handleShowCancelDialog(booking)}
                             disabledEditButton={(booking.returned && booking.paid) || booking.cancelled}

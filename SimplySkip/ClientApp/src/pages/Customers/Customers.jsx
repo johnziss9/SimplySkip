@@ -298,7 +298,7 @@ function Customers() {
                                     lastName={customer.lastName}
                                     firstName={customer.firstName}
                                     phone={customer.phone}
-                                    onClickView={() => handleOpenViewCustomer(customer)}
+                                    onClick={() => handleOpenViewCustomer(customer)}
                                     onClickEdit={() => handleEditClick(customer.id)}
                                     onClickDelete={() => handleCheckDeleteCustomer(customer)}
                                 />
