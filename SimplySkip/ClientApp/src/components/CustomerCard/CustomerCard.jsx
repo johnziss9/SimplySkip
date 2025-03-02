@@ -3,14 +3,14 @@ import { Card, Collapse, IconButton, Typography } from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
-import VisibilityIcon from '@mui/icons-material/Visibility';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 
 function CustomerCard(props) {
     const [expanded, setExpanded] = useState(false);
 
-    const handleExpand = () => {
+    const handleExpand = (e) => {
+        e.stopPropagation(); // Makes sure the icon is opening the modal and not navigating user to the address page
         setExpanded(!expanded);
     };
 
@@ -37,8 +37,11 @@ function CustomerCard(props) {
             maxWidth: 275,
             backgroundColor: '#fff',
             borderTop: props.statusBorder,
-            margin: '15px'
-        }}>
+            margin: '15px',
+            cursor: props.onClick ? 'pointer' : 'default'
+        }}
+        onClick={props.onClick}
+        >
             <CardContent sx={{ paddingBottom: '17px !important' }}>
                 <UppercaseWithoutDiacritics lastName={props.lastName} />
                 <Typography variant="body2" sx={{ fontSize: '19px', margin: '5px' }} >
@@ -51,9 +54,6 @@ function CustomerCard(props) {
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
                 <Collapse in={expanded}>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickView} >
-                        <VisibilityIcon />
-                    </IconButton>
                     <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
                         <EditIcon />
                     </IconButton>
