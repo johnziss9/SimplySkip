@@ -20,6 +20,7 @@ function CustomerBookings() {
     const [bookings, setBookings] = useState([]);
     const [booking, setBooking] = useState({});
     const [customer, setCustomer] = useState({});
+    const [skipNames, setSkipNames] = useState({});
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
     const [openViewBooking, setOpenViewBooking] = useState(false);
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
@@ -63,6 +64,8 @@ function CustomerBookings() {
             );
 
             setBookings(filteredData);
+
+            handleGetSkipNamesForBookings(filteredData);
 
             setFilterCounts({
                 all: filteredData.length,
@@ -169,6 +172,28 @@ function CustomerBookings() {
             setSnackbarMessage('Failed to add audit log.');
             setShowSnackbar(true);
         }
+    };
+
+    const handleGetSkipNamesForBookings = async (bookingsArray) => {
+        const uniqueSkipIds = [...new Set(bookingsArray.map(booking => booking.skipId))];
+        
+        const skipNamesMapping = {};
+        
+        for (const skipId of uniqueSkipIds) {
+            try {
+                const url = `/skip/${skipId}`;
+                const method = 'GET';
+                const { success, data } = await handleHttpRequest(url, method);
+                
+                if (success) {
+                    skipNamesMapping[skipId] = data.name;
+                }
+            } catch (error) {
+                console.error(`Error fetching skip ${skipId}:`, error);
+            }
+        }
+        
+        setSkipNames(skipNamesMapping);
     };
 
     const handleFilterClick = () => {
@@ -359,7 +384,7 @@ function CustomerBookings() {
                                             : "10px solid white"}
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
                             returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
-                            address={booking.address}
+                            skipName={skipNames[booking.skipId]}
                             onClick={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
                             onClickCancel={() => handleShowCancelDialog(booking)}
@@ -397,7 +422,7 @@ function CustomerBookings() {
                         Κρἀτηση
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Skip:</FormLabel> {booking.skipId}
+                        <FormLabel>Skip:</FormLabel> {skipNames[booking.skipId]}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Διεὐθυνση:</FormLabel> {booking.address}

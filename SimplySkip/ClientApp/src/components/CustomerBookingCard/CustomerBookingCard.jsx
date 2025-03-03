@@ -33,7 +33,7 @@ function CustomerBookingCard(props) {
                     {props.returnDateOrDays}
                 </Typography>
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.address}
+                    {props.skipName}
                 </Typography>
                 <IconButton onClick={handleExpand} sx={{ padding: 0 }} >
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
