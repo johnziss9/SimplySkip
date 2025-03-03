@@ -1,4 +1,3 @@
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SimplySkip.Models;
 
@@ -18,5 +17,7 @@ namespace SimplySkip
         public DbSet<Skip> Skips { get; set; }
 
         public DbSet<AuditLog> AuditLogs { get; set; }
+
+        public DbSet<Update> Updates { get; set; }
     }
 }
