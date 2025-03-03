@@ -5,7 +5,7 @@ import NotificationsIcon from '@mui/icons-material/Notifications';
 import CustomButton from '../CustomButton/CustomButton';
 import handleHttpRequest from "../../api/api";
 
-function UpdatesAccordion({ showDialog, setShowDialog, isButton = true }) {
+function UpdatesButton({ showDialog, setShowDialog, isButton = true }) {
     const [updateHistory, setUpdateHistory] = useState([]);
     const [expanded, setExpanded] = useState('panel0');
     const [loading, setLoading] = useState(false);
@@ -149,4 +149,4 @@ function UpdatesAccordion({ showDialog, setShowDialog, isButton = true }) {
     );
 }
 
-export default UpdatesAccordion;
+export default UpdatesButton;
