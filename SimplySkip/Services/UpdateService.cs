@@ -16,6 +16,8 @@ namespace SimplySkip.Services
 
         public async Task<Response<Update>> CreateUpdate(Update update)
         {
+            update.Timestamp = DateTime.UtcNow;
+
             _ssDbContext.Updates.Add(update);
             await _ssDbContext.SaveChangesAsync();
 
