@@ -14,6 +14,16 @@ function CustomerCard(props) {
         setExpanded(!expanded);
     };
 
+    const handleEdit = (e) => {
+        e.stopPropagation();
+        props.onClickEdit();
+    };
+
+    const handleDelete = (e) => {
+        e.stopPropagation();
+        props.onClickDelete();
+    };
+
     // Function to remove diacritics from Greek text
     const removeDiacritics = (text) => {
         return text.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
@@ -54,10 +64,10 @@ function CustomerCard(props) {
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
                 <Collapse in={expanded}>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={handleEdit} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickDelete} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={handleDelete} >
                         <DeleteIcon />
                     </IconButton>
                 </Collapse>

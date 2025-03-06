@@ -14,6 +14,16 @@ function CustomerBookingCard(props) {
         setExpanded(!expanded);
     };
 
+    const handleEdit = (e) => {
+        e.stopPropagation();
+        props.onClickEdit();
+    };
+
+    const handleCancel = (e) => {
+        e.stopPropagation();
+        props.onClickCancel();
+    };
+
     return (
         <Card sx={{
             minWidth: 275,
@@ -39,10 +49,10 @@ function CustomerBookingCard(props) {
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
                 <Collapse in={expanded}>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} disabled={props.disabledEditButton}>
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={handleEdit} disabled={props.disabledEditButton}>
                         <EditIcon />
                     </IconButton>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickCancel} disabled={props.disabledCancelButton}>
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={handleCancel} disabled={props.disabledCancelButton}>
                         <DoNotDisturbIcon />
                     </IconButton>
                 </Collapse>
