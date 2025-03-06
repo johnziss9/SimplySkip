@@ -13,6 +13,16 @@ function SkipCard(props) {
         setExpanded(!expanded);
     };
 
+    const handleEdit = (e) => {
+        e.stopPropagation();
+        props.onClickEdit();
+    };
+
+    const handleDelete = (e) => {
+        e.stopPropagation();
+        props.onClickDelete();
+    };
+
     return (
         <Card sx={{
             minWidth: 275,
@@ -35,10 +45,10 @@ function SkipCard(props) {
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
                 <Collapse in={expanded}>
-                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickEdit} >
+                    <IconButton sx={{ padding: '7px 7px 0 7px' }} onClick={handleEdit} >
                         <EditIcon />
                     </IconButton>
-                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} onClick={props.onClickDelete} disabled={props.disabledDeleteButton} >
+                    <IconButton  sx={{ padding: '7px 7px 0 7px' }} onClick={handleDelete} disabled={props.disabledDeleteButton} >
                         <DeleteIcon  />
                     </IconButton>
                 </Collapse>
