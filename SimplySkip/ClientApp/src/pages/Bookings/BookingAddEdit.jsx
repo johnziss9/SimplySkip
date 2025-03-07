@@ -66,6 +66,12 @@ function BookingAddEdit() {
             localStorage.clear();
         }
 
+        // Get the filter address from session storage if it exists and set it as the address
+        const filterAddress = sessionStorage.getItem('FilterAddress');
+        if (filterAddress) {
+            setAddress(filterAddress.replace(/, /g, '\n'));
+        }
+
         handleFetchAvailableSkips();
         // eslint-disable-next-line
     }, [id]);
