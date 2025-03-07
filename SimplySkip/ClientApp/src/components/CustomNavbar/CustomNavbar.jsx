@@ -60,8 +60,15 @@ function CustomNavbar(props) {
                             <Fab sx={{ background: '#edf6f9', width: '40px', height: '40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
                                 <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
                             </Fab>
-                    ) : null}
-
+                        ) : null
+                    }
+                    {
+                        props.currentPage === 'Διευθύνσεις' && props.totalBookings === 0 ? (
+                            <Fab sx={{ background: '#edf6f9', width: '40px', height: '40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
+                                <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
+                            </Fab>
+                        ) : null
+                    }
                     {
                         props.currentPage === 'Πελἀτες' || 
                         props.currentPage === 'Κρατἠσεις' || 
