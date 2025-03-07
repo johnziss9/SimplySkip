@@ -103,7 +103,7 @@ function Addresses() {
 
     return (
         <>
-            <CustomNavbar currentPage={'Διευθύνσεις'} />
+            <CustomNavbar currentPage={'Διευθύνσεις'} totalBookings={totalBookings} customerId={id} addNewClick="/Booking" addNewSource="addresses" />
             <div className='addresses-container'>
                 <div className="addresses-header">
                     <IconButton

@@ -379,6 +379,8 @@ function BookingAddEdit() {
             navigate(`/Customer/${customer.id}/Bookings`, { 
                 state: { filterAddress: filterAddress } 
             });
+        } else if (addNewSource === 'addresses') {
+            navigate(`/Addresses/${customer.id}`);
         } else {
             navigate('/Bookings');
         }
