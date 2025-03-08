@@ -18,12 +18,6 @@ namespace SimplySkip.Services
         {
             var customers = await _ssDbContext.Customers.Where(c => c.Deleted == false).ToListAsync();
 
-            foreach (var customer in customers)
-            {
-                if (customer.Address != null)
-                    customer.Address = customer.Address.Replace(", ", "\n");
-            }
-
             return Response<List<Customer>>.Success(customers);
         }
 
@@ -56,13 +50,6 @@ namespace SimplySkip.Services
                     .Skip(skip)
                     .Take(pageSize)
                     .ToListAsync();
-
-                // Format addresses
-                foreach (var customer in customers)
-                {
-                    if (customer.Address != null)
-                        customer.Address = customer.Address.Replace(", ", "\n");
-                }
 
                 var paginatedList = new PaginatedList<Customer>(
                     customers,
@@ -99,9 +86,6 @@ namespace SimplySkip.Services
             _ssDbContext.Customers.Add(customer);
             await _ssDbContext.SaveChangesAsync();
 
-            if (customer.Address != null)
-                customer.Address = customer.Address.Replace(", ", "\n");
-
             return Response<Customer>.Success(customer);
         }
 
@@ -113,9 +97,6 @@ namespace SimplySkip.Services
             {
                 return Response<Customer>.Fail(404, "Customer Not Found");
             }
-
-            if (customer.Address != null)
-                customer.Address = customer.Address.Replace(", ", "\n");
 
             return Response<Customer>.Success(customer);
         }
@@ -137,11 +118,6 @@ namespace SimplySkip.Services
             if (updatedCustomer.LastName != null && updatedCustomer.LastName != customer.LastName)
             {
                 customer.LastName = updatedCustomer.LastName;
-            }
-
-            if (updatedCustomer.Address != null && updatedCustomer.Address != customer.Address)
-            {
-                customer.Address = updatedCustomer.Address.Replace("\n", ", ");
             }
 
             if (updatedCustomer.Phone != null && updatedCustomer.Phone != customer.Phone)

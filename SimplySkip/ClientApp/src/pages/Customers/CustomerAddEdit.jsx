@@ -4,7 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomButton from "../../components/CustomButton/CustomButton";
-import { Dialog, DialogActions, DialogContent, DialogTitle, useMediaQuery } from "@mui/material";
+import { Dialog, DialogActions, DialogTitle, useMediaQuery } from "@mui/material";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
 
@@ -16,7 +16,6 @@ function CustomerAddEdit() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [phone, setPhone] = useState('');
-    const [address, setAddress] = useState('');
     const [email, setEmail] = useState('');
     const [createdOn, setCreatedOn] = useState(new Date());
     const [deletedOn, setDeletedOn] = useState(new Date());
@@ -24,16 +23,13 @@ function CustomerAddEdit() {
     const [isValidEmail, setIsValidEmail] = useState(false);
     const [openSuccess, setOpenSuccess] = useState(false);
     const [openAddEditDialog, setOpenAddEditDialog] = useState(false);
-    const [openBookingsAddressDialog, setOpenBookingsAddressDialog] = useState(false);
     const [isEdit, setIsEdit] = useState(false);
     const [customer, setCustomer] = useState({});
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
-    const [previousAddress, setPreviousAddress] = useState('');
 
     const [firstNameError, setFirstNameError] = useState(false);
     const [lastNameError, setLastNameError] = useState(false);
-    const [addressError, setAddressError] = useState(false);
     const [phoneError, setPhoneError] = useState(false);
     const [emailError, setEmailError] = useState(false);
 
@@ -73,7 +69,6 @@ function CustomerAddEdit() {
         // Reset error states
         setFirstNameError(false);
         setLastNameError(false);
-        setAddressError(false);
         setPhoneError(false);
         setEmailError(false);
     
@@ -92,7 +87,6 @@ function CustomerAddEdit() {
                 lastName: lastName,
                 phone: phone,
                 email: email,
-                address: address.replace(/\n/g, ', '),
                 createdOn: createdOn,
                 lastUpdated: new Date(new Date()),
                 deletedOn: deletedOn
@@ -104,9 +98,6 @@ function CustomerAddEdit() {
                 handleAddAuditLogEntry(`Επεξεργασἰα πελἀτη ${lastName}, ${firstName}.`);
                 handleCloseAddEditDialog();
                 handleShowSuccess();
-    
-                if (previousAddress !== address)
-                    handleFutureBookingAddress();
             } else {
                 handleCloseAddEditDialog();
                 
@@ -115,11 +106,10 @@ function CustomerAddEdit() {
                     response.error.title === "Customer with this phone number already exists") {
                     setSnackbarMessage('Υπάρχει ήδη πελάτης με αυτό το τηλέφωνο.');
                     setPhoneError(true);
-                } else if (!firstName || !lastName || !address || !phone) {
+                } else if (!firstName || !lastName || !phone) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setFirstNameError(!firstName);
                     setLastNameError(!lastName);
-                    setAddressError(!address);
                     setPhoneError(!phone);
                 } else {
                     setSnackbarMessage('Αποτυχία επεξεργασίας πελάτη.');
@@ -135,7 +125,6 @@ function CustomerAddEdit() {
                 lastName: lastName,
                 phone: phone,
                 email: email,
-                address: address.replace(/\n/g, ', '),
                 deleted: false,
                 createdOn: new Date(new Date()),
                 lastUpdated: new Date(new Date()),
@@ -156,11 +145,10 @@ function CustomerAddEdit() {
                     response.error.title === "Customer with this phone number already exists") {
                     setSnackbarMessage('Υπάρχει ήδη πελάτης με αυτό το τηλέφωνο.');
                     setPhoneError(true);
-                } else if (!firstName || !lastName || !address || !phone) {
+                } else if (!firstName || !lastName || !phone) {
                     setSnackbarMessage('Συμπληρώστε τα απαραίτητα πεδία.')
                     setFirstNameError(!firstName);
                     setLastNameError(!lastName);
-                    setAddressError(!address);
                     setPhoneError(!phone);
                 } else {
                     setSnackbarMessage('Αποτυχία προσθήκης πελάτη.');
@@ -187,31 +175,12 @@ function CustomerAddEdit() {
             setFirstName(data.firstName);
             setLastName(data.lastName);
             setPhone(data.phone);
-            setAddress(data.address.replace(/, /g, '\n'));
-            setPreviousAddress(data.address);
             setEmail(data.email);
             setIsValidEmail(validateEmail(data.email));
             setCreatedOn(new Date(new Date(data.createdOn)));
             setDeletedOn(new Date(new Date(data.deletedOn)));
         } else {
             setSnackbarMessage('Failed to load customer.');
-            setShowSnackbar(true);
-        }
-    };
-
-    const handleFutureBookingAddress = async () => {
-        const url = `/booking/customer/${customer.id}`;
-        const method = 'GET';
-
-        const { success, data } = await handleHttpRequest(url, method);
-
-        if (success) {            
-            const futureBookings = data.filter(booking => new Date(booking.hireDate) > new Date());
-
-            if (futureBookings.length > 0)
-                handleShowBookingsAddressDialog()
-        } else {
-            setSnackbarMessage('Failed to load bookings.');
             setShowSnackbar(true);
         }
     };
@@ -233,10 +202,6 @@ function CustomerAddEdit() {
         }
     };
 
-    const handleViewBookings = () => {
-        navigate(`/Customer/${customer.id}/Bookings`);
-    }
-
     const handleCloseSnackbar = () => {
         setShowSnackbar(false);
         setSnackbarMessage('');
@@ -248,9 +213,6 @@ function CustomerAddEdit() {
     const handleShowSuccess = () => setOpenSuccess(true);
     const handleCloseSuccess = () => setOpenSuccess(false);
 
-    const handleShowBookingsAddressDialog = () => setOpenBookingsAddressDialog(true);
-    const handleCloseBookingsAddressDialog = () => setOpenBookingsAddressDialog(false);
-
     return (
         <>
             <CustomNavbar currentPage={'Πληροφορίες Πελάτη'} />
@@ -259,7 +221,6 @@ function CustomerAddEdit() {
                     <CustomTextField label={'Ὀνομα'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setFirstName(e.target.value)} value={firstName} error={firstNameError} />
                     <CustomTextField label={'Επὠνυμο'} variant={'outlined'} required={true} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={e => setLastName(e.target.value)} value={lastName} error={lastNameError} />
                     <CustomTextField label={'Τηλἐφωνο'} variant={'outlined'} margin={'normal'} onChange={handlePhoneInput} value={phone} required={true} width={fieldsWidth ? '300px' : '440px'} error={phoneError} />
-                    <CustomTextField label={'Διεὐθυνση'} variant={'outlined'} margin={'normal'} required={true} multiline={true} rows={4} width={fieldsWidth ? '300px' : '440px'} onChange={e => setAddress(e.target.value)} value={address} error={addressError} />
                     <CustomTextField label={'Email'} variant={'outlined'} margin={'normal'} width={fieldsWidth ? '300px' : '440px'} onChange={(e) => handleEmailInput(e)} value={email} error={emailError} />
                     <div className="customer-add-edit-form-buttons">
                         <CustomButton backgroundColor={"#83c5be"} buttonName={"ΑΚΥΡΩΣΗ"} width={"200px"} height={"50px"} margin={fieldsWidth ? '20px 0' : '20px 10px 0 0'} onClick={handleOkAndCancel} />
@@ -282,18 +243,6 @@ function CustomerAddEdit() {
                 </DialogTitle>
                 <DialogActions>
                     <CustomButton backgroundColor={"#006d77"} buttonName={"Ok"} width={"100px"} height={"45px"} onClick={handleOkAndCancel} />
-                </DialogActions>
-            </Dialog>
-            <Dialog open={openBookingsAddressDialog} onClose={(event, reason) => { if (reason !== 'backdropClick' && reason !== 'escapeKeyDown') { handleCloseBookingsAddressDialog(event, reason) } }}>
-                <DialogTitle sx={{ width: '400px' }}>
-                    Η Διεὐθυνση του Πελάτη Αλλαξε
-                </DialogTitle>
-                <DialogContent>
-                    Βρέθηκαν μελλοντικές κρατήσεις με την ίδια διεύθυνση όπως ο πελάτης. Βεβαιωθείτε ότι αλλάζουν.
-                </DialogContent>
-                <DialogActions>
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΑΡΓΟΤΕΡΑ"} width={"100px"} height={"45px"} onClick={handleCloseBookingsAddressDialog} />
-                    <CustomButton backgroundColor={"#006d77"} buttonName={"ΚΡΑΤΗΣΕΙΣ"} width={"150px"} height={"45px"} onClick={handleViewBookings} />
                 </DialogActions>
             </Dialog>
             <CustomSnackbar open={showSnackbar} onClose={handleCloseSnackbar} onClickIcon={handleCloseSnackbar} content={snackbarMessage} severity="error" />

@@ -452,9 +452,6 @@ function Bookings() {
                         <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
                     </Typography>
                     <hr />
