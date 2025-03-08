@@ -212,7 +212,7 @@ namespace SimplySkip.Tests.Customers
                 await SeedTestData(dbContext);
 
                 var tonyCustomer = await dbContext.Customers.FindAsync(1);
-                
+
                 if (tonyCustomer != null)
                 {
                     tonyCustomer.Deleted = true;
@@ -220,7 +220,7 @@ namespace SimplySkip.Tests.Customers
                 }
 
                 var customerId = 3;
-                var deletedCustomerPhoneNumber = "23847238"; // Tony's phone number
+                var deletedCustomerPhoneNumber = "23847238";
 
                 var controller = new CustomerController(new CustomerService(dbContext));
 
