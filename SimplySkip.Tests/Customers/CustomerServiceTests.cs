@@ -6,9 +6,9 @@ namespace SimplySkip.Tests.Customers
         {
             dbContext.Customers.AddRange(new List<Models.Customer>
                 {
-                    new Models.Customer { Id = 1, FirstName = "Tony", LastName = "Soprano", Address = "New Jersey", Phone = "23847238", Email = "tsoprano@gmail.com" },
-                    new Models.Customer { Id = 2, FirstName = "Carmella", LastName = "Soprano", Address = "New Jersey", Phone = "348756348", Email = "csoprano@gmail.com" },
-                    new Models.Customer { Id = 3, FirstName = "Meadow", LastName = "Soprano", Address = "New Jersey", Phone = "64645646", Email = "msoprano@gmail.com" }
+                    new Models.Customer { Id = 1, FirstName = "Tony", LastName = "Soprano", Phone = "23847238", Email = "tsoprano@gmail.com" },
+                    new Models.Customer { Id = 2, FirstName = "Carmella", LastName = "Soprano", Phone = "348756348", Email = "csoprano@gmail.com" },
+                    new Models.Customer { Id = 3, FirstName = "Meadow", LastName = "Soprano", Phone = "64645646", Email = "msoprano@gmail.com" }
                 });
 
             await dbContext.SaveChangesAsync();
@@ -48,7 +48,7 @@ namespace SimplySkip.Tests.Customers
 
             using (var dbContext = new SSDbContext(options))
             {
-                var newCustomer = new Models.Customer { Id = 4, FirstName = "AJ", LastName = "Soprano", Address = "New Jersey", Phone = "5345345", Email = "ajsoprano@gmail.com" };
+                var newCustomer = new Models.Customer { Id = 4, FirstName = "AJ", LastName = "Soprano", Phone = "5345345", Email = "ajsoprano@gmail.com" };
 
                 var service = new CustomerService(dbContext);
 
@@ -61,7 +61,6 @@ namespace SimplySkip.Tests.Customers
                 Assert.Equal(newCustomer.Id, result.Data.Id);
                 Assert.Equal(newCustomer.FirstName, result.Data.FirstName);
                 Assert.Equal(newCustomer.LastName, result.Data.LastName);
-                Assert.Equal(newCustomer.Address, result.Data.Address);
                 Assert.Equal(newCustomer.Email, result.Data.Email);
                 Assert.Equal(newCustomer.Phone, result.Data.Phone);
             }
@@ -92,7 +91,6 @@ namespace SimplySkip.Tests.Customers
                 Assert.Equal(expectedCustomer?.Id, result.Data.Id);
                 Assert.Equal(expectedCustomer?.FirstName, result.Data.FirstName);
                 Assert.Equal(expectedCustomer?.LastName, result.Data.LastName);
-                Assert.Equal(expectedCustomer?.Address, result.Data.Address);
                 Assert.Equal(expectedCustomer?.Email, result.Data.Email);
                 Assert.Equal(expectedCustomer?.Phone, result.Data.Phone);
             }
@@ -116,7 +114,7 @@ namespace SimplySkip.Tests.Customers
                 var service = new CustomerService(dbContext);
 
                 // Act
-                var customerUpdates = new Models.Customer { Id = 3, FirstName = "Meadow", LastName = "Soprano", Address = "New York", Phone = "64645646", Email = "msoprano@gmail.com" };
+                var customerUpdates = new Models.Customer { Id = 3, FirstName = "Meadow", LastName = "Soprano", Phone = "64645646", Email = "msoprano@gmail.com" };
 
                 var result = await service.UpdateCustomer(updatedCustomerId, customerUpdates);
 
@@ -129,7 +127,6 @@ namespace SimplySkip.Tests.Customers
                     Assert.Equal(updatedCustomer.Id, result.Data.Id);
                     Assert.Equal(updatedCustomer.FirstName, result.Data.FirstName);
                     Assert.Equal(updatedCustomer.LastName, result.Data.LastName);
-                    Assert.Equal(updatedCustomer.Address, result.Data.Address);
                     Assert.Equal(updatedCustomer.Email, result.Data.Email);
                     Assert.Equal(updatedCustomer.Phone, result.Data.Phone);
                 }
@@ -230,7 +227,6 @@ namespace SimplySkip.Tests.Customers
                 Id = 1,
                 FirstName = "First",
                 LastName = "Test",
-                Address = "Address 1",
                 Phone = "1234567890",
                 CreatedOn = now.AddDays(-2)
             },
@@ -239,7 +235,6 @@ namespace SimplySkip.Tests.Customers
                 Id = 2,
                 FirstName = "Second",
                 LastName = "Test",
-                Address = "Address 2",
                 Phone = "2234567890",
                 CreatedOn = now.AddDays(-1)
             },
@@ -248,7 +243,6 @@ namespace SimplySkip.Tests.Customers
                 Id = 3,
                 FirstName = "Third",
                 LastName = "Test",
-                Address = "Address 3",
                 Phone = "3234567890",
                 CreatedOn = now
             }
@@ -290,7 +284,6 @@ namespace SimplySkip.Tests.Customers
                     Id = 4,
                     FirstName = "Christopher",
                     LastName = "Moltisanti",
-                    Address = "New Jersey",
                     Phone = existingPhoneNumber, // Duplicate phone number
                     Email = "cmoltisanti@gmail.com"
                 };
@@ -329,7 +322,6 @@ namespace SimplySkip.Tests.Customers
                     Id = 4,
                     FirstName = "Christopher",
                     LastName = "Moltisanti",
-                    Address = "New Jersey",
                     Phone = "98765432", // Unique phone number
                     Email = "cmoltisanti@gmail.com"
                 };
@@ -372,7 +364,6 @@ namespace SimplySkip.Tests.Customers
                     Id = customerId,
                     FirstName = "Meadow",
                     LastName = "Soprano",
-                    Address = "New York",
                     Phone = existingPhoneNumber, // Phone number that belongs to Tony
                     Email = "msoprano@gmail.com"
                 };
@@ -414,7 +405,6 @@ namespace SimplySkip.Tests.Customers
                     Id = customerId,
                     FirstName = "Meadow",
                     LastName = newLastName,
-                    Address = "New York",
                     Phone = originalPhone,
                     Email = "msoprano@gmail.com"
                 };
@@ -452,7 +442,6 @@ namespace SimplySkip.Tests.Customers
                     Id = customerId,
                     FirstName = "Meadow",
                     LastName = "Soprano",
-                    Address = "New York",
                     Phone = newPhoneNumber,
                     Email = "msoprano@gmail.com"
                 };

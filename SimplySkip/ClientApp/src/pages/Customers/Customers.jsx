@@ -127,7 +127,6 @@ function Customers() {
             lastName: customer.lastName,
             phone: customer.phone,
             email: customer.email,
-            address: customer.address.replace(/\n/g, ', '),
             deleted: true,
             createdOn: customer.createdOn,
             lastUpdated: new Date(new Date()),
@@ -334,17 +333,14 @@ function Customers() {
                         <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                    {/* <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Χρἠστης Αποθἠκευσης:</FormLabel> { }
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Χρἠστης Τελευταίας Επεξἐργασης:</FormLabel> { }
-                    </Typography>
+                    </Typography> */}
                     <Button
                         variant="outlined"
                         sx={{
