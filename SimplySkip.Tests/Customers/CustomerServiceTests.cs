@@ -384,7 +384,6 @@ namespace SimplySkip.Tests.Customers
                 Assert.NotNull(result.Data);
                 Assert.Equal(deletedCustomerPhoneNumber, result.Data.Phone);
 
-                // Verify customer was added to database
                 var customerInDb = await dbContext.Customers.FindAsync(newCustomer.Id);
                 Assert.NotNull(customerInDb);
                 Assert.Equal(deletedCustomerPhoneNumber, customerInDb.Phone);
@@ -458,7 +457,7 @@ namespace SimplySkip.Tests.Customers
                     Id = customerId,
                     FirstName = "Meadow",
                     LastName = "Soprano",
-                    Phone = existingPhoneNumber, // Phone number that belongs to Tony
+                    Phone = existingPhoneNumber,
                     Email = "msoprano@gmail.com"
                 };
 
