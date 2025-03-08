@@ -345,6 +345,99 @@ namespace SimplySkip.Tests.Customers
         }
 
         [Fact]
+        public async Task CreateCustomer_PhoneNumberOfDeletedCustomer_Succeeds()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var tonyCustomer = await dbContext.Customers.FindAsync(1);
+                
+                if (tonyCustomer != null)
+                {
+                    tonyCustomer.Deleted = true;
+                    await dbContext.SaveChangesAsync();
+                }
+
+                var service = new CustomerService(dbContext);
+                var deletedCustomerPhoneNumber = "23847238";
+
+                var newCustomer = new Models.Customer
+                {
+                    Id = 4,
+                    FirstName = "Christopher",
+                    LastName = "Moltisanti",
+                    Phone = deletedCustomerPhoneNumber,
+                    Email = "cmoltisanti@gmail.com"
+                };
+
+                // Act
+                var result = await service.CreateCustomer(newCustomer);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(deletedCustomerPhoneNumber, result.Data.Phone);
+
+                var customerInDb = await dbContext.Customers.FindAsync(newCustomer.Id);
+                Assert.NotNull(customerInDb);
+                Assert.Equal(deletedCustomerPhoneNumber, customerInDb.Phone);
+            }
+        }
+
+        [Fact]
+        public async Task UpdateCustomer_PhoneNumberOfDeletedCustomer_Succeeds()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                await SeedTestData(dbContext);
+
+                var tonyCustomer = await dbContext.Customers.FindAsync(1);
+
+                if (tonyCustomer != null)
+                {
+                    tonyCustomer.Deleted = true;
+                    await dbContext.SaveChangesAsync();
+                }
+
+                var customerId = 3;
+                var deletedCustomerPhoneNumber = "23847238";
+
+                var customerUpdates = new Models.Customer
+                {
+                    Id = customerId,
+                    FirstName = "Meadow",
+                    LastName = "Soprano",
+                    Phone = deletedCustomerPhoneNumber,
+                    Email = "msoprano@gmail.com"
+                };
+
+                var service = new CustomerService(dbContext);
+
+                // Act
+                var result = await service.UpdateCustomer(customerId, customerUpdates);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.NotNull(result.Data);
+                Assert.Equal(deletedCustomerPhoneNumber, result.Data.Phone);
+
+                var updatedCustomer = await dbContext.Customers.FindAsync(customerId);
+                Assert.Equal(deletedCustomerPhoneNumber, updatedCustomer?.Phone);
+            }
+        }
+
+        [Fact]
         public async Task UpdateCustomer_DuplicatePhoneNumber_Fails()
         {
             // Arrange
@@ -364,7 +457,7 @@ namespace SimplySkip.Tests.Customers
                     Id = customerId,
                     FirstName = "Meadow",
                     LastName = "Soprano",
-                    Phone = existingPhoneNumber, // Phone number that belongs to Tony
+                    Phone = existingPhoneNumber,
                     Email = "msoprano@gmail.com"
                 };
 

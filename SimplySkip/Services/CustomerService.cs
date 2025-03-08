@@ -78,7 +78,7 @@ namespace SimplySkip.Services
                 return Response<Customer>.Fail(errorMessages);
             }
 
-            if (_ssDbContext.Customers.Any(c => c.Phone == customer.Phone))
+            if (_ssDbContext.Customers.Any(c => c.Phone == customer.Phone && c.Deleted == false))
             {
                 return Response<Customer>.Fail(400, "Customer with this phone number already exists");
             }
@@ -122,7 +122,7 @@ namespace SimplySkip.Services
 
             if (updatedCustomer.Phone != null && updatedCustomer.Phone != customer.Phone)
             {
-                if (_ssDbContext.Customers.Any(c => c.Phone == updatedCustomer.Phone && c.Id != id))
+                if (_ssDbContext.Customers.Any(c => c.Phone == updatedCustomer.Phone && c.Id != id && c.Deleted == false))
                 {
                     return Response<Customer>.Fail(400, "Customer with this phone number already exists");
                 }
