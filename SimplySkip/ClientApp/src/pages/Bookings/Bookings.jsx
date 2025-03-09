@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
+import UpdatesButton from "../../components/UpdatesButton/UpdatesButton";
 
 function Bookings() {
 
@@ -21,6 +22,7 @@ function Bookings() {
     const [skip, setSkip] = useState({}); // Used for changing skip status
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
+    const [showInitialAnnouncement, setShowInitialAnnouncement] = useState (false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
@@ -41,6 +43,13 @@ function Bookings() {
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
+        const hasSeenAnnouncement = sessionStorage.getItem ('hasSeenAnnouncement');
+
+        if (!hasSeenAnnouncement) {
+            setShowInitialAnnouncement (true);
+            sessionStorage.setItem( 'hasSeenAnnouncement', 'true');
+        }
+
         // Initial load
         handleFetchBookings(1, filter);
 
@@ -343,6 +352,7 @@ function Bookings() {
 
     return (
         <>
+            <UpdatesButton showDialog={showInitialAnnouncement} setShowDialog= {setShowInitialAnnouncement} isButton={false} />
             <CustomNavbar currentPage={'Κρατἠσεις'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
                 {bookings.length > 0 && (
