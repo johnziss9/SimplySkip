@@ -36,6 +36,14 @@ jobs:
           git merge --no-ff staging
           git push origin main
 
+      # Create a tag for this release for easy reference
+      - name: Create Release Tag
+        run: |
+          RELEASE_TAG="release-$(date +%Y%m%d%H%M%S)"
+          git tag $RELEASE_TAG
+          git push origin $RELEASE_TAG
+
+      # Deploy using the new script
       - name: Deploy to Linode Production
         uses: appleboy/ssh-action@master
         with:
@@ -44,7 +52,5 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd SimplySkip-Prod
-            git pull origin main
-            docker compose -f docker-compose.prod.yml down
-            docker compose -f docker-compose.prod.yml up --build -d
+            # Run the deployment script
+            bash /root/deploy-production.sh
