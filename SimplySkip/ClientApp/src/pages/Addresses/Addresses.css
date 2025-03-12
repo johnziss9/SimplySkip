@@ -1,11 +1,11 @@
-.customer-bookings-container {
+.addresses-container {
     display: flex;
     flex-direction: column;
     align-items: center;
     margin-top: 64px;
 }
 
-.customer-bookings-section {
+.addresses-section {
     max-width: 915px;
     margin-top: 10px;
     display: flex;
@@ -13,7 +13,8 @@
     flex-wrap: wrap;
 }
 
-.customer-bookings-header {
+
+.addresses-header {
     display: flex;
     align-items: center;
     width: 100%;

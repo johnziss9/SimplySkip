@@ -314,7 +314,7 @@ function Skips() {
                             statusBorder={skip.rented ? "10px solid red" : "10px solid green"}
                             name={`Skip ${skip.name}`}
                             size={skip.size === 1 ? 'Small' : 'Large'}
-                            onClickView={() => handleOpenViewSkip(skip)}
+                            onClick={() => handleOpenViewSkip(skip)}
                             onClickEdit={() => handleEditClick(skip.id)}
                             onClickDelete={() => handleShowDeleteDialog(skip)}
                             disabledDeleteButton={skip.rented ? true : false}
@@ -402,9 +402,6 @@ function Skips() {
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
-                        </Typography>
-                        <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                            <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
                         </Typography>
                         <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                             <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}

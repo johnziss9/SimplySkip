@@ -28,6 +28,10 @@ function CustomNavbar(props) {
             localStorage.setItem('CustomerId', props.customerId);
 
         sessionStorage.setItem('AddNewSource', props.addNewSource);
+
+        if (props.filterAddress)
+            sessionStorage.setItem('FilterAddress', props.filterAddress);
+        
         navigate(props.addNewClick);
     }
 
@@ -48,19 +52,36 @@ function CustomNavbar(props) {
                     <Typography variant="h5">
                         {props.currentPage}
                     </Typography>
-                    {props.currentPage === 'Πελἀτες' || props.currentPage === 'Κρατἠσεις' || props.currentPage === 'Skips' || (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ?
-                    <>
-                        <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
-                            <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
-                        </Fab>
-                        <UpdatesButton showDialog={showUpdates} setShowDialog={setShowUpdates} />
-                    </>
-                    : null}
+                    {
+                        props.currentPage === 'Πελἀτες' || 
+                        props.currentPage === 'Κρατἠσεις' || 
+                        props.currentPage === 'Skips' || 
+                        (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ? (
+                            <Fab sx={{ background: '#edf6f9', width: '40px', height: '40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
+                                <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
+                            </Fab>
+                        ) : null
+                    }
+                    {
+                        props.currentPage === 'Διευθύνσεις' && props.totalBookings === 0 ? (
+                            <Fab sx={{ background: '#edf6f9', width: '40px', height: '40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleAddNew}>
+                                <AddIcon sx={{ fontSize: '32px', color: '#006d77' }} />
+                            </Fab>
+                        ) : null
+                    }
+                    {
+                        props.currentPage === 'Πελἀτες' || 
+                        props.currentPage === 'Κρατἠσεις' || 
+                        props.currentPage === 'Skips' || 
+                        props.currentPage === 'Διευθύνσεις' || 
+                        (props.currentPage && props.currentPage.includes('Κρατἠσεις για')) ? (
+                            <UpdatesButton showDialog={showUpdates} setShowDialog={setShowUpdates} />
+                    ) : null}
                 </div>
-                <Fab sx={{ background: '#edf6f9', width: '40px', height:'40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleLogout}>
+                <Fab sx={{ background: '#edf6f9', width: '40px', height: '40px', marginLeft: '12px', borderRadius: '100%', fontSize: '12px' }} onClick={handleLogout}>
                     <LogoutIcon sx={{ fontSize: '30px', color: '#006d77' }} />
                 </Fab>
-                
+
             </Toolbar>
             {open && (
                 <div className="menu-container">

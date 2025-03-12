@@ -3,7 +3,7 @@ import './Customers.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import CustomTextField from "../../components/CustomTextField/CustomTextField";
 import CustomerCard from "../../components/CustomerCard/CustomerCard";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, FormLabel, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
@@ -11,6 +11,7 @@ import handleHttpRequest from "../../api/api";
 
 function Customers() {
     const navigate = useNavigate();
+    const location = useLocation();
 
     const [customers, setCustomers] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
@@ -43,6 +44,14 @@ function Customers() {
         // eslint-disable-next-line
     }, []);
 
+    // Check if we need to open a customer modal (coming back from Addresses page)
+    useEffect(() => {
+        if (location.state && location.state.openCustomerModal && location.state.customerId) {
+            handleFetchCustomerById(location.state.customerId);
+        }
+        // eslint-disable-next-line
+    }, [location.state]);
+
     useEffect(() => {
         if (page > 1) { // Only fetch if it's not the initial load
             handleFetchCustomers(page, searchQuery);
@@ -57,6 +66,26 @@ function Customers() {
         }
         // eslint-disable-next-line
     }, [customers]);
+
+    const handleFetchCustomerById = async (customerId) => {
+        try {
+            const url = `/customer/${customerId}`;
+            const method = 'GET';
+
+            const { success, data } = await handleHttpRequest(url, method);
+
+            if (success) {
+                setCustomer(data);
+                setOpenViewCustomer(true);
+            } else {
+                setSnackbarMessage('Failed to load customer details.');
+                setShowSnackbar(true);
+            }
+        } catch (error) {
+            setSnackbarMessage('An error occurred while loading customer details.');
+            setShowSnackbar(true);
+        }
+    };
 
     const handleFetchCustomers = async (currentPage = 1, search = '') => {
         try {
@@ -98,7 +127,6 @@ function Customers() {
             lastName: customer.lastName,
             phone: customer.phone,
             email: customer.email,
-            address: customer.address.replace(/\n/g, ', '),
             deleted: true,
             createdOn: customer.createdOn,
             lastUpdated: new Date(new Date()),
@@ -122,14 +150,22 @@ function Customers() {
     }
 
     const handleViewBookings = (customerId) => {
-        navigate(`/Customer/${customerId}/Bookings`);
+        navigate(`/Addresses/${customerId}`);
     }
 
     const handleOpenViewCustomer = (customer) => {
         setCustomer(customer);
         setOpenViewCustomer(true);
     }
-    const handleCloseViewCustomer = () => setOpenViewCustomer(false);
+    const handleCloseViewCustomer = () => {
+        setOpenViewCustomer(false);
+        // Checks if modal was opened from Addresses page
+        if (location.state && location.state.openCustomerModal) {
+            // Navigates to the same page without the state
+            // Replace the current history entry to remove the state
+            navigate(location.pathname, { replace: true });
+        }
+    };
 
     const handleCheckDeleteCustomer = async (customer) => {
         const url = `/booking/customer/${customer.id}`;
@@ -261,7 +297,7 @@ function Customers() {
                                     lastName={customer.lastName}
                                     firstName={customer.firstName}
                                     phone={customer.phone}
-                                    onClickView={() => handleOpenViewCustomer(customer)}
+                                    onClick={() => handleOpenViewCustomer(customer)}
                                     onClickEdit={() => handleEditClick(customer.id)}
                                     onClickDelete={() => handleCheckDeleteCustomer(customer)}
                                 />
@@ -297,17 +333,14 @@ function Customers() {
                         <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}
                     </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
+                    {/* <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Χρἠστης Αποθἠκευσης:</FormLabel> { }
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Χρἠστης Τελευταίας Επεξἐργασης:</FormLabel> { }
-                    </Typography>
+                    </Typography> */}
                     <Button
                         variant="outlined"
                         sx={{

@@ -3,11 +3,11 @@ import './Bookings.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import { Dialog, DialogActions, DialogContent, DialogTitle, FormControlLabel, FormLabel, Radio, RadioGroup, Typography, useMediaQuery, CircularProgress } from "@mui/material";
 import BookingCard from "../../components/BookingCard/BookingCard";
-import UpdatesButton from "../../components/UpdatesButton/UpdatesButton";
 import { useNavigate } from "react-router-dom";
 import CustomButton from "../../components/CustomButton/CustomButton";
 import CustomSnackbar from "../../components/CustomSnackbar/CustomSnackbar";
 import handleHttpRequest from "../../api/api";
+import UpdatesButton from "../../components/UpdatesButton/UpdatesButton";
 
 function Bookings() {
 
@@ -22,6 +22,7 @@ function Bookings() {
     const [skip, setSkip] = useState({}); // Used for changing skip status
     const [openCancelSuccess, setOpenCancelSuccess] = useState(false);
     const [openCancelDialog, setOpenCancelDialog] = useState(false);
+    const [showInitialAnnouncement, setShowInitialAnnouncement] = useState (false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
@@ -42,6 +43,13 @@ function Bookings() {
     const radioButtonsWidth = useMediaQuery('(max-width: 550px)');
 
     useEffect(() => {
+        const hasSeenAnnouncement = sessionStorage.getItem ('hasSeenAnnouncement');
+
+        if (!hasSeenAnnouncement) {
+            setShowInitialAnnouncement (true);
+            sessionStorage.setItem( 'hasSeenAnnouncement', 'true');
+        }
+
         // Initial load
         handleFetchBookings(1, filter);
 
@@ -344,6 +352,7 @@ function Bookings() {
 
     return (
         <>
+            <UpdatesButton showDialog={showInitialAnnouncement} setShowDialog= {setShowInitialAnnouncement} isButton={false} />
             <CustomNavbar currentPage={'Κρατἠσεις'} addNewClick={'/Booking'} addNewSource="all-bookings" />
             <div className='bookings-container'>
                 {bookings.length > 0 && (
@@ -416,7 +425,7 @@ function Bookings() {
                             hireDate={new Date(booking.hireDate).toLocaleDateString()}
                             returnDateOrDays={booking.returned ? new Date(booking.returnDate).toLocaleDateString() : booking.cancelled ? 'Cancelled' : handleCalculateDays(booking.hireDate)}
                             address={booking.address}
-                            onClickView={() => handleOpenViewBooking(booking)}
+                            onClick={() => handleOpenViewBooking(booking)}
                             onClickEdit={() => handleEditClick(booking.id)}
                             onClickCancel={() => handleShowCancelDialog(booking)}
                             disabledEditButton={(booking.returned && booking.paid) || booking.cancelled}
@@ -451,9 +460,6 @@ function Bookings() {
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Τηλἐφωνο:</FormLabel> {customer.phone}
-                    </Typography>
-                    <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
-                        <FormLabel>Διεὐθυνση:</FormLabel> {customer.address}
                     </Typography>
                     <Typography variant="body2" sx={{ fontSize: '20px', margin: '5px' }} >
                         <FormLabel>Email:</FormLabel> {customer.email ? customer.email : 'Μ/Δ'}

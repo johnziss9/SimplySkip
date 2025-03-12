@@ -335,5 +335,52 @@ namespace SimplySkip.Tests.Bookings
                 }
             }
         }
+
+        [Fact]
+        public async Task GetAddressesCountsByCustomerId_ReturnsAddressesWithCounts()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 5;
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 10, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 11, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 12, CustomerId = customerId, Address = "456 Oak Ave" },
+                    new Models.Booking { Id = 13, CustomerId = customerId, Address = "789 Pine Blvd" },
+                    new Models.Booking { Id = 14, CustomerId = 6, Address = "999 Other St" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var controller = new BookingController(new BookingService(dbContext));
+
+                // Act
+                var actionResult = await controller.GetAddressesCountsByCustomerId(customerId);
+
+                // Assert
+                var result = actionResult.Result as OkObjectResult;
+                Assert.NotNull(result);
+                Assert.Equal(StatusCodes.Status200OK, result.StatusCode);
+
+                var addressCounts = result.Value as List<AddressCountDto>;
+                Assert.NotNull(addressCounts);
+                Assert.Equal(3, addressCounts.Count);
+
+                // Find and verify the "123 Main St" entry
+                var mainStAddress = addressCounts.FirstOrDefault(a => a.Address == "123 Main St");
+                Assert.NotNull(mainStAddress);
+                Assert.Equal(2, mainStAddress.Count);
+
+                // Verify other addresses exist
+                Assert.Contains(addressCounts, a => a.Address == "456 Oak Ave");
+                Assert.Contains(addressCounts, a => a.Address == "789 Pine Blvd");
+                Assert.DoesNotContain(addressCounts, a => a.Address == "999 Other St");
+            }
+        }
     }
 }

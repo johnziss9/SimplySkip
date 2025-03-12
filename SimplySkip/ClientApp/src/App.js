@@ -14,6 +14,7 @@ import LogoutTimerDialog from './components/LogoutTimerDialog/LogoutTimerDialog'
 import { useNavigate } from 'react-router-dom';
 import NotFound from './pages/NotFound/NotFound';
 import History from './pages/History/History';
+import Addresses from './pages/Addresses/Addresses';
 
 const App = () => {
   const navigate = useNavigate();
@@ -58,6 +59,7 @@ const App = () => {
         <Route element={<PrivateRoute />}>
           <Route path="/Customers" element={<Customers />} />
           <Route path="/Customer/:id?" element={<CustomerAddEdit />} />
+          <Route path="/Addresses/:id?" element={<Addresses />} />
           <Route path="/Bookings" element={<Bookings />} />
           <Route path="/Customer/:id/Bookings" element={<CustomerBookings />} />
           <Route path="/Booking/:id?/:source?" element={<BookingAddEdit />} />

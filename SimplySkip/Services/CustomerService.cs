@@ -18,12 +18,6 @@ namespace SimplySkip.Services
         {
             var customers = await _ssDbContext.Customers.Where(c => c.Deleted == false).ToListAsync();
 
-            foreach (var customer in customers)
-            {
-                if (customer.Address != null)
-                    customer.Address = customer.Address.Replace(", ", "\n");
-            }
-
             return Response<List<Customer>>.Success(customers);
         }
 
@@ -57,13 +51,6 @@ namespace SimplySkip.Services
                     .Take(pageSize)
                     .ToListAsync();
 
-                // Format addresses
-                foreach (var customer in customers)
-                {
-                    if (customer.Address != null)
-                        customer.Address = customer.Address.Replace(", ", "\n");
-                }
-
                 var paginatedList = new PaginatedList<Customer>(
                     customers,
                     totalCount,
@@ -81,19 +68,23 @@ namespace SimplySkip.Services
 
         public async Task<Response<Customer>> CreateCustomer(Customer customer)
         {
+            // Validate customer object for required fields and other validations
             var validationContext = new ValidationContext(customer, serviceProvider: null, items: null);
             var validationResults = new List<ValidationResult>();
+
             if (!Validator.TryValidateObject(customer, validationContext, validationResults, validateAllProperties: true))
             {
                 var errorMessages = validationResults.Select(vr => vr.ErrorMessage).ToList();
                 return Response<Customer>.Fail(errorMessages);
             }
 
+            if (_ssDbContext.Customers.Any(c => c.Phone == customer.Phone && c.Deleted == false))
+            {
+                return Response<Customer>.Fail(400, "Customer with this phone number already exists");
+            }
+
             _ssDbContext.Customers.Add(customer);
             await _ssDbContext.SaveChangesAsync();
-
-            if (customer.Address != null)
-                customer.Address = customer.Address.Replace(", ", "\n");
 
             return Response<Customer>.Success(customer);
         }
@@ -106,9 +97,6 @@ namespace SimplySkip.Services
             {
                 return Response<Customer>.Fail(404, "Customer Not Found");
             }
-
-            if (customer.Address != null)
-                customer.Address = customer.Address.Replace(", ", "\n");
 
             return Response<Customer>.Success(customer);
         }
@@ -132,13 +120,13 @@ namespace SimplySkip.Services
                 customer.LastName = updatedCustomer.LastName;
             }
 
-            if (updatedCustomer.Address != null && updatedCustomer.Address != customer.Address)
-            {
-                customer.Address = updatedCustomer.Address.Replace("\n", ", ");
-            }
-
             if (updatedCustomer.Phone != null && updatedCustomer.Phone != customer.Phone)
             {
+                if (_ssDbContext.Customers.Any(c => c.Phone == updatedCustomer.Phone && c.Id != id && c.Deleted == false))
+                {
+                    return Response<Customer>.Fail(400, "Customer with this phone number already exists");
+                }
+                
                 customer.Phone = updatedCustomer.Phone;
             }
 

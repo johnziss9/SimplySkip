@@ -167,6 +167,28 @@ namespace SimplySkip.Services
             return Response<Booking>.Success(booking);
         }
 
+        public async Task<Response<List<AddressCountDto>>> GetAddressesWithCountsByCustomerId(int customerId)
+        {
+            try
+            {
+                var addressCounts = await _ssDbContext.Bookings
+                    .Where(b => b.CustomerId == customerId)
+                    .GroupBy(b => b.Address)
+                    .Select(g => new AddressCountDto 
+                    { 
+                        Address = g.Key ?? string.Empty, 
+                        Count = g.Count() 
+                    })
+                    .ToListAsync();
+
+                return Response<List<AddressCountDto>>.Success(addressCounts);
+            }
+            catch (Exception ex)
+            {
+                return Response<List<AddressCountDto>>.Fail(ex);
+            }
+        }
+
         public async Task<Response<Booking>> UpdateBooking(int id, Booking updatedBooking)
         {
             var booking = await _ssDbContext.Bookings.Where(c => c.Id == id).FirstOrDefaultAsync();
