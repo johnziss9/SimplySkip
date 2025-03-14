@@ -418,7 +418,7 @@ function Bookings() {
                                         ? "10px solid red"
                                         : !booking.cancelled && booking.returned && booking.paid // past
                                             ? "10px solid grey"
-                                            : "10px solid blue"}
+                                            : "10px solid white"}
                             customerDeleted={customerDetails[booking.customerId]?.deleted}
                             lastName={customerDetails[booking.customerId]?.lastName}
                             firstName={customerDetails[booking.customerId]?.firstName}
