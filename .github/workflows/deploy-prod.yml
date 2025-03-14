@@ -22,7 +22,6 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
 
-      # Add this new step right here
       - name: Setup known hosts
         run: |
           mkdir -p ~/.ssh
