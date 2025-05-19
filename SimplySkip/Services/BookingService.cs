@@ -149,13 +149,16 @@ namespace SimplySkip.Services
             return Response<Booking>.Success(booking);
         }
 
-        public async Task<Response<Booking>> GetBookingBySkipId(int id)
+        public async Task<Response<Booking>> GetActiveBookingBySkipId(int id)
         {
-            var booking = await _ssDbContext.Bookings.Where(c => c.SkipId == id).FirstOrDefaultAsync();
+            var booking = await _ssDbContext.Bookings
+                .Where(c => c.SkipId == id && !c.Returned && !c.Cancelled)
+                .OrderByDescending(c => c.HireDate)
+                .FirstOrDefaultAsync();
 
             if (booking == null)
             {
-                return Response<Booking>.Fail(404, "Booking Not Found");
+                return Response<Booking>.Fail(404, "Active Booking Not Found");
             }
 
             if (booking.Address != null)

@@ -52,9 +52,9 @@ namespace SimplySkip.Controllers
         }
 
         [HttpGet("skip/{id}")]
-        public async Task<ActionResult<Booking>> GetBySkipId(int id)
+        public async Task<ActionResult<Booking>> GetActiveBySkipId(int id)
         {
-            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetBookingBySkipId(id));
+            return ResponseHelper.HandleErrorAndReturn(await _bookingService.GetActiveBookingBySkipId(id));
         }
 
         [HttpGet("customer/{id}/addresses/counts")]
