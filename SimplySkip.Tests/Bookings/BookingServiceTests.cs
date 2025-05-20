@@ -304,7 +304,7 @@ namespace SimplySkip.Tests.Bookings
         }
 
         [Fact]
-        public async Task GetBookingBySkipId_Success()
+        public async Task GetActiveBookingBySkipId_Success()
         {
             // Arrange
             var options = new DbContextOptionsBuilder<SSDbContext>()
@@ -314,13 +314,13 @@ namespace SimplySkip.Tests.Bookings
             using (var dbContext = new SSDbContext(options))
             {
                 await SeedTestData(dbContext);
-                var expectedSkipId = 3;
+                var expectedSkipId = 2;
                 var expectedBooking = dbContext.Bookings.FirstOrDefault(b => b.SkipId == expectedSkipId);
 
                 var service = new BookingService(dbContext);
 
                 // Act
-                var result = await service.GetBookingBySkipId(expectedSkipId);
+                var result = await service.GetActiveBookingBySkipId(expectedSkipId);
 
                 // Assert
                 Assert.NotNull(result.Data);

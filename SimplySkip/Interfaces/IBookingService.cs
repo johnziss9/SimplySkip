@@ -15,7 +15,7 @@ namespace SimplySkip.Interfaces
 
         Task<Response<Booking>> GetBookingById(int id);
 
-        Task<Response<Booking>> GetBookingBySkipId(int id);
+        Task<Response<Booking>> GetActiveBookingBySkipId(int id);
 
         Task<Response<List<AddressCountDto>>> GetAddressesWithCountsByCustomerId(int customerId);
 
