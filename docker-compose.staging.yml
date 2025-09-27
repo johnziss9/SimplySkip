@@ -30,20 +30,5 @@ services:
     env_file:
       - .env
 
-  pgadmin-staging:
-    image: dpage/pgadmin4
-    environment:
-      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
-      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
-    ports:
-      - "5051:80"
-    depends_on:
-      - postgres-staging
-    volumes:
-      - pgadmin-data-staging:/var/lib/pgadmin
-    env_file:
-      - .env
-
 volumes:
   db-data-staging:
-  pgadmin-data-staging:
