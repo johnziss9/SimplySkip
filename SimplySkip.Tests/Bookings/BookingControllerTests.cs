@@ -105,7 +105,7 @@ namespace SimplySkip.Tests.Bookings
                 Assert.NotNull(returnedData);
                 Assert.Equal(3, returnedData.TotalCount);
                 Assert.Equal(1, returnedData.CurrentPage);
-                Assert.Equal(500, returnedData.PageSize);
+                Assert.Equal(15, returnedData.PageSize);
                 Assert.False(returnedData.HasNext);
                 Assert.NotNull(returnedData.Counts);
             }
