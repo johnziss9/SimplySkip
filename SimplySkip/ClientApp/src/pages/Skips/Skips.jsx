@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import './Skips.css';
 import CustomNavbar from "../../components/CustomNavbar/CustomNavbar";
 import SkipCard from "../../components/SkipCard/SkipCard";
@@ -15,16 +15,16 @@ function Skips() {
     const [skips, setSkips] = useState([]);
     const [skip, setSkip] = useState({});
     const [booking, setBooking] = useState({});
+    const [bookings, setBookings] = useState({}); // Store bookings by skipId
     const [customer, setCustomer] = useState({});
     const [selectedValue, setSelectedValue] = useState('All'); // Handling the Radio Buttons
+    const [sortBy, setSortBy] = useState('name');
     const [openViewSkip, setOpenViewSkip] = useState(false); // Handling the View Skip Dialog
     const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
     const [openDeleteSuccess, setOpenDeleteSuccess] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState('');
     const [showSnackbar, setShowSnackbar] = useState(false);
     const [showFilter, setShowFilter] = useState(false);
-    const [page, setPage] = useState(1);
-    const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [filter, setFilter] = useState('');
     const [totalSkips, setTotalSkips] = useState(0);
@@ -38,32 +38,8 @@ function Skips() {
     useEffect(() => {
         // Initial load
         handleFetchSkips(1, filter);
-
-        // Add scroll listener
-        window.addEventListener('scroll', handleScroll);
-
-        // Cleanup
-        return () => {
-            window.removeEventListener('scroll', handleScroll);
-        };
         // eslint-disable-next-line
     }, []);
-
-    // Page change effect
-    useEffect(() => {
-        if (page > 1) { // Only fetch if it's not the initial load
-            handleFetchSkips(page, filter);
-        }
-        // eslint-disable-next-line
-    }, [page]);
-
-    // Content check effect
-    useEffect(() => {
-        if (skips.length > 0) {
-            checkContentAndLoadMore();
-        }
-        // eslint-disable-next-line
-    }, [skips]);
 
     const handleFetchSkips = async (currentPage = 1, filterValue = filter) => {
         try {
@@ -74,18 +50,18 @@ function Skips() {
             const { success, data } = await handleHttpRequest(url, method);
 
             if (success) {
-                if (data.items.length === 0) {
-                    setHasMore(false);
-                    return;
-                }
-
                 setSkips(prevSkips =>
                     currentPage === 1 ? data.items : [...prevSkips, ...data.items]
                 );
 
+                // This function fetches booking details for a given skip Id in order to display booking information on the skip card.
+                const rentedSkips = data.items.filter(skip => skip.rented);
+                for (const skip of rentedSkips) {
+                    await fetchBookingForSkip(skip.id);
+                }
+
                 setFilterCounts(data.counts);
                 setTotalSkips(data.totalCount);
-                setHasMore(data.hasNext);
             } else {
                 setSnackbarMessage('Failed to load skips.');
                 setShowSnackbar(true);
@@ -135,9 +111,27 @@ function Skips() {
     const handleRadioChange = (event) => {
         setSelectedValue(event.target.value);
         setFilter(event.target.value === 'All' ? '' : event.target.value);
-        setPage(1);  // Reset to first page
         setSkips([]); // Clear existing skips
         handleFetchSkips(1, event.target.value === 'All' ? '' : event.target.value);
+    };
+
+    const fetchBookingForSkip = async (skipId) => {
+        try {
+            const url = `/booking/skip/${skipId}`;
+            const method = 'GET';
+
+            const { success, data } = await handleHttpRequest(url, method);
+            
+            if (success) {
+                setBookings(prev => ({
+                    ...prev,
+                    [skipId]: data
+                }));
+            }
+        } catch (error) {
+            // Silent fail - card will just not show booking data
+            console.error(`Failed to fetch booking for skip ${skipId}`);
+        }
     };
 
     const handleEditClick = (id) => {
@@ -242,90 +236,113 @@ function Skips() {
         setShowFilter(!showFilter);
     };
 
-    const handleScroll = useCallback(() => {
-        const scrollPosition = Math.ceil(window.innerHeight + window.scrollY);
-        const documentHeight = document.documentElement.scrollHeight;
-
-        if (!isLoading && hasMore && scrollPosition >= (documentHeight - 200)) {
-            setPage(prevPage => prevPage + 1);
-        }
-    }, [isLoading, hasMore]);
-
-    const checkContentAndLoadMore = useCallback(() => {
-        const windowHeight = window.innerHeight;
-        const documentHeight = document.documentElement.scrollHeight;
-
-        if (!isLoading && hasMore && documentHeight <= windowHeight) {
-            setPage(prevPage => prevPage + 1);
-        }
-    }, [isLoading, hasMore]);
-
     return (
         <>
             <CustomNavbar currentPage={'Skips'} addNewClick={'/Skip'} />
             <div className='skips-container'>
                 {skips.length > 0 && (
-                    <CustomButton
-                        backgroundColor="#006d77"
-                        buttonName="ΦΙΛΤΡΟ"
-                        width="100px"
-                        height="45px"
-                        margin="20px 0 0 0"
-                        onClick={handleFilterClick}
-                    />
-                )}
-                {showFilter && (
-                    <div style={{ marginTop: '10px' }}>
-                        <RadioGroup
-                            value={selectedValue}
-                            onChange={handleRadioChange}
-                            row
-                        >
-                            <FormControlLabel
-                                value="All"
-                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label={`Ὀλα (${filterCounts.all})`}
-                                sx={{ display: 'inline' }}
-                            />
-                            <FormControlLabel
-                                value="Booked"
-                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label={`Κρατημἐνα (${filterCounts.rented})`}
-                                sx={{ display: 'inline' }}
-                            />
-                            <FormControlLabel
-                                value="Available"
-                                control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
-                                label={`Διαθέσιμα (${filterCounts.available})`}
-                                sx={{ display: 'inline' }}
-                            />
-                        </RadioGroup>
-                    </div>
-                )}
+                <CustomButton
+                    backgroundColor="#006d77"
+                    buttonName="ΦΙΛΤΡΟ & ΤΑΞΙΝΟΜΗΣΗ"
+                    width="205px"
+                    height="45px"
+                    margin="20px 0 0 0"
+                    onClick={handleFilterClick}
+                />
+            )}
+            {showFilter && (
+                <div style={{ marginTop: '10px' }}>
+                    <FormLabel sx={{ color: '#006d77', fontWeight: 'bold' }}>Φίλτρο:</FormLabel>
+                    <RadioGroup
+                        value={selectedValue}
+                        onChange={handleRadioChange}
+                        row
+                    >
+                        <FormControlLabel
+                            value="All"
+                            control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                            label={`Ὀλα (${filterCounts.all})`}
+                            sx={{ display: 'inline' }}
+                        />
+                        <FormControlLabel
+                            value="Booked"
+                            control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                            label={`Κρατημἐνα (${filterCounts.rented})`}
+                            sx={{ display: 'inline' }}
+                        />
+                        <FormControlLabel
+                            value="Available"
+                            control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                            label={`Διαθέσιμα (${filterCounts.available})`}
+                            sx={{ display: 'inline' }}
+                        />
+                    </RadioGroup>
+                    
+                    <FormLabel sx={{ color: '#006d77', fontWeight: 'bold', marginTop: '10px', display: 'block' }}>Ταξινόμηση:</FormLabel>
+                    <RadioGroup
+                        value={sortBy}
+                        onChange={(e) => setSortBy(e.target.value)}
+                        row
+                    >
+                        <FormControlLabel
+                            value="name"
+                            control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                            label="Αριθμός Skip"
+                            sx={{ display: 'inline' }}
+                        />
+                        <FormControlLabel
+                            value="daysOut"
+                            control={<Radio sx={{ color: '#006d77', '&.Mui-checked': { color: '#006d77' } }} />}
+                            label="Ημέρες Εκτός"
+                            sx={{ display: 'inline' }}
+                        />
+                    </RadioGroup>
+                </div>
+            )}
                 <div className="skips-section">
                     {!showFilter && (
                         <Typography sx={{ marginTop: '20px', color: '#006d77', width: '100%', textAlign: 'center' }}>
                             {`Σύνολο Skip: ${totalSkips}`}
                         </Typography>
                     )}
-                    {Array.isArray(skips) && skips.length > 0 ? skips.sort((a, b) => new Date(b.createdOn) - new Date(a.createdOn)).map((skip) => (
-                        <SkipCard
-                            key={skip.id}
-                            statusBorder={skip.rented ? "10px solid red" : "10px solid green"}
-                            name={`Skip ${skip.name}`}
-                            size={skip.size === 1 ? 'Small' : 'Large'}
-                            onClick={() => handleOpenViewSkip(skip)}
-                            onClickEdit={() => handleEditClick(skip.id)}
-                            onClickDelete={() => handleShowDeleteDialog(skip)}
-                            disabledDeleteButton={skip.rented ? true : false}
-                        />
-                    )) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν skips. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε ένα.</h5>}
-                    {isLoading && hasMore && (
+                    {isLoading ? (
                         <div style={{ display: 'flex', justifyContent: 'center', padding: '20px', width: '100%'}}>
-                            <CircularProgress size={40} sx={{ color: '#006d77' }}
-                            />
+                            <CircularProgress size={40} sx={{ color: '#006d77' }} />
                         </div>
-                    )}
+                    ) : Array.isArray(skips) && skips.length > 0 ? skips.sort((a, b) => {
+                        if (sortBy === 'daysOut') {
+                            if (a.rented && !b.rented) return -1;
+                            if (!a.rented && b.rented) return 1;
+                            if (a.rented && b.rented) {
+                                const bookingA = bookings[a.id];
+                                const bookingB = bookings[b.id];
+                                if (bookingA && bookingB) {
+                                    return new Date(bookingA.hireDate) - new Date(bookingB.hireDate); // Oldest hire date first (most days out)
+                                }
+                            }
+                            return 0;
+                        } else {
+                            // Default to sort by skip name
+                            return a.name.localeCompare(b.name);
+                        }
+                    }).map((skip) => {
+                        const skipBooking = bookings[skip.id];
+                        return (
+                            <SkipCard
+                                key={skip.id}
+                                statusBorder={skip.rented ? "10px solid red" : "10px solid green"}
+                                name={`Skip ${skip.name}`}
+                                size={skip.size === 1 ? 'Small' : 'Large'}
+                                rented={skip.rented}
+                                hireDate={skip.rented && skipBooking ? `${new Date(skipBooking.hireDate).toLocaleDateString()}` : null}
+                                returnDateOrDays={skip.rented && skipBooking ? `${handleCalculateDays(skipBooking.hireDate)}` : null}
+                                onClick={() => handleOpenViewSkip(skip)}
+                                onClickEdit={() => handleEditClick(skip.id)}
+                                onClickDelete={() => handleShowDeleteDialog(skip)}
+                                disabledDeleteButton={skip.rented ? true : false}
+                            />
+                        );
+                    }) : <h5 style={{ marginTop: '20px', textAlign: 'center', padding: '0 10px' }}>Δεν υπάρχουν skips. Κάντε κλικ στο Προσθήκη Νέου για να δημιουργήσετε ένα.</h5>}
                 </div>
             </div>
             {!skip.rented ?

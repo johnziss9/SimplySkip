@@ -36,11 +36,17 @@ function SkipCard(props) {
         >
             <CardContent sx={{ paddingBottom: '17px !important' }}>
                 <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.name}
+                    {props.name} <span style={{ fontSize: '14px' }}>({props.size})</span>
                 </Typography>
-                <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
-                    {props.size}
-                </Typography>
+                {props.rented ?
+                    <>
+                        <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
+                            {props.hireDate}
+                        </Typography>
+                        <Typography variant="body2" sx={{ fontSize: '18px', margin: '5px' }} >
+                            {props.returnDateOrDays}
+                        </Typography>
+                    </> : null}
                 <IconButton onClick={handleExpand} sx={{ padding: 0 }} >
                     {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
                 </IconButton>
