@@ -18,7 +18,7 @@ services:
       - .env
 
   postgres-dev:
-    image: postgres
+    image: postgres:17
     environment:
       POSTGRES_DB: ssdb_dev
       POSTGRES_USER: johnz
