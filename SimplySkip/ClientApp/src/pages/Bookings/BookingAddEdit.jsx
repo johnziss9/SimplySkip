@@ -511,7 +511,7 @@ function BookingAddEdit() {
                             customerId={customer.id}
                             value={selectedAddress}
                             onChange={handleAddressChange}
-                            disabled={(isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()))}
+                            // disabled={(isEdit && (!isCancelled && !isPaid && !isReturned) && (hireDate < new Date()))}
                             error={addressError}
                             required={true}
                             width={fieldsWidth ? '300px' : '440px'}

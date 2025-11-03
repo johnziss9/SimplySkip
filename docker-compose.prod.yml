@@ -18,7 +18,7 @@ services:
       - .env
 
   postgres-prod:
-    image: postgres
+    image: postgres:18
     environment:
       POSTGRES_DB: ssdb_prod
       POSTGRES_USER: johnz
