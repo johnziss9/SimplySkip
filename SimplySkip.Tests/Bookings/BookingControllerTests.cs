@@ -1,3 +1,4 @@
+using SimplySkip.DTOs;
 using SimplySkip.Helpers;
 
 namespace SimplySkip.Tests.Bookings

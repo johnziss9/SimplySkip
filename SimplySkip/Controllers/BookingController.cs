@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using SimplySkip.DTOs;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
 using SimplySkip.Models;
@@ -67,6 +68,13 @@ namespace SimplySkip.Controllers
         public async Task<ActionResult<Booking>> Update(int id, Booking booking)
         {
             return ResponseHelper.HandleErrorAndReturn(await _bookingService.UpdateBooking(id, booking));
+        }
+        
+        [HttpPut("customer/{customerId}/address/bulk-update")]
+        public async Task<ActionResult<int>> BulkUpdateAddress(int customerId, [FromBody] BulkAddressUpdateDto updateDto)
+        {
+            return ResponseHelper.HandleErrorAndReturn(
+                await _bookingService.BulkUpdateAddressByCustomerId(customerId, updateDto.OldAddress, updateDto.NewAddress));
         }
     }
 }
