@@ -1,3 +1,4 @@
+using SimplySkip.DTOs;
 using SimplySkip.Helpers;
 using SimplySkip.Models;
 
@@ -20,5 +21,7 @@ namespace SimplySkip.Interfaces
         Task<Response<List<AddressCountDto>>> GetAddressesWithCountsByCustomerId(int customerId);
 
         Task<Response<Booking>> UpdateBooking(int id, Booking updatedBooking);
+
+        Task<Response<int>> BulkUpdateAddressByCustomerId(int customerId, string oldAddress, string newAddress);
     }
 }
