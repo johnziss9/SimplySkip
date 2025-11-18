@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using SimplySkip.DTOs;
 using SimplySkip.Helpers;
 using SimplySkip.Interfaces;
 using SimplySkip.Models;
@@ -259,6 +260,41 @@ namespace SimplySkip.Services
             await _ssDbContext.SaveChangesAsync();
 
             return Response<Booking>.Success(booking);
+        }
+
+        public async Task<Response<int>> BulkUpdateAddressByCustomerId(int customerId, string oldAddress, string newAddress)
+        {
+            try
+            {
+                // Normalise the old address format to match database storage (comma-separated)
+                var normalisedOldAddress = oldAddress.Replace("\n", ", ");
+                var normalisedNewAddress = newAddress.Replace("\n", ", ");
+
+                // Find all bookings for this customer with the old address
+                var bookingsToUpdate = await _ssDbContext.Bookings
+                    .Where(b => b.CustomerId == customerId && b.Address == normalisedOldAddress)
+                    .ToListAsync();
+
+                if (bookingsToUpdate.Count == 0)
+                {
+                    return Response<int>.Success(0);
+                }
+
+                // Update all matching bookings
+                foreach (var booking in bookingsToUpdate)
+                {
+                    booking.Address = normalisedNewAddress;
+                    booking.LastUpdated = DateTime.UtcNow;
+                }
+
+                await _ssDbContext.SaveChangesAsync();
+
+                return Response<int>.Success(bookingsToUpdate.Count);
+            }
+            catch (Exception ex)
+            {
+                return Response<int>.Fail(ex);
+            }
         }
     }
 }

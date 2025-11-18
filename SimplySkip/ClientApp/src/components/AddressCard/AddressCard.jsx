@@ -1,7 +1,10 @@
-import React, { useState } from "react";
-import { Card, Typography, Box, Divider, IconButton, Dialog, DialogActions, DialogTitle, DialogContent} from "@mui/material";
+import { useState } from "react";
+import { Card, Typography, Box, Divider, IconButton, Dialog, DialogActions, DialogTitle, DialogContent, Collapse} from "@mui/material";
 import CardContent from '@mui/material/CardContent';
 import VisibilityIcon from '@mui/icons-material/Visibility';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import EditIcon from '@mui/icons-material/Edit';
 import CustomButton from "../CustomButton/CustomButton";
 
 function AddressCard(props) {
@@ -9,10 +12,13 @@ function AddressCard(props) {
         address,
         bookingCount,
         characterThreshold = 80,
-        onClick
+        onClick,
+        onClickEdit,
+        disabledEditButton = false
     } = props;
 
     const [viewAddresModal, setViewAddressModal] = useState(false);
+    const [expanded, setExpanded] = useState(false);
     
     const isLikelyOverflowing = address.length > characterThreshold;
 
@@ -22,12 +28,22 @@ function AddressCard(props) {
     }
     const handleCloseModal = () => setViewAddressModal(false);
 
+    const handleExpand = (e) => {
+        e.stopPropagation();
+        setExpanded(!expanded);
+    };
+
+    const handleEdit = (e) => {
+        e.stopPropagation();
+        onClickEdit();
+    };
+
     return (
         <>
             <Card sx={{
                 minWidth: 275,
                 maxWidth: 275,
-                height: 195,
+                minHeight: 195,
                 backgroundColor: '#fff',
                 borderTop: '10px solid #83c5be',
                 margin: '15px',
@@ -43,17 +59,12 @@ function AddressCard(props) {
                     paddingBottom: '17px !important',
                     display: 'flex',
                     flexDirection: 'column',
-                    height: '100%',
                     position: 'relative'
                 }}>
                     <Box sx={{ 
                         position: 'relative',
                         display: 'flex',
-                        flexDirection: 'column',
-                        justifyContent: 'center',
-                        flexGrow: 1,
-                        overflow: 'hidden',
-                        marginBottom: 'auto'
+                        flexDirection: 'column'
                     }}>
                         <Typography
                             variant="body1"
@@ -63,7 +74,7 @@ function AddressCard(props) {
                                 overflow: 'hidden',
                                 textOverflow: 'ellipsis',
                                 display: '-webkit-box',
-                                WebkitLineClamp: 3, // Number of lines to show before overflow
+                                WebkitLineClamp: 3,
                                 WebkitBoxOrient: 'vertical',
                                 paddingRight: isLikelyOverflowing ? 4 : 0
                             }}
@@ -87,27 +98,36 @@ function AddressCard(props) {
                         )}
                     </Box>
 
+                    <Divider sx={{ mb: 1 }} />
                     <Box sx={{
-                        marginTop: 'auto',
-                        width: '100%'
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center'
                     }}>
-                        <Divider sx={{ mb: 1 }} />
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'center',
-                            alignItems: 'center'
+                        <Typography variant="body2" sx={{ color: '#757575', marginRight: 1 }}>
+                            Σύνολο Κρατήσεων:
+                        </Typography>
+                        <Typography variant="h4" sx={{
+                            fontWeight: 'bold',
+                            color: '#83c5be'
                         }}>
-                            <Typography variant="body2" sx={{ color: '#757575', marginRight: 1 }}>
-                                Σύνολο Κρατήσεων:
-                            </Typography>
-                            <Typography variant="h4" sx={{
-                                fontWeight: 'bold',
-                                color: '#83c5be'
-                            }}>
-                                {bookingCount}
-                            </Typography>
-                        </Box>
+                            {bookingCount}
+                        </Typography>
                     </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+                        <IconButton onClick={handleExpand} sx={{ padding: 0, marginLeft: '5px' }}>
+                            {expanded ? <KeyboardArrowUpIcon /> : <KeyboardArrowDownIcon />}
+                        </IconButton>
+                    </Box>
+                    <Collapse in={expanded}>
+                        <IconButton 
+                            sx={{ padding: '7px 7px 0 7px' }} 
+                            onClick={handleEdit} 
+                            disabled={disabledEditButton}
+                        >
+                            <EditIcon />
+                        </IconButton>
+                    </Collapse>
                 </CardContent>
             </Card>
 

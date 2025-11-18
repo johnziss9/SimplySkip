@@ -454,5 +454,118 @@ namespace SimplySkip.Tests.Bookings
                 Assert.Empty(result.Data); // Should be empty for customer with no bookings
             }
         }
+
+        [Fact]
+        public async Task BulkUpdateAddressByCustomerId_UpdatesMultipleBookings()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 10;
+                var oldAddress = "123 Main St, Apt 4";
+                var newAddress = "456 Oak Ave, Suite 10";
+                
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 20, CustomerId = customerId, Address = "123 Main St, Apt 4" },
+                    new Models.Booking { Id = 21, CustomerId = customerId, Address = "123 Main St, Apt 4" },
+                    new Models.Booking { Id = 22, CustomerId = customerId, Address = "789 Pine Blvd" },
+                    new Models.Booking { Id = 23, CustomerId = 11, Address = "123 Main St, Apt 4" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var service = new BookingService(dbContext);
+
+                // Act
+                var result = await service.BulkUpdateAddressByCustomerId(customerId, oldAddress, newAddress);
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.Equal(2, result.Data); // Two bookings should be updated
+
+                // Verify the addresses were actually updated
+                var updatedBookings = await dbContext.Bookings
+                    .Where(b => b.CustomerId == customerId && b.Address == "456 Oak Ave, Suite 10")
+                    .ToListAsync();
+                Assert.Equal(2, updatedBookings.Count);
+
+                // Verify other bookings weren't affected
+                var unchangedBooking = await dbContext.Bookings.FindAsync(22);
+                Assert.Equal("789 Pine Blvd", unchangedBooking?.Address);
+
+                // Verify booking from different customer wasn't affected
+                var otherCustomerBooking = await dbContext.Bookings.FindAsync(23);
+                Assert.Equal("123 Main St, Apt 4", otherCustomerBooking?.Address);
+            }
+        }
+
+        [Fact]
+        public async Task BulkUpdateAddressByCustomerId_NoMatchingBookings_ReturnsZero()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 15;
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 30, CustomerId = customerId, Address = "123 Main St" },
+                    new Models.Booking { Id = 31, CustomerId = customerId, Address = "456 Oak Ave" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var service = new BookingService(dbContext);
+
+                // Act
+                var result = await service.BulkUpdateAddressByCustomerId(customerId, "999 Nonexistent St", "111 New St");
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.Equal(0, result.Data); // No bookings updated
+            }
+        }
+
+        [Fact]
+        public async Task BulkUpdateAddressByCustomerId_HandlesNewlineFormatting()
+        {
+            // Arrange
+            var options = new DbContextOptionsBuilder<SSDbContext>()
+                .UseInMemoryDatabase(databaseName: Guid.NewGuid().ToString())
+                .Options;
+
+            using (var dbContext = new SSDbContext(options))
+            {
+                var customerId = 20;
+                // Database stores with commas
+                dbContext.Bookings.AddRange(new List<Models.Booking>
+                {
+                    new Models.Booking { Id = 40, CustomerId = customerId, Address = "123 Main St, Apt 4" }
+                });
+                await dbContext.SaveChangesAsync();
+
+                var service = new BookingService(dbContext);
+
+                // Act - Frontend sends with newlines
+                var result = await service.BulkUpdateAddressByCustomerId(
+                    customerId, 
+                    "123 Main St\nApt 4",  // Newline format from frontend
+                    "456 Oak Ave\nSuite 10"
+                );
+
+                // Assert
+                Assert.True(result.IsSuccess);
+                Assert.Equal(1, result.Data);
+
+                var updatedBooking = await dbContext.Bookings.FindAsync(40);
+                Assert.Equal("456 Oak Ave, Suite 10", updatedBooking?.Address); // Stored with comma
+            }
+        }
     }
 }
